@@ -1,0 +1,71 @@
+[Package]
+version: 1
+depends: 
+incremental: False
+
+[Product]
+type: localboot
+id: 0_vivaldi
+name: Vivaldi
+description: A Browser for Our Friends (Jón S. von Tetzchner)
+ CSG recommended replacement for Opera
+ WebSite: https://vivaldi.com/
+ _____
+ Maintainer: Jens Boettge <boettge@mpi-halle.mpg.de>
+advice: Organization: MPIMSP
+version: 1.6.689.40
+priority: 0
+licenseRequired: False
+productClasses: web & mail
+setupScript: setup.ins
+uninstallScript: uninstall.ins
+updateScript: 
+alwaysScript: 
+onceScript: 
+customScript: 
+userLoginScript: 
+
+[ProductProperty]
+type: unicode
+name: install_architecture
+multivalue: False
+editable: False
+description: which architecture (32/64 bit) should be installed
+values: ["32 bit", "64 bit", "sysnative"]
+default: ["64 bit"]
+
+[ProductProperty]
+type: unicode
+name: default_language
+multivalue: False
+editable: False
+description: application default language (currently unused!)
+values: ["de", "en-GB", "en-US"]
+default: ["en-US"]
+
+[Changelog]
+vivaldi 1.6.689.40-1 testing:
+  * initial package
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-01-03 17:00:06 +0100
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

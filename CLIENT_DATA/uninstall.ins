@@ -1,0 +1,35 @@
+;=====================================================================
+; uninstall.ins (generic)
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-01-03 13:09:04 +0100
+;=====================================================================
+
+;======================================================================
+[Initial]
+;======================================================================
+setLogLevel=6
+; Log Errors in Logfile but don't abort:
+ExitOnError=false 
+; Show syntax errors in the script:
+ScriptErrorMessages=off
+; Dont trace step by step through the script:
+TraceMode=off 
+; Let started programs run in front of the winst window
+StayOnTop=false 
+
+;======================================================================
+[Actions]
+;======================================================================
+include_insert "%ScriptPath%\product_variables.ins"
+
+ShowBitmap "%ScriptPath%\" + $ProductId$ + "_prepare.png" $ProductName$
+
+Message "Uninstalling previous version of " + $ProductName$
+
+if FileExists("%ScriptPath%\delsub.ins")
+	comment "Starting uninstall sub section"
+	Sub "%ScriptPath%\delsub.ins"
+else
+	logError "Can't find uninstaller script"
+	isFatalError "delsub.ins not found"
+	
+endif

@@ -1,0 +1,109 @@
+;=====================================================================
+; product specific variables  VIVALDI
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-01-03 14:45:15 +0100
+;=====================================================================
+
+include_insert "%ScriptPath%\variables.ins"
+;include_append "%ScriptPath%\exitcode_msi.ins"
+
+Set $MAP$ 				= getProductMap
+Set $FullProductId$     = getValue("id", $MAP$)
+Set $ProductName$   	= getValue("name", $MAP$)
+Set $Version$       	= getValue("ProductVersion", $MAP$)
+Set $SystemType$    	= GetSystemType
+Set $NTVersion$   		= GetMsVersionInfo
+
+;-----------------------------------------------------------
+; basic requirements
+;-----------------------------------------------------------
+requiredWinstVersion >= "4.11.6"
+
+if not ($NTVersion$ >= "6.1")
+	LogError "OS is not Windows 7 or above"
+	isFatalError
+endif
+
+if not ($SystemType$ = "64 Bit System")
+	LogError "OS is not a 64 Bit System"
+	isFatalError
+endif
+
+;-----------------------------------------------------------
+;*** detect testing package:
+if strPos($FullProductId$, "0_") = "0"
+	; no a testing package
+	set $ProductId$  = $FullProductId$ 
+	set $Testing$ = "false"
+else
+	; this is a testing package
+	comment "Prefix for testing package detected"
+	set $ProductId$  = strPart($FullProductId$,"3",strLength($FullProductId$))
+	set $Testing$ = "true"
+endif
+
+;-----------------------------------------------------------
+; software architecture; valid values: "32 bit", "64 bit", "sysnative"
+
+Set $sw_arch$ = GetProductProperty("install_architecture","sysnative")
+Set $sw_arch$ = takeString(0, splitString($sw_arch$, " "))
+
+if ( $sw_arch$ = "sysnative" )
+	if ($SystemType$ = "64 Bit System")
+		Set $sw_arch$ = "64"
+	else
+		Set $sw_arch$ = "32"
+	endif
+endif
+
+if ($sw_arch$ = "64")
+	; 64 bit software
+	set $InstallBase$ = "%ProgramFiles64Dir%"
+else
+	; 32 bit software
+	set $InstallBase$ = EnvVar("ProgramFiles(x86)")
+endif
+
+;-----------------------------------------------------------
+; language property: "de, "en_US", "en_GB"
+Set $sw_lang$ = GetProductProperty("default_language","en_US")
+
+;-----------------------------------------------------------
+Set $ProductDir$	= stringReplace($ProductName$," ","")
+;Set $ProductDir$	= $ProductId$
+Set $SrcDir$		= "%ScriptPath%\files\" 
+Set $InstallDir$    = $InstallBase$+"\"+$ProductDir$
+Set $LogDir$ 	    = "%SystemDrive%\tmp"
+Set $InstallLog$    = $LogDir$ + "\"+$ProductId$+"_install.log"
+Set $UninstallLog$  = $LogDir$ + "\"+$ProductId$+"_uninstall.log"
+Set $ExDir$			= $ProductName$ + "-bin"
+Set $ExDirLong$		= "%opsiTmpDir%\" + $ProductName$ + "-bin\"
+Set $Archive$		= $ProductName$ + "." + $Version$ + ".x" + $sw_arch$ + ".7z"
+Set $TempDir$		= "%opsiTmpDir%"
+Set $UnZip$         = "%ScriptPath%\bin\7z.exe"
+
+set $Img_Install$	= "%ScriptPath%\" + $ProductId$ +"_install.png"
+set $Img_Uninstall$	= "%ScriptPath%\" + $ProductId$ +"_uninstall.png"
+set $Img_Prepare$	= "%ScriptPath%\" + $ProductId$ +"_prepare.png"
+
+ShowBitmap $Img_Prepare$ $ProductName$
+
+;-----------------------------------------------------------
+Set $MinimumSpace$ 	= "360 MB"
+Set $MainBin$      	= $ProductId$ +".exe"
+
+;-----------------------------------------------------------
+if ( $sw_arch$ = "32" )
+	Set $Installer$		  = $SrcDir$ + $ProductName$ + "." + $Version$ + ".exe"
+else
+	; $sw_arch$ = "64" 
+	Set $Installer$		  = $SrcDir$ + $ProductName$ + "." + $Version$ + ".x64.exe"	
+	Set $MinimumSpace$ 	= "400 MB"
+endif
+
+;-----------------------------------------------------------
+Set $MPIMSP_Reg$		 = "HKEY_Local_Machine\Software\_MPIMSP\" + $ProductName$
+Set $RegPathUninstall$	 = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
+Set $RegPathUninstall64$ = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
+Set $RegPathUninstall32$ = "HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+
+

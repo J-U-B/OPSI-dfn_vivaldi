@@ -1,0 +1,34 @@
+#! /bin/bash
+#=====================================================================
+# postinst script
+# This script executes after unpacking files from that archive and registering the product at the depot.
+#
+# The following environment variables can be used to obtain information about the current installation:
+#   PRODUCT_ID: id of the current product
+#   CLIENT_DATA_DIR: directory which contains the installed client data
+#=====================================================================
+# J. Boettge <boettge@mpi-halle.mpg.de>  2016-12-01 07:45:58 +0100
+#=====================================================================
+
+VER="${PRODUCT_VERSION}"
+ARC=""
+
+SRC="${CLIENT_DATA_DIR}/../../source/${PRODUCT_ID##0_}/${ARC}"
+DST="${CLIENT_DATA_DIR}/files/${ARC}"
+
+[ -n "$ARC" -a ! -d "$DST" ] && mkdir $DST
+
+DST=${DST%\/}
+
+if [ -h "${DST}" ]; then
+	echo "Symlink to [${DST}] already exists. - Replacing"
+	rm ${DST}
+fi
+
+if [ -d "${DST}" ]; then
+	echo "Directory [${DST}] already exists!\nSkipping creation of symlink."
+elif [ -f "${DST}" ]; then
+	echo "File [${DST}] already exists!\nSkipping creation of symlink."
+else
+	ln -s ${SRC} ${DST}
+fi

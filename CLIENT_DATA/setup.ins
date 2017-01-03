@@ -1,0 +1,166 @@
+;======================================================================
+; setup.ins VIVALDI
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-01-03 16:59:53 +0100
+;======================================================================
+
+;======================================================================
+[Initial]
+;======================================================================
+setLogLevel=6
+; Log Errors in Logfile but and abort:
+ExitOnError=true
+; Show syntax errors in the script:
+ScriptErrorMessages=off
+; Dont trace step by step through the script:
+TraceMode=off 
+; Let started programs run in front of the winst window
+StayOnTop=false 
+
+;======================================================================
+[Actions]
+;======================================================================
+include_insert "%ScriptPath%\product_variables.ins"
+
+if not(HasMinimumSpace ("%SYSTEMDRIVE%", $MinimumSpace$))
+	LogError "Not enough space on %SYSTEMDRIVE%: . "+$MinimumSpace$+" on Drive %SYSTEMDRIVE%: needed for "+$ProductId$+"."
+	isFatalError
+else
+	if FileExists("%ScriptPath%\delsub.ins")
+		comment  "Starting uninstall sub section"
+		sub "%ScriptPath%\delsub.ins"	
+	else
+		logError "Can't find uninstaller script"
+		isFatalError "delsub.ins not found"
+	endif
+	
+	if ($SystemType$="x86 System") and ($sw_arch$="64")
+		LogError "Cannot install 64 bit version of " + $ProductName$ + " on a 32 bit operating system!"
+		isFatalError
+	endif
+
+	ShowBitmap $Img_Install$ $ProductName$
+	message "Installing " + $ProductName$ + " " + $Version$ + " (" + $sw_arch$ + " bit)"
+	
+	;=== cleanup temporary folder
+	if FileExists($ExDirLong$)
+		comment "Cleanup temp folder: " + $ExDirLong$
+		set $LogLevel$ = getLogLevel
+		SetLogLevel=5
+		Files_CleanupTempFolder
+		SetLogLevel=$LogLevel$
+	endif
+	if FileExists($ExDirLong$)
+		LogWarning "Temp folder [" + $ExDirLong$ + "] still exists"
+	endif
+	
+	;=== extract EXE to $TmpDir$\$Archive$
+	Message "Extracting archive from installer " + $Installer$
+	ShellInAnIcon_UnzipExe
+	set $ExitCode$ = getLastExitCode
+	if not($ExitCode$ = "0")
+		LogError "Error " + $ExitCode$ + " while extracting archive"
+	endif
+	
+	if not(FileExists($TempDir$+"\"+$Archive$))
+		LogError "Archive does not exist: " $TempDir$+"\"+$Archive$
+		ifFatalError "Archive not found"
+	endif
+	
+	;=== extract 7Z archive to $TmpDir$
+	ShellInAnIcon_UnzipArchive
+	set $ExitCode$ = getLastExitCode
+	if not($ExitCode$ = "0")
+		LogError "Error " + $ExitCode$ + " while extracting archive"
+	endif
+	
+	Files_CleanupArchive
+	
+	if not(FileExists($ExDirLong$))
+		LogError "Temporary application folder does not exist: " $ExDirLong$
+		ifFatalError $ExDir$ +" folder not found"
+	endif	
+	
+	set $LogLevel$ = getLogLevel
+	SetLogLevel=5
+	Files_MoveToInstallDir
+	SetLogLevel=$LogLevel$
+		
+	if FileExists($ExDirLong$)
+		comment "Cleanup temp folder: " + $ExDirLong$
+		set $LogLevel$ = getLogLevel
+		SetLogLevel=5
+		Files_CleanupTempFolder
+		SetLogLevel=$LogLevel$
+	endif	
+
+	if not(FileExists($InstallDir$+"\"+$MainBin$))
+		LogError "Main binary " + $MainBin$ +" not found"
+		isFatalError "MainBin not found"	
+	endif
+	
+	;=== create start menu entry
+	LinkFolder_CreateVivaldi
+	
+	;=== write helper info to registry
+	Set $DateTime$ = EnvVar("DATE")+ " " + EnvVar("TIME")
+	Registry_WriteVivaldiInfo /sysnative
+	
+	;??? Default-Browser, HTM(L)-Handler?
+endif
+
+
+;=====================================================================
+[ShellInAnIcon_UnzipExe]
+;=====================================================================
+$UnZip$ e -y -so "$Installer$" > "$TempDir$\$Archive$"
+
+;=====================================================================
+[ShellInAnIcon_UnzipArchive]
+;=====================================================================
+$UnZip$  x -y -o"$TempDir$" "$TempDir$\$Archive$"
+
+;=====================================================================
+[Files_CleanupTempFolder]
+;=====================================================================
+del -sf "$ExDirLong$"
+
+;=====================================================================
+[Files_CleanupArchive]
+;=====================================================================
+del -f "$TempDir$\$Archive$"
+
+;=====================================================================
+[Files_MoveToInstallDir]
+;=====================================================================
+;SourcePath 		= $TempDir$
+;CheckTargetPath	= $InstallBase$
+;move -c "$TempDir$\$ExDir$" "$InstallBase$\$ProductDir$"
+
+SourcePath 		= $ExDirLong$
+CheckTargetPath	= $InstallDir$
+copy -secr "$ExDirLong$\*.*" "$InstallDir$"
+
+;=====================================================================
+[LinkFolder_CreateVivaldi]
+;=====================================================================
+set_basefolder common_programs
+; set_subfolder "$ProductName$"
+set_link 
+	name: $ProductName$
+	target: $InstallDir$\$MainBin$
+	parameters:
+	working_dir:
+	icon_file:
+	icon_index:
+end_link
+
+;=====================================================================
+[Registry_WriteVivaldiInfo]
+;=====================================================================
+openkey [$MPIMSP_Reg$]
+set "InstallDir"	= "$InstallDir$"
+set "Version"		= "$Version$"
+set "Architecture"	= "$sw_arch$"
+set "DateTime"		= "$DateTime$"
+set "$ProductName$"	= "$ProductName$"
+

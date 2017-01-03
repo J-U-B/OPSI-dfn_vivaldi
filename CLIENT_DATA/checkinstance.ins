@@ -1,0 +1,47 @@
+;===============================================================================
+; checkinstance.ins 
+; J. Boettge <boettge@mpi-halle.mpg.de> 2017-01-03 13:12:15 +0100
+;===============================================================================
+
+;===============================================================================
+[sub_checkinstance]
+;===============================================================================
+comment "Checking for running instances and kill it."
+
+DefVar $Proc_Cnt$
+DefVar $Proc_Killed$
+DefVar $PSDETAIL$
+
+set $PSDETAIL$ = "%ScriptPath%\bin\psdetail.exe"
+
+if FileExists($PSDETAIL$) 
+	winbatch_psdetail_count
+	set $Proc_Cnt$ = getLastExitCode
+	if $Proc_Cnt$ > "0"
+		comment $Proc_Cnt$+" running instance(s) of "+$MainBin$ + " found, killing them."
+		winbatch_psdetail_kill
+		set $Proc_Killed$ = getLastExitCode
+		comment $Proc_Killed$+" instance(s) of "$MainBin$ + " were killed."
+		if not ($Proc_Cnt$=$Proc_Killed$)
+			logWarning "Number of killed instances ("+$Proc_Killed$+") does not match expectations ("+$Proc_Cnt$+")."
+		endif
+	else
+		if $Proc_Cnt$ = "0"
+			comment "no running instance of "+$MainBin$= "found"
+		else
+			logError "psdetail returns "+$Proc_Cnt$ + " (unexpected)"
+		endif
+	endif
+else
+	logError "can't find psdetail.exe"
+endif
+
+;===============================================================================
+[winbatch_psdetail_count]
+;===============================================================================
+"$PSDETAIL$" -e "$MainBin$"
+
+;===============================================================================
+[winbatch_psdetail_kill]
+;===============================================================================
+"$PSDETAIL$" -k -e "$MainBin$"

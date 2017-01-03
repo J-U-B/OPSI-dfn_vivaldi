@@ -1,0 +1,73 @@
+;=====================================================================
+; delsub.ins VIVALDI
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-01-03 16:58:46 +0100
+;=====================================================================
+
+;=== kill running instances
+include_append "%ScriptPath%\checkinstance.ins"
+sub_checkinstance
+
+;=== search for uninstall info
+Set $UninstRegKeyPath$ = "[" + $MPIMSP_Reg$ + "]"
+Set $UninstDir$  = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " InstallDir")
+Set $UninstVer$  = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " Version")
+Set $UninstArch$ = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " Architecture")
+Set $UninstName$ = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " ProductName")
+
+if ($UninstDir$ = "")
+	comment "no uninstall info found in regisrty at " + $UninstRegKeyPath$
+	comment "trying default folder and architecture: [" + $InstallDir$ + "]"
+	set $UninstDir$ = $InstallDir$
+endif
+
+if ($UninstName$ = "")
+	Set $UninstName$ = $ProductName$
+endif
+
+;=== normalize:
+if not (strPart($UninstDir$, strLength($UninstDir$),"1") = "\" )
+	set $UninstDir$ = $UninstDir$ + "\"
+endif
+
+
+if FileExists($UninstDir$)
+	ShowBitmap $Img_Uninstall$	 $ProductName$
+	if ($UninstVer$="") or ($UninstArch$="")
+		Message "Uninstalling previous setup of " + $ProductName$
+	else
+		Message "Uninstalling previous setup of " + $UninstName$ + " (" + $UninstArch$ + " bit)"
+	endif
+
+	Message "removing link from startmenu"
+	LinkFolder_RemoveVivaldi
+	Message "removing installation directory"
+	set $LogLevel$ = getLogLevel
+	SetLogLevel=5
+	Files_RemoveInstallDir
+	SetLogLevel=$LogLevel$
+	Message "removing uninstall information"
+	Registry_RemoveVivaldiInfo /sysnative
+	Message ""
+endif
+
+
+
+;=====================================================================
+[Files_RemoveInstallDir]
+;=====================================================================
+del -sf "$UninstDir$"
+
+
+;=====================================================================
+[LinkFolder_RemoveVivaldi]
+;=====================================================================
+set_basefolder common_programs
+set_subfolder ""
+;delete_element "$ProductName$"
+delete_element $ProductName$
+
+
+;=====================================================================
+[Registry_RemoveVivaldiInfo]
+;=====================================================================
+deletekey [$MPIMSP_Reg$]
