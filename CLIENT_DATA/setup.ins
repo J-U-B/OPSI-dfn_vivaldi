@@ -1,6 +1,6 @@
 ;======================================================================
 ; setup.ins VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-01-03 16:59:53 +0100
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-02-22 11:55:54 +0100
 ;======================================================================
 
 ;======================================================================
@@ -41,6 +41,8 @@ else
 	ShowBitmap $Img_Install$ $ProductName$
 	message "Installing " + $ProductName$ + " " + $Version$ + " (" + $sw_arch$ + " bit)"
 	
+	marktime
+	
 	;=== cleanup temporary folder
 	if FileExists($ExDirLong$)
 		comment "Cleanup temp folder: " + $ExDirLong$
@@ -63,7 +65,7 @@ else
 	
 	if not(FileExists($TempDir$+"\"+$Archive$))
 		LogError "Archive does not exist: " $TempDir$+"\"+$Archive$
-		ifFatalError "Archive not found"
+		isFatalError "Archive not found"
 	endif
 	
 	;=== extract 7Z archive to $TmpDir$
@@ -102,10 +104,15 @@ else
 	LinkFolder_CreateVivaldi
 	
 	;=== write helper info to registry
-	Set $DateTime$ = EnvVar("DATE")+ " " + EnvVar("TIME")
+	Set $OutStream$ = shellCall('echo %DATE%_%TIME%')
+	Set $DateTime$ = takeString(0, $OutStream$)
 	Registry_WriteVivaldiInfo /sysnative
 	
 	;??? Default-Browser, HTM(L)-Handler?
+	
+	set $TimeDiff$ = getDiffTimeSec
+	Message  "Setup time: " + $TimeDiff$ + " seconds"	
+	
 endif
 
 
@@ -162,5 +169,5 @@ set "InstallDir"	= "$InstallDir$"
 set "Version"		= "$Version$"
 set "Architecture"	= "$sw_arch$"
 set "DateTime"		= "$DateTime$"
-set "$ProductName$"	= "$ProductName$"
+set "ProductName"	= "$ProductName$"
 

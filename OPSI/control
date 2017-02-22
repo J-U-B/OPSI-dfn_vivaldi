@@ -1,11 +1,11 @@
 [Package]
-version: 1
+version: 2
 depends: 
 incremental: False
 
 [Product]
 type: localboot
-id: 0_vivaldi
+id: vivaldi
 name: Vivaldi
 description: A Browser for Our Friends (Jón S. von Tetzchner)
  CSG recommended replacement for Opera
@@ -13,7 +13,7 @@ description: A Browser for Our Friends (Jón S. von Tetzchner)
  _____
  Maintainer: Jens Boettge <boettge@mpi-halle.mpg.de>
 advice: Organization: MPIMSP
-version: 1.6.689.40
+version: 1.7.735.46
 priority: 0
 licenseRequired: False
 productClasses: web & mail
@@ -44,6 +44,18 @@ values: ["de", "en-GB", "en-US"]
 default: ["en-US"]
 
 [Changelog]
+vivaldi 1.7.735.46-2 release:
+  * meassure time for install/uninstall
+  * fixed: writing install date/time to registry
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-02-22 12:00:25 +0100
+
+vivaldi 1.7.735.46-1 release:
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-02-17 12:09:14 +0100
+
+vivaldi 1.7.735.46-1 testing:
+  * release update
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-02-10 08:08:40 +0100
+
 vivaldi 1.6.689.40-1 testing:
   * initial package
   -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-01-03 17:00:06 +0100

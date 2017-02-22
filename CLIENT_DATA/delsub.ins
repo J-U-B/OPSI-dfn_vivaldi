@@ -1,6 +1,6 @@
 ;=====================================================================
 ; delsub.ins VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-01-03 16:58:46 +0100
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-02-22 11:56:57 +0100
 ;=====================================================================
 
 ;=== kill running instances
@@ -38,6 +38,8 @@ if FileExists($UninstDir$)
 		Message "Uninstalling previous setup of " + $UninstName$ + " (" + $UninstArch$ + " bit)"
 	endif
 
+	marktime
+
 	Message "removing link from startmenu"
 	LinkFolder_RemoveVivaldi
 	Message "removing installation directory"
@@ -47,7 +49,9 @@ if FileExists($UninstDir$)
 	SetLogLevel=$LogLevel$
 	Message "removing uninstall information"
 	Registry_RemoveVivaldiInfo /sysnative
-	Message ""
+
+	set $TimeDiff$ = getDiffTimeSec
+	Message  "Setup time: " + $TimeDiff$ + " seconds"
 endif
 
 
