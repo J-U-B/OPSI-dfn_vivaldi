@@ -10,10 +10,10 @@ name: Vivaldi
 description: A Browser for Our Friends (Jón S. von Tetzchner)
  CSG recommended replacement for Opera
  WebSite: https://vivaldi.com/
- _____
- Maintainer: Jens Boettge <boettge@mpi-halle.mpg.de>
-advice: Organization: MPIMSP
-version: 1.7.735.46
+advice: Maintainer: Jens Boettge <boettge@mpi-halle.mpg.de>
+Organization: MPIMSP
+Release date: 2017-04-04
+version: 1.8.770.54
 priority: 0
 licenseRequired: False
 productClasses: web & mail
@@ -44,6 +44,14 @@ values: ["de", "en-GB", "en-US"]
 default: ["en-US"]
 
 [Changelog]
+vivaldi 1.8.770.54-2 release:
+  * product update to 1.8.770.54
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-04-04 15:29:01 +0200
+
+vivaldi 1.8.770.50-2 release:
+  * product update to 1.8.770.50
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-03-30 11:56:49 +0200
+
 vivaldi 1.7.735.46-2 release:
   * meassure time for install/uninstall
   * fixed: writing install date/time to registry
