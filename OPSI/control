@@ -12,8 +12,8 @@ description: A Browser for Our Friends (Jón S. von Tetzchner)
  WebSite: https://vivaldi.com/
 advice: Maintainer: Jens Boettge <boettge@mpi-halle.mpg.de>
 Organization: MPIMSP
-Release date: 2017-04-04
-version: 1.8.770.54
+Release date: 2017-04-21
+version: 1.8.770.56
 priority: 0
 licenseRequired: False
 productClasses: web & mail
@@ -44,6 +44,10 @@ values: ["de", "en-GB", "en-US"]
 default: ["en-US"]
 
 [Changelog]
+vivaldi 1.8.770.56-2 release:
+  * product update to 1.8.770.56
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-04-21 08:09:16 +0200
+
 vivaldi 1.8.770.54-2 release:
   * product update to 1.8.770.54
   -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-04-04 15:29:01 +0200
