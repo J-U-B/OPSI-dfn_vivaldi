@@ -10,11 +10,11 @@ name: Vivaldi
 description: A Browser for Our Friends (Jón S. von Tetzchner)
  CSG recommended replacement for Opera
  WebSite: https://vivaldi.com/
- changelog: https://vivaldi.com/blog/vivaldi-1-9-plant-trees-as-you-browse/?version=1.9.818.49
+ changelog: https://vivaldi.com/blog/vivaldi-powers-up-the-start-page-and-adds-docked-dev-tools/?hl=de&version=1.10.867.38
 advice: Maintainer: Jens Boettge <boettge@mpi-halle.mpg.de>
 Organization: MPIMSP
-Release date: 2017-05-11
-version: 1.9.818.49
+Release date: 2017-06-15
+version: 1.10.867.38
 priority: 0
 licenseRequired: False
 productClasses: web & mail
@@ -45,6 +45,10 @@ values: ["de", "en-GB", "en-US"]
 default: ["en-US"]
 
 [Changelog]
+vivaldi 1.10.867.38-2 release:
+  * product update to 1.10.867.38
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-15 15:51:40 +0200
+
 vivaldi 1.9.818.49-2 release:
   * product update to 1.9.818.49
   -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-05-11 14:55:27 +0200
