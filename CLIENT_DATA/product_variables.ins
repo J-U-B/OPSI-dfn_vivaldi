@@ -1,6 +1,6 @@
 ;=====================================================================
 ; product specific variables  VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-01-03 14:45:15 +0100
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-26 12:00:03 +0200
 ;=====================================================================
 
 include_insert "%ScriptPath%\variables.ins"
@@ -81,9 +81,9 @@ Set $Archive$		= $ProductName$ + "." + $Version$ + ".x" + $sw_arch$ + ".7z"
 Set $TempDir$		= "%opsiTmpDir%"
 Set $UnZip$         = "%ScriptPath%\bin\7z.exe"
 
-set $Img_Install$	= "%ScriptPath%\" + $ProductId$ +"_install.png"
-set $Img_Uninstall$	= "%ScriptPath%\" + $ProductId$ +"_uninstall.png"
-set $Img_Prepare$	= "%ScriptPath%\" + $ProductId$ +"_prepare.png"
+set $Img_Install$	= "%ScriptPath%\images\" + $ProductId$ +"_install.png"
+set $Img_Uninstall$	= "%ScriptPath%\images\" + $ProductId$ +"_uninstall.png"
+set $Img_Prepare$	= "%ScriptPath%\images\" + $ProductId$ +"_prepare.png"
 
 ShowBitmap $Img_Prepare$ $ProductName$
 
