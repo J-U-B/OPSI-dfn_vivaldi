@@ -1,29 +1,37 @@
 ;===============================================================================
 ; checkinstance.ins 
-; J. Boettge <boettge@mpi-halle.mpg.de> 2017-01-03 13:12:15 +0100
+; J. Boettge <boettge@mpi-halle.mpg.de> 2017-06-26 11:49:29 +0200
 ;===============================================================================
 
 ;===============================================================================
 [sub_checkinstance]
 ;===============================================================================
-comment "Checking for running instances and kill it."
+comment "Checking for running instances and kill it (if allowed)."
 
 DefVar $Proc_Cnt$
 DefVar $Proc_Killed$
 DefVar $PSDETAIL$
+DefVar $Kill_Running$
 
 set $PSDETAIL$ = "%ScriptPath%\bin\psdetail.exe"
+
+set $Kill_Running$ = GetProductProperty("kill_running", "False")
 
 if FileExists($PSDETAIL$) 
 	winbatch_psdetail_count
 	set $Proc_Cnt$ = getLastExitCode
 	if $Proc_Cnt$ > "0"
-		comment $Proc_Cnt$+" running instance(s) of "+$MainBin$ + " found, killing them."
-		winbatch_psdetail_kill
-		set $Proc_Killed$ = getLastExitCode
-		comment $Proc_Killed$+" instance(s) of "$MainBin$ + " were killed."
-		if not ($Proc_Cnt$=$Proc_Killed$)
-			logWarning "Number of killed instances ("+$Proc_Killed$+") does not match expectations ("+$Proc_Cnt$+")."
+		if $Kill_Running$ = "True"
+			comment $Proc_Cnt$+" running instance(s) of "+$MainBin$ + " found, killing them."
+			winbatch_psdetail_kill
+			set $Proc_Killed$ = getLastExitCode
+			comment $Proc_Killed$+" instance(s) of "$MainBin$ + " were killed."
+			if not ($Proc_Cnt$=$Proc_Killed$)
+				logWarning "Number of killed instances ("+$Proc_Killed$+") does not match expectations ("+$Proc_Cnt$+")."
+			endif
+		else
+			logError $Proc_Cnt$+" running instance(s) of "+$MainBin$ + " found, but I'm not allowed to kill them."
+			isFatalError
 		endif
 	else
 		if $Proc_Cnt$ = "0"
