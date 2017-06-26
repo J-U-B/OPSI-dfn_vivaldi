@@ -1,10 +1,10 @@
-#Vivaldi#
+# Vivaldi #
 
 Diese OPSI-Paket fuer **Vivaldi** wurde aus dem internen Paket des *Max-Planck-Institut fuer Mikrostrukturphysik*
 abgeleitet und fuer die Verwendung im DFN-Repository angepasst und erweitert.
 
 
-##Installation##
+## Installation ##
 
 Bei der Installation des Paketes im Depot erfolgt im <code>postinst</code>-Script 
 der Download der Software vom Hersteller (Windows, 32 und 64 Bit). Ein manueller
@@ -12,9 +12,9 @@ Download sollte nicht erforderlich sein.
 Die Software selbst wird +nicht+ mit diesem Paket vertrieben.
 
 
-##Allgemeines##
+## Allgemeines ##
 
-###Aufbau des Paketes###
+### Aufbau des Paketes ###
 * **<code>variables.opsiinc</code>** - Da Variablen ueber die Scripte hinweg mehrfach
 verwendet werden, werden diese (bis auf wenige Ausnahmen) zusammengefasst hier deklariert.
 * **<code>product_variables.opsiinc</code>** - die producktspezifischen Variablen werden
@@ -30,10 +30,10 @@ zwangsweise beendet werden.
 * **<code>checkvars.sh</code>** - Hilfsscript fuer die Entwicklung zur Ueberpruefung,
 ob alle verwendeten Variablen deklariert sind bzw. nicht verwendete Variablen
 aufzuspueren.
-* **<code>bin/<code>** - Hilfprogramme; hier: **7zip**, **psdetail**
+* **<code>bin/</code>** - Hilfprogramme; hier: **7zip**, **psdetail**
 * **<code>images/</code>** - Programmbilder fuer OPSI
 
-###Nomenklatur###
+### Nomenklatur ###
 Praefixes in der Produkt-Id definieren die Art des Paketes:
 
 * **0_** - Es handelt sich um ein Test-Paket. Beim Uebergang zur Produktions-Release
@@ -43,7 +43,7 @@ wird der Praefix entfernt.
 Die Reihenfolge der Praefixes ist relevant; die Markierung als Testpaket ist 
 stets fuehrend.
 
-###Unattended-Switches###
+### Unattended-Switches ###
 ...gibt es derzeit beim Vivaldi-Installer nicht. Die Installation besteht daher
 aus dem manuellen entpacken des Archivs und Erzeugen der Startmenueeintraege.
 
@@ -53,15 +53,15 @@ wird unter *<code>$MPIMSP_Reg$</code>* ein Eintrag fuer derart installierte Pake
 angelegt.
 
 
-##Anmerkungen/ToDo##
+## Anmerkungen/ToDo ##
 * Die vollstaendige Integration des Browsers ins System (Default-Browser, HTML-Handler, Self-Updater
 erfolgt aufgrund der Art der Installation derzeit nicht).
 * Die Product-Property *default_language* wird derzeit nicht ausgewertet.
 * Policies fuer Chromium/Vivaldi sind bislang noch nicht realisiert.
 
-##Lizenzen##
+## Lizenzen ##
 
-###psdetail###
+### psdetail ###
 **Autor** der Software: Jens Boettge <<boettge@mpi-halle.mpg.de>> 
 
 Die Software **psdetail.exe**  wird als Freeware kostenlos angeboten und darf fuer 
@@ -83,10 +83,10 @@ Alle Risiken des Softwareeinsatzes liegen beim Nutzer.
 Der Autor behaelt sich eine Anpassung bzw. weitere Ausformulierung der Lizenzbedingungen
 vor.
 
-###7zip###
+### 7zip ###
 Es gilt die Lizenz von http://www.7-zip.org/license.txt.
 
-###Vivaldi###
+### Vivaldi ###
 Das verwendete Vivialdi-Logo ist gemeinfrei  
 Quelle: https://de.wikipedia.org/wiki/Vivaldi_(Browser)#/media/File:Vivaldi_web_browser_logo.svg
 
