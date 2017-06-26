@@ -1,25 +1,25 @@
 [Package]
-version: 3
+version: 4
 depends: 
 incremental: False
 
 [Product]
 type: localboot
-id: vivaldi
+id: 0_dfn_vivaldi
 name: Vivaldi
 description: A Browser for Our Friends (Jón S. von Tetzchner)
- CSG recommended replacement for Opera
+ Recommended replacement for Opera
  WebSite: https://vivaldi.com/
- changelog: https://vivaldi.com/blog/vivaldi-powers-up-the-start-page-and-adds-docked-dev-tools/?hl=de&version=1.10.867.38
+ changelog: https://vivaldi.com/blog/vivaldi-powers-up-the-start-page-and-adds-docked-dev-tools/?hl=de&version=1.10.867.42
 advice: Maintainer: Jens Boettge <boettge@mpi-halle.mpg.de>
-Organization: MPIMSP
+Organization: MPIMSP/DFN
 Release date: 2017-06-26
 version: 1.10.867.42
 priority: 0
 licenseRequired: False
 productClasses: web & mail
-setupScript: setup.ins
-uninstallScript: uninstall.ins
+setupScript: setup.opsiscript
+uninstallScript: uninstall.opsiscript
 updateScript: 
 alwaysScript: 
 onceScript: 
@@ -50,7 +50,35 @@ description: application default language (currently unused!)
 values: ["de", "en-GB", "en-US"]
 default: ["en-US"]
 
+[ProductProperty]
+type: unicode
+name: custom_post_install
+multivalue: False
+editable: True
+description: Define filename for include script in custom directory after installation
+values: ["none", "post-install.opsiinc"]
+default: ["none"]
+
+[ProductProperty]
+type: unicode
+name: custom_post_uninstall
+multivalue: False
+editable: True
+description: Define filename for include script in custom directory after deinstallation
+values: ["none", "post-uninstall.opsiinc"]
+default: ["none"]
+
 [Changelog]
+dfn_vivaldi 1.10.867.42-4 testing:
+  * renamed: *.ins to *.opsiscript/*.opsiinc
+  * preparation for DFN release
+  * detection of DFN package
+  * download packages from https://downloads.vivaldi.com/stable/ during postinst
+  * 7z_license.txt added
+  * new product properties: CustomPostInstall/CustomPostUninstall
+  * initial documentation added (readme.md)
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-26 17:00:29 +0200
+
 vivaldi 1.10.867.42-3 release:
   * new product property: kill_running
   * images moved to subfolder

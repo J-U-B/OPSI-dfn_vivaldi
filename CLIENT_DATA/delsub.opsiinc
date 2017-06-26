@@ -1,10 +1,10 @@
 ;=====================================================================
-; delsub.ins VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-02-22 11:56:57 +0100
+; delsub.opsiinc VIVALDI
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-26 15:28:41 +0200
 ;=====================================================================
 
 ;=== kill running instances
-include_append "%ScriptPath%\checkinstance.ins"
+include_append "%ScriptPath%\checkinstance.opsiinc"
 sub_checkinstance
 
 ;=== search for uninstall info
@@ -49,7 +49,16 @@ if FileExists($UninstDir$)
 	SetLogLevel=$LogLevel$
 	Message "removing uninstall information"
 	Registry_RemoveVivaldiInfo /sysnative
-
+	
+	
+	;=== custom post uninstall
+	comment "include custom post uninstall file"
+	if not ($CustomPostUninstall$ = "none")
+		if FileExists("%ScriptPath%\custom\" + $CustomPostUninstall$)
+			include_insert "%ScriptPath%\custom\" + $CustomPostUninstall$
+		endif
+	endif
+	
 	set $TimeDiff$ = getDiffTimeSec
 	Message  "Setup time: " + $TimeDiff$ + " seconds"
 endif

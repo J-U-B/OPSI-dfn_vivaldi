@@ -1,10 +1,10 @@
 ;=====================================================================
 ; product specific variables  VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-26 12:00:03 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-26 15:13:32 +0200
 ;=====================================================================
 
-include_insert "%ScriptPath%\variables.ins"
-;include_append "%ScriptPath%\exitcode_msi.ins"
+include_insert "%ScriptPath%\variables.opsiinc"
+;include_append "%ScriptPath%\exitcode_msi.opsiinc"
 
 Set $MAP$ 				= getProductMap
 Set $FullProductId$     = getValue("id", $MAP$)
@@ -39,6 +39,16 @@ else
 	comment "Prefix for testing package detected"
 	set $ProductId$  = strPart($FullProductId$,"3",strLength($FullProductId$))
 	set $Testing$ = "true"
+endif
+
+;-----------------------------------------------------------
+;*** detect DFN package:
+if strPos($FullProductId$, "dfn_") = "0"
+	set $isDFN$ = "false"
+	set $StrippedProductId$ = $ProductId$
+else
+	set $isDFN$ = "true"
+	set $StrippedProductId$ = strPart($ProductId$,"5",strLength($ProductId$))
 endif
 
 ;-----------------------------------------------------------
@@ -81,15 +91,15 @@ Set $Archive$		= $ProductName$ + "." + $Version$ + ".x" + $sw_arch$ + ".7z"
 Set $TempDir$		= "%opsiTmpDir%"
 Set $UnZip$         = "%ScriptPath%\bin\7z.exe"
 
-set $Img_Install$	= "%ScriptPath%\images\" + $ProductId$ +"_install.png"
-set $Img_Uninstall$	= "%ScriptPath%\images\" + $ProductId$ +"_uninstall.png"
-set $Img_Prepare$	= "%ScriptPath%\images\" + $ProductId$ +"_prepare.png"
+set $Img_Install$	= "%ScriptPath%\images\" + $StrippedProductId$ +"_install.png"
+set $Img_Uninstall$	= "%ScriptPath%\images\" + $StrippedProductId$ +"_uninstall.png"
+set $Img_Prepare$	= "%ScriptPath%\images\" + $StrippedProductId$ +"_prepare.png"
 
 ShowBitmap $Img_Prepare$ $ProductName$
 
 ;-----------------------------------------------------------
 Set $MinimumSpace$ 	= "360 MB"
-Set $MainBin$      	= $ProductId$ +".exe"
+Set $MainBin$      	= $StrippedProductId$ +".exe"
 
 ;-----------------------------------------------------------
 if ( $sw_arch$ = "32" )
@@ -101,7 +111,12 @@ else
 endif
 
 ;-----------------------------------------------------------
-Set $MPIMSP_Reg$		 = "HKEY_Local_Machine\Software\_MPIMSP\" + $ProductName$
+if ($isDFN$ = "true")
+	Set $MPIMSP_Reg$		 = "HKEY_Local_Machine\Software\_DFN\" + $ProductName$
+else
+	Set $MPIMSP_Reg$		 = "HKEY_Local_Machine\Software\_MPIMSP\" + $ProductName$
+endif
+
 Set $RegPathUninstall$	 = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
 Set $RegPathUninstall64$ = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
 Set $RegPathUninstall32$ = "HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"

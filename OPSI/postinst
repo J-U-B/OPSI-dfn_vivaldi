@@ -7,28 +7,88 @@
 #   PRODUCT_ID: id of the current product
 #   CLIENT_DATA_DIR: directory which contains the installed client data
 #=====================================================================
-# J. Boettge <boettge@mpi-halle.mpg.de>  2016-12-01 07:45:58 +0100
+# J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-26 14:44:55 +0200
 #=====================================================================
 
+LOGFILE=/tmp/${PRODUCT_ID}_opsi_package_install.log
+
+exec > $LOGFILE
+exec 2>&1
+chgrp opsiadmin $LOGFILE
+chmod g+rw $LOGFILE
+
 VER="${PRODUCT_VERSION}"
-ARC=""
 
-SRC="${CLIENT_DATA_DIR}/../../source/${PRODUCT_ID##0_}/${ARC}"
-DST="${CLIENT_DATA_DIR}/files/${ARC}"
-
-[ -n "$ARC" -a ! -d "$DST" ] && mkdir $DST
-
+SRC="${CLIENT_DATA_DIR}/../../source/${PRODUCT_ID##0_}"
+DST="${CLIENT_DATA_DIR}/files"
+# remove trailing "/" in path:
 DST=${DST%\/}
+ERR=0
 
-if [ -h "${DST}" ]; then
-	echo "Symlink to [${DST}] already exists. - Replacing"
-	rm ${DST}
-fi
+### check for testing and DFN package:
+P=${PRODUCT_ID}
+[ "${P}" = "${P##0_}" ] &&  IS_TESTING=false || IS_TESTING=true
+P=${P/#0_/}
+[ "${P}" = "${P##dfn_}" ] && IS_DFN=false || IS_DFN=true
 
-if [ -d "${DST}" ]; then
-	echo "Directory [${DST}] already exists!\nSkipping creation of symlink."
-elif [ -f "${DST}" ]; then
-	echo "File [${DST}] already exists!\nSkipping creation of symlink."
+
+if [ $IS_DFN == true ]; then
+	 [ ! -d "${DST}" ] && mkdir $DST
 else
-	ln -s ${SRC} ${DST}
+	### symlink files directory to ../../source/${PRODUCT_ID##0_} only
+	### for non-DFN packages:
+	if [ -h "${DST}" ]; then
+		echo "Symlink to [${DST}] already exists. - Replacing"
+		rm ${DST}
+	fi
+
+	if [ -d "${DST}" ]; then
+		echo "Directory [${DST}] already exists!\nSkipping creation of symlink."
+	elif [ -f "${DST}" ]; then
+		echo "File [${DST}] already exists!\nSkipping creation of symlink."
+	else
+		ln -s ${SRC} ${DST}
+	fi
 fi
+
+
+### restore custom directories
+TMP_DIR=${CLIENT_DATA_DIR}/../${PRODUCT_ID}.tmp
+if [ -d $TMP_DIR ]; then
+	echo 'Restoring previous directories...'
+	
+	for DIRNAME in custom ; do
+		echo "*  ${DIRNAME}:"
+		if [ -d $TMP_DIR/${DIRNAME} ]; then
+			test -e $CLIENT_DATA_DIR/${DIRNAME} && rm -rf $CLIENT_DATA_DIR/${DIRNAME}
+			echo "   moving $TMP_DIR/${DIRNAME} to $CLIENT_DATA_DIR/"
+			mv $TMP_DIR/${DIRNAME} $CLIENT_DATA_DIR/ || exit 1	
+		fi
+	done
+fi
+echo "Removing temporary files..."
+rm -rf $TMP_DIR
+
+
+### download files form vendor:
+#https://downloads.vivaldi.com/stable/Vivaldi.1.10.867.42.exe
+#https://downloads.vivaldi.com/stable/Vivaldi.1.10.867.42.x64.exe
+
+VERSION=`opsi-admin -dS method getProduct_hash ${PRODUCT_ID} | grep productVersion | cut -d "=" -f 2`
+BASE="https://downloads.vivaldi.com/stable/"
+
+echo "detected version for this package: ${VERSION}"
+
+CNT=0
+for ARCH in "exe" "x64.exe"; do
+	PACKAGE="Vivaldi.${VERSION}.${ARCH}"
+	let "CNT++"
+	echo "Retrieving [$PACKAGE]";
+	if [ -f "${DST}/${PACKAGE}" ]; then
+		echo "* file already exists"
+	else
+		wget -nv "${BASE}/${PACKAGE}" -O "${DST}/${PACKAGE}"
+		[ ! -s "${DST}/${PACKAGE}" ] && let "ERR+=1<<$CNT"
+	fi
+done
+exit $ERR

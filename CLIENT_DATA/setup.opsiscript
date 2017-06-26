@@ -1,6 +1,6 @@
 ;======================================================================
-; setup.ins VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-02-22 11:55:54 +0100
+; setup.opsiscript VIVALDI
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-26 15:28:57 +0200
 ;======================================================================
 
 ;======================================================================
@@ -19,18 +19,18 @@ StayOnTop=false
 ;======================================================================
 [Actions]
 ;======================================================================
-include_insert "%ScriptPath%\product_variables.ins"
+include_insert "%ScriptPath%\product_variables.opsiinc"
 
 if not(HasMinimumSpace ("%SYSTEMDRIVE%", $MinimumSpace$))
 	LogError "Not enough space on %SYSTEMDRIVE%: . "+$MinimumSpace$+" on Drive %SYSTEMDRIVE%: needed for "+$ProductId$+"."
 	isFatalError
 else
-	if FileExists("%ScriptPath%\delsub.ins")
+	if FileExists("%ScriptPath%\delsub.opsiinc")
 		comment  "Starting uninstall sub section"
-		sub "%ScriptPath%\delsub.ins"	
+		sub "%ScriptPath%\delsub.opsiinc"	
 	else
 		logError "Can't find uninstaller script"
-		isFatalError "delsub.ins not found"
+		isFatalError "delsub.opsiinc not found"
 	endif
 	
 	if ($SystemType$="x86 System") and ($sw_arch$="64")
@@ -109,6 +109,18 @@ else
 	Registry_WriteVivaldiInfo /sysnative
 	
 	;??? Default-Browser, HTM(L)-Handler?
+	
+	;=== custom post install
+	comment "include custom post install file"
+	set $CustomPostInstall$ = getProductProperty("custom-post-install","none")
+	if not ($CustomPostInstall$ = "none")
+		if FileExists("%ScriptPath%\custom\" + $CustomPostInstall$)
+			include_insert "%ScriptPath%\custom\" + $CustomPostInstall$
+		endif
+	endif
+
+endif
+	
 	
 	set $TimeDiff$ = getDiffTimeSec
 	Message  "Setup time: " + $TimeDiff$ + " seconds"	
