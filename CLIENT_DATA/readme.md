@@ -59,7 +59,7 @@ erfolgt aufgrund der Art der Installation derzeit nicht).
 * Die Product-Property *default_language* wird derzeit nicht ausgewertet.
 * Das <code>postinst</code>-Script legt unter <code>/tmp/${PRODUCT_ID}__opsi_package_install.log</code> ein Logfile an.
 * <s>Bereits heruntergeladene Software (unter <code>files</code>) werden beim 
-Update geloescht. Ggf. kann das Verzeichnis analog zu <code>custom</custom> 
+Update geloescht. Ggf. kann das Verzeichnis analog zu <code>custom</code> 
 zuvor gesichert und wiederhergestellt werden.</s>
 * Policies fuer Chromium/Vivaldi sind bislang noch nicht realisiert.
 * Fuer die OPSI-Pakete wird noch ein ***Lizenzmodell*** benoetigt.
