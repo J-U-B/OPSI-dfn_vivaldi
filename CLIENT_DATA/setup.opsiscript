@@ -1,6 +1,6 @@
 ;======================================================================
 ; setup.opsiscript VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-27 09:02:58 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-27 12:31:21 +0200
 ;======================================================================
 
 ;======================================================================
@@ -158,8 +158,8 @@ del -f "$TempDir$\$Archive$"
 ;CheckTargetPath	= $InstallBase$
 ;move -c "$TempDir$\$ExDir$" "$InstallBase$\$ProductDir$"
 
-SourcePath 		= $ExDirLong$
-CheckTargetPath	= $InstallDir$
+SourcePath 		= "$ExDirLong$"
+CheckTargetPath	= "$InstallDir$"
 copy -secr "$ExDirLong$\*.*" "$InstallDir$"
 
 ;=====================================================================
@@ -169,7 +169,7 @@ set_basefolder common_programs
 ; set_subfolder "$ProductName$"
 set_link 
 	name: $ProductName$
-	target: $InstallDir$\$MainBin$
+	target: "$InstallDir$\$MainBin$"
 	parameters:
 	working_dir:
 	icon_file:
@@ -183,9 +183,9 @@ set_basefolder common_desktopdirectory
 set_subfolder ""
 set_link
        name: $ProductName$
-       target: $InstallDir$\$MainBin$
+       target: "$InstallDir$\$MainBin$"
        parameters:
-       working_dir: $InstallDir$
+       working_dir: "$InstallDir$"
        icon_file:
        icon_index:
 end_link

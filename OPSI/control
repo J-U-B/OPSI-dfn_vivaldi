@@ -81,7 +81,8 @@ dfn_vivaldi 1.10.867.42-5 testing:
   * files directory will be saved/restored on update
   * modified: readme.md
   * o4i install logo added
-  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-27 12:14:32 +0200
+  * fixed: Files_MoveToInstallDir
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-27 12:32:19 +0200
 
 dfn_vivaldi 1.10.867.42-4 testing:
   * renamed: *.ins to *.opsiscript/*.opsiinc
