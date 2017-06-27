@@ -9,7 +9,7 @@ abgeleitet und fuer die Verwendung im DFN-Repository angepasst und erweitert.
 Bei der Installation des Paketes im Depot erfolgt im <code>postinst</code>-Script 
 der Download der Software vom Hersteller (Windows, 32 und 64 Bit). Ein manueller
 Download sollte nicht erforderlich sein.  
-Die Software selbst wird +nicht+ mit diesem Paket vertrieben.
+Die Software selbst wird <u>nicht</u> mit diesem Paket vertrieben.
 
 
 ## Allgemeines ##
@@ -57,7 +57,12 @@ angelegt.
 * Die vollstaendige Integration des Browsers ins System (Default-Browser, HTML-Handler, Self-Updater
 erfolgt aufgrund der Art der Installation derzeit nicht).
 * Die Product-Property *default_language* wird derzeit nicht ausgewertet.
+* Das <code>postinst</code>-Script legt unter <code>/tmp/${PRODUCT_ID}__opsi_package_install.log</code> ein Logfile an.
+* <s>Bereits heruntergeladene Software (unter <code>files</code>) werden beim 
+Update geloescht. Ggf. kann das Verzeichnis analog zu <code>custom</custom> 
+zuvor gesichert und wiederhergestellt werden.</s>
 * Policies fuer Chromium/Vivaldi sind bislang noch nicht realisiert.
+* Fuer die OPSI-Pakete wird noch ein ***Lizenzmodell*** benoetigt.
 
 ## Lizenzen ##
 
@@ -83,12 +88,15 @@ Alle Risiken des Softwareeinsatzes liegen beim Nutzer.
 Der Autor behaelt sich eine Anpassung bzw. weitere Ausformulierung der Lizenzbedingungen
 vor.
 
+Fuer die Nutzung wird das *.NET Framework ab v3.5*  benoetigt.
+
+
 ### 7zip ###
 Es gilt die Lizenz von http://www.7-zip.org/license.txt.
 
 ### Vivaldi ###
-Das verwendete Vivialdi-Logo ist gemeinfrei  
+Das verwendete Vivialdi-Logo ist gemeinfrei.  
 Quelle: https://de.wikipedia.org/wiki/Vivaldi_(Browser)#/media/File:Vivaldi_web_browser_logo.svg
 
 -----
-Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2017-06-26 16:58:40 +0200
+Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2017-06-27 11:17:54 +0200

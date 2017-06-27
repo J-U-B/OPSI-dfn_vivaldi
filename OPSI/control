@@ -1,5 +1,5 @@
 [Package]
-version: 4
+version: 5
 depends: 
 incremental: False
 
@@ -13,7 +13,7 @@ description: A Browser for Our Friends (Jón S. von Tetzchner)
  changelog: https://vivaldi.com/blog/vivaldi-powers-up-the-start-page-and-adds-docked-dev-tools/?hl=de&version=1.10.867.42
 advice: Maintainer: Jens Boettge <boettge@mpi-halle.mpg.de>
 Organization: MPIMSP/DFN
-Release date: 2017-06-26
+Release date: 2017-06-27
 version: 1.10.867.42
 priority: 0
 licenseRequired: False
@@ -51,6 +51,12 @@ values: ["de", "en-GB", "en-US"]
 default: ["en-US"]
 
 [ProductProperty]
+type: bool
+name: desktoplink
+description: generate or delete DesktopLink
+default: False
+
+[ProductProperty]
 type: unicode
 name: custom_post_install
 multivalue: False
@@ -69,6 +75,13 @@ values: ["none", "post-uninstall.opsiinc"]
 default: ["none"]
 
 [Changelog]
+dfn_vivaldi 1.10.867.42-5 testing:
+  * new property: desktoplink
+  * fixed: read properties for custom_post_install/custom_post_uninstall
+  * files directory will be saved/restored on update
+  * modified: readme.md
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-27 11:53:28 +0200
+
 dfn_vivaldi 1.10.867.42-4 testing:
   * renamed: *.ins to *.opsiscript/*.opsiinc
   * preparation for DFN release

@@ -1,6 +1,6 @@
 ;=====================================================================
 ; delsub.opsiinc VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-26 15:28:41 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-27 08:38:18 +0200
 ;=====================================================================
 
 ;=== kill running instances
@@ -42,6 +42,7 @@ if FileExists($UninstDir$)
 
 	Message "removing link from startmenu"
 	LinkFolder_RemoveVivaldi
+	LinkFolder_RemoveDesktopLink
 	Message "removing installation directory"
 	set $LogLevel$ = getLogLevel
 	SetLogLevel=5
@@ -75,6 +76,15 @@ del -sf "$UninstDir$"
 [LinkFolder_RemoveVivaldi]
 ;=====================================================================
 set_basefolder common_programs
+set_subfolder ""
+;delete_element "$ProductName$"
+delete_element $ProductName$
+
+
+;=====================================================================
+[LinkFolder_RemoveDesktopLink]
+;=====================================================================
+set_basefolder common_desktopdirectory
 set_subfolder ""
 ;delete_element "$ProductName$"
 delete_element $ProductName$

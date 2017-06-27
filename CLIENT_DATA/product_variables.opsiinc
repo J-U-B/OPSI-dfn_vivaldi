@@ -1,6 +1,6 @@
 ;=====================================================================
 ; product specific variables  VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-26 15:13:32 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-27 08:28:47 +0200
 ;=====================================================================
 
 include_insert "%ScriptPath%\variables.opsiinc"
@@ -76,6 +76,15 @@ endif
 ;-----------------------------------------------------------
 ; language property: "de, "en_US", "en_GB"
 Set $sw_lang$ = GetProductProperty("default_language","en_US")
+
+;-----------------------------------------------------------
+; create desktop link?
+Set $sw_DesktopLink$ = GetProductProperty("DesktopLink","False")
+
+;-----------------------------------------------------------
+; post install/uninstall properties:
+set $CustomPostInstall$ 	= getProductProperty("custom_post_install","none")
+set $CustomPostUninstall$ 	= getProductProperty("custom_post_uninstall","none")
 
 ;-----------------------------------------------------------
 Set $ProductDir$	= stringReplace($ProductName$," ","")

@@ -1,6 +1,6 @@
 ;======================================================================
 ; setup.opsiscript VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-26 15:28:57 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-27 09:02:58 +0200
 ;======================================================================
 
 ;======================================================================
@@ -103,6 +103,11 @@ else
 	;=== create start menu entry
 	LinkFolder_CreateVivaldi
 	
+	;=== create desktop link if requested
+	if ($sw_DesktopLink$ = "true")
+		LinkFolder_CreateDesktopLink
+	endif
+	
 	;=== write helper info to registry
 	Set $OutStream$ = shellCall('echo %DATE%_%TIME%')
 	Set $DateTime$ = takeString(0, $OutStream$)
@@ -112,16 +117,14 @@ else
 	
 	;=== custom post install
 	comment "include custom post install file"
-	set $CustomPostInstall$ = getProductProperty("custom-post-install","none")
 	if not ($CustomPostInstall$ = "none")
 		if FileExists("%ScriptPath%\custom\" + $CustomPostInstall$)
 			include_insert "%ScriptPath%\custom\" + $CustomPostInstall$
 		endif
 	endif
 
-endif
 	
-	
+	;=== measure installation time
 	set $TimeDiff$ = getDiffTimeSec
 	Message  "Setup time: " + $TimeDiff$ + " seconds"	
 	
@@ -171,6 +174,20 @@ set_link
 	working_dir:
 	icon_file:
 	icon_index:
+end_link
+
+;=====================================================================
+[LinkFolder_CreateDesktopLink]
+;=====================================================================
+set_basefolder common_desktopdirectory
+set_subfolder ""
+set_link
+       name: $ProductName$
+       target: $InstallDir$\$MainBin$
+       parameters:
+       working_dir: $InstallDir$
+       icon_file:
+       icon_index:
 end_link
 
 ;=====================================================================
