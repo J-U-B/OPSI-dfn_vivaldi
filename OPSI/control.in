@@ -1,20 +1,20 @@
 [Package]
-version: 5
+version: 6
 depends: 
 incremental: False
 
 [Product]
 type: localboot
-id: 0_dfn_vivaldi
+id: {{TESTING}}{{ORGPREFIX}}vivaldi
 name: Vivaldi
 description: A Browser for Our Friends (Jón S. von Tetzchner)
  Recommended replacement for Opera
  WebSite: https://vivaldi.com/
- changelog: https://vivaldi.com/blog/vivaldi-powers-up-the-start-page-and-adds-docked-dev-tools/?hl=de&version=1.10.867.42
+ changelog: https://vivaldi.com/blog/minor-update-to-vivaldi-1-10-2/
 advice: Maintainer: Jens Boettge <boettge@mpi-halle.mpg.de>
-Organization: MPIMSP/DFN
-Release date: 2017-06-27
-version: 1.10.867.42
+Organization: {{ORGNAME}}
+Release date: 2017-07-07
+version: 1.10.867.46
 priority: 0
 licenseRequired: False
 productClasses: web & mail
@@ -41,14 +41,14 @@ description: which architecture (32/64 bit) should be installed
 values: ["32 bit", "64 bit", "sysnative"]
 default: ["64 bit"]
 
-[ProductProperty]
-type: unicode
-name: default_language
-multivalue: False
-editable: False
-description: application default language (currently unused!)
-values: ["de", "en-GB", "en-US"]
-default: ["en-US"]
+;[ProductProperty]
+;type: unicode
+;name: default_language
+;multivalue: False
+;editable: False
+;description: application default language (currently unused!)
+;values: ["de", "en-GB", "en-US"]
+;default: ["en-US"]
 
 [ProductProperty]
 type: bool
@@ -75,6 +75,15 @@ values: ["none", "post-uninstall.opsiinc"]
 default: ["none"]
 
 [Changelog]
+{{ORGPREFIX}}vivaldi 1.10.867.46-6 testing
+	* product update ==> 1.10.867.46
+	* simple Makefile for creating packages; control moved to control.in
+	* disabled unused property: default_language
+	* calling delsub.opsiinc with function sub_delsub_main
+	* several small improvements and fixes
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2017-07-07 12:32:15 +0200
+
+
 dfn_vivaldi 1.10.867.42-5 testing:
   * new property: desktoplink
   * fixed: read properties for custom_post_install/custom_post_uninstall

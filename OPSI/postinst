@@ -43,6 +43,11 @@ else
 		echo "Symlink to [${DST}] already exists. - Replacing"
 		rm ${DST}
 	fi
+	
+	if [ ! -d "${SRC}" ]; then	
+		echo "Directory [${SRC}] does not exist. Try to create it."
+		mkdir -m 750 ${SRC} && chgrp pcpatch ${SRC}
+	fi
 
 	if [ -d "${DST}" ]; then
 		echo "Directory [${DST}] already exists!\nSkipping creation of symlink."
@@ -75,8 +80,8 @@ rm -rf $TMP_DIR
 
 
 ### download files form vendor:
-#https://downloads.vivaldi.com/stable/Vivaldi.1.10.867.42.exe
-#https://downloads.vivaldi.com/stable/Vivaldi.1.10.867.42.x64.exe
+#https://downloads.vivaldi.com/stable/Vivaldi.1.10.867.46.exe
+#https://downloads.vivaldi.com/stable/Vivaldi.1.10.867.46.x64.exe
 
 VERSION=`opsi-admin -dS method getProduct_hash ${PRODUCT_ID} | grep productVersion | cut -d "=" -f 2`
 BASE="https://downloads.vivaldi.com/stable/"
@@ -93,6 +98,7 @@ for ARCH in "exe" "x64.exe"; do
 	else
 		wget -nv "${BASE}/${PACKAGE}" -O "${DST}/${PACKAGE}"
 		[ ! -s "${DST}/${PACKAGE}" ] && let "ERR+=1<<$CNT"
+		chmod g+r "${DST}/${PACKAGE}"
 	fi
 done
 exit $ERR

@@ -1,11 +1,14 @@
 ;=====================================================================
 ; delsub.opsiinc VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-27 08:38:18 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-07-07 11:33:58 +0200
 ;=====================================================================
 
-;=== kill running instances
-include_append "%ScriptPath%\checkinstance.opsiinc"
-sub_checkinstance
+;=======================================
+[sub_delsub_main]
+;=======================================
+Message "Removing previous version(s) of " + $ProductName$
+ShowBitmap $Img_Prepare$ $ProductName$
+marktime
 
 ;=== search for uninstall info
 Set $UninstRegKeyPath$ = "[" + $MPIMSP_Reg$ + "]"
@@ -31,6 +34,12 @@ endif
 
 
 if FileExists($UninstDir$)
+
+	;=== kill running instances
+	include_append "%ScriptPath%\checkinstance.opsiinc"
+	sub_checkinstance
+
+	
 	ShowBitmap $Img_Uninstall$	 $ProductName$
 	if ($UninstVer$="") or ($UninstArch$="")
 		Message "Uninstalling previous setup of " + $ProductName$
@@ -38,7 +47,6 @@ if FileExists($UninstDir$)
 		Message "Uninstalling previous setup of " + $UninstName$ + " (" + $UninstArch$ + " bit)"
 	endif
 
-	marktime
 
 	Message "removing link from startmenu"
 	LinkFolder_RemoveVivaldi

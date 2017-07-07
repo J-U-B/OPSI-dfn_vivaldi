@@ -1,6 +1,6 @@
 ;=====================================================================
 ; uninstall.opsiscript (generic)
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-26 13:37:41 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-07-07 11:27:06 +0200
 ;=====================================================================
 
 ;======================================================================
@@ -8,7 +8,7 @@
 ;======================================================================
 setLogLevel=6
 ; Log Errors in Logfile but don't abort:
-ExitOnError=false 
+ExitOnError=true
 ; Show syntax errors in the script:
 ScriptErrorMessages=off
 ; Dont trace step by step through the script:
@@ -21,13 +21,13 @@ StayOnTop=false
 ;======================================================================
 include_insert "%ScriptPath%\product_variables.opsiinc"
 
-ShowBitmap "%ScriptPath%\" + $ProductId$ + "_prepare.png" $ProductName$
-
 Message "Uninstalling previous version of " + $ProductName$
 
 if FileExists("%ScriptPath%\delsub.opsiinc")
 	comment "Starting uninstall sub section"
-	Sub "%ScriptPath%\delsub.opsiinc"
+	;Sub "%ScriptPath%\delsub.opsiinc"
+	include_append "%ScriptPath%\delsub.opsiinc"
+	sub_delsub_main
 else
 	logError "Can't find uninstaller script"
 	isFatalError "delsub.opsiinc not found"

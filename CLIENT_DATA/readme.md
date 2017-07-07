@@ -1,7 +1,10 @@
 # Vivaldi #
 
 Diese OPSI-Paket fuer **Vivaldi** wurde aus dem internen Paket des *Max-Planck-Institut fuer Mikrostrukturphysik*
-abgeleitet und fuer die Verwendung im DFN-Repository angepasst und erweitert.
+abgeleitet und fuer die Verwendung im *DFN*-Repository angepasst und erweitert.
+Es wird versucht auf die Besonderheitden der jeweiligen Repositories einzugehen;
+entsprechend werden durch ein einfaches ***Makefile*** aus den Quellen verschiedene
+Pakete erstellt.
 
 
 ## Installation ##
@@ -99,4 +102,4 @@ Das verwendete Vivialdi-Logo ist gemeinfrei.
 Quelle: https://de.wikipedia.org/wiki/Vivaldi_(Browser)#/media/File:Vivaldi_web_browser_logo.svg
 
 -----
-Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2017-06-27 11:17:54 +0200
+Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2017-07-07 11:19:32 +0200
