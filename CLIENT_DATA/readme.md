@@ -2,7 +2,7 @@
 
 Diese OPSI-Paket fuer **Vivaldi** wurde aus dem internen Paket des *Max-Planck-Institut fuer Mikrostrukturphysik*
 abgeleitet und fuer die Verwendung im *DFN*-Repository angepasst und erweitert.
-Es wird versucht auf die Besonderheitden der jeweiligen Repositories einzugehen;
+Es wird versucht auf die Besonderheiten der jeweiligen Repositories einzugehen;
 entsprechend werden durch ein einfaches ***Makefile*** aus den Quellen verschiedene
 Pakete erstellt.
 
