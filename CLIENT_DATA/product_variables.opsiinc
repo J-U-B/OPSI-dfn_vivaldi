@@ -1,6 +1,6 @@
 ;=====================================================================
 ; product specific variables  VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-07-07 12:05:11 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-07-14 14:34:54 +0200
 ;=====================================================================
 
 include_insert "%ScriptPath%\variables.opsiinc"
@@ -29,18 +29,26 @@ if not ($SystemType$ = "64 Bit System")
 endif
 
 ;-----------------------------------------------------------
+;*** get LogLevel from property
+Set $LogLevelDefault$ = GetProductProperty("log_level","default")
+
+;-----------------------------------------------------------
 ;*** detect testing package:
 if strPos($FullProductId$, "0_") = "0"
 	; no a testing package
 	set $ProductId$  		= $FullProductId$ 
 	set $Testing$ 			= "false"
-	set $LogLevelDefault$  	= "5"
+	if ($LogLevelDefault$ = "default")
+		set $LogLevelDefault$  	= "5"
+	endif
 else
 	; this is a testing package
 	comment "Prefix for testing package detected"
 	set $ProductId$  		= strPart($FullProductId$,"3",strLength($FullProductId$))
 	set $Testing$ 			= "true"
-	set $LogLevelDefault$  	= "7"
+	if ($LogLevelDefault$ = "default")
+		set $LogLevelDefault$  	= "7"
+	endif
 endif
 setlogLevel 				= $LogLevelDefault$
 

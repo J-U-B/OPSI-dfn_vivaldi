@@ -1,6 +1,6 @@
 ;======================================================================
 ; setup.opsiscript VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-07-07 11:29:24 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-07-14 14:05:56 +0200
 ;======================================================================
 
 ;======================================================================
@@ -75,13 +75,14 @@ else
 	set $ExitCode$ = getLastExitCode
 	if not($ExitCode$ = "0")
 		LogError "Error " + $ExitCode$ + " while extracting archive"
+		isFatalError "Error extracting archive"
 	endif
 	
 	Files_CleanupArchive
 	
 	if not(FileExists($ExDirLong$))
 		LogError "Temporary application folder does not exist: " $ExDirLong$
-		ifFatalError $ExDir$ +" folder not found"
+		isFatalError $ExDir$ +" folder not found"
 	endif	
 	
 	set $LogLevel$ = getLogLevel

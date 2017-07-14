@@ -1,11 +1,11 @@
 [Package]
-version: 6
+version: 7
 depends: 
 incremental: False
 
 [Product]
 type: localboot
-id: {{TESTING}}{{ORGPREFIX}}vivaldi
+id: {{TESTPREFIX}}{{ORGPREFIX}}vivaldi
 name: Vivaldi
 description: A Browser for Our Friends (Jón S. von Tetzchner)
  Recommended replacement for Opera
@@ -13,7 +13,7 @@ description: A Browser for Our Friends (Jón S. von Tetzchner)
  changelog: https://vivaldi.com/blog/minor-update-to-vivaldi-1-10-2/
 advice: Maintainer: Jens Boettge <boettge@mpi-halle.mpg.de>
 Organization: {{ORGNAME}}
-Release date: 2017-07-13
+Release date: 2017-07-14
 version: 1.10.867.48
 priority: 0
 licenseRequired: False
@@ -74,7 +74,23 @@ description: Define filename for include script in custom directory after deinst
 values: ["none", "post-uninstall.opsiinc"]
 default: ["none"]
 
+[ProductProperty]
+type: unicode
+name: log_level
+multivalue: False
+editable: False
+description: Loglevel for this package
+values: ["default", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+default: ["default"]
+
+
 [Changelog]
+{{ORGPREFIX}}vivaldi 1.10.867.46-7 {{STAGE}}
+	* STAGE defined by Makefile
+	* hotfix errors in setup
+	* new property: log_level
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2017-07-14 14:29:35 +0200
+
 {{ORGPREFIX}}vivaldi 1.10.867.46-6 release
 	* product update ==> 1.10.867.48
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2017-07-13 15:07:51 +0200
