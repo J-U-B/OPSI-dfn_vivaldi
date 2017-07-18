@@ -2,7 +2,7 @@
 # OPSI package Makefile (generic)
 # Version: 1.1
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2017-07-14 07:19:41 +0200
+# 2017-07-18 15:50:54 +0200
 ############################################################
 
 .PHONY: header clean mpimsp dfn mpimsp_test dfn_test all_test all_prod all help
@@ -40,6 +40,14 @@ mpimsp_test: header
 
 dfn_test: header
 	@echo "---------- building DFN testing package --------------------------"
+	@make 	TESTPREFIX="test_"  \
+			ORGNAME="DFN"    \
+			ORGPREFIX="dfn_" \
+			STAGE="testing"  \
+	build
+
+dfn_test_0: header
+	@echo "---------- building DFN testing package --------------------------"
 	@make 	TESTPREFIX="0_"  \
 			ORGNAME="DFN"    \
 			ORGPREFIX="dfn_" \
@@ -67,7 +75,7 @@ help: header
 	@echo "* all_prod"
 	@echo "* all_test"
 
-all_test:  header mpimsp_test dfn_test
+all_test:  header mpimsp_test dfn_test dfn_test_0
 
 all_prod : header mpimsp dfn
 
