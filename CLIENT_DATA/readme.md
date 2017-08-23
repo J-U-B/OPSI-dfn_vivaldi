@@ -1,4 +1,4 @@
-![](./CLIENT_DATA/images/vivaldi.png "Vivaldi")
+![](images/vivaldi.png "Vivaldi")
 
 # Vivaldi #
 
