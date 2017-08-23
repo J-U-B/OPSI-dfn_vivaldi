@@ -1,4 +1,4 @@
-![](images/vivaldi.png "Vivaldi")
+![](images/vivaldi_install.png "Vivaldi")
 
 # Vivaldi #
 
