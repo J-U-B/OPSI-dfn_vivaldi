@@ -1,6 +1,6 @@
 ;=====================================================================
 ; product specific variables  VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-07-18 16:11:11 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2017-10-27 13:25:07 +0200
 ;=====================================================================
 
 include_insert "%ScriptPath%\variables.opsiinc"
@@ -124,6 +124,7 @@ ShowBitmap $Img_Prepare$ $ProductName$
 ;-----------------------------------------------------------
 Set $MinimumSpace$ 	= "360 MB"
 Set $MainBin$      	= $StrippedProductId$ +".exe"
+Set $NotifierBin$	= $InstallDir$ + "\" + "update_notifier.exe"
 
 ;-----------------------------------------------------------
 if ( $sw_arch$ = "32" )
