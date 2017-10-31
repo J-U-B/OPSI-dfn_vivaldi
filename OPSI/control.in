@@ -10,11 +10,11 @@ name: Vivaldi
 description: A Browser for Our Friends (Jón S. von Tetzchner)
  Recommended replacement for Opera
  WebSite: https://vivaldi.com/
- changelog: https://vivaldi.com/blog/minor-update-to-vivaldi-1-12-2/
+ changelog: https://vivaldi.com/blog/minor-update-to-vivaldi-1-12-crash-fix/
 advice: Maintainer: Jens Boettge <boettge@mpi-halle.mpg.de>
 Organization: {{ORGNAME}}
-Release date: 2017-10-27
-version: 1.12.955.42
+Release date: 2017-10-31
+version: 1.12.955.48
 priority: 0
 licenseRequired: False
 productClasses: web & mail
@@ -85,6 +85,10 @@ default: ["default"]
 
 
 [Changelog]
+{{ORGPREFIX}}vivaldi 1.12.955.48-8 {{STAGE}}
+	* product update ==> 1.12.955.48
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2017-10-31 12:07:55 +0200
+
 {{ORGPREFIX}}vivaldi 1.12.955.42-8 {{STAGE}}
 	* product update ==> 1.12.955.42
 	* checkinstance extended by update_notifier.exe
