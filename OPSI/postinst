@@ -80,11 +80,13 @@ echo "Removing temporary files..."
 rm -rf $TMP_DIR
 
 
-### download files form vendor:
-#https://downloads.vivaldi.com/stable/Vivaldi.1.10.867.46.exe
-#https://downloads.vivaldi.com/stable/Vivaldi.1.10.867.46.x64.exe
+### download files from vendor:
+# link examples:
+#	https://downloads.vivaldi.com/stable/Vivaldi.1.10.867.46.exe
+#	https://downloads.vivaldi.com/stable/Vivaldi.1.10.867.46.x64.exe
 
-VERSION=`opsi-admin -dS method getProduct_hash ${PRODUCT_ID} | grep productVersion | cut -d "=" -f 2`
+# VERSION=`opsi-admin -dS method getProduct_hash ${PRODUCT_ID} | grep productVersion | cut -d "=" -f 2`
+VERSION=${PRODUCT_VERSION}
 BASE="https://downloads.vivaldi.com/stable/"
 
 echo "Detected version for this package: ${VERSION}"
