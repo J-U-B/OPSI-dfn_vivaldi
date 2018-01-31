@@ -85,8 +85,10 @@ else
 endif
 
 ;-----------------------------------------------------------
-; language property: "de, "en_US", "en_GB"
-Set $sw_lang$ = GetProductProperty("default_language","en_US")
+;; language property: "de, "en_US", "en_GB"
+; Set $sw_lang$ = GetProductProperty("default_language","en_US")
+;; ...property is currently not enabled in OPSI/control 
+set $sw_lang$ = "en_US"
 
 ;-----------------------------------------------------------
 ; create desktop link?
