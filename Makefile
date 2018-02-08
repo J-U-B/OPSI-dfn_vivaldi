@@ -26,7 +26,7 @@ dfn: header
 	@echo "---------- building DFN package ----------------------------------"
 	@make 	TESTPREFIX=""    \
 			ORGNAME="DFN"    \
-			ORGPREFIX="dfn_" \
+			ORGPREFIX="dfn_dl_" \
 			STAGE="release"  \
 	build
 
