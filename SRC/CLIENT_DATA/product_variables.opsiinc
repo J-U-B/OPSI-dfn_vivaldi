@@ -1,6 +1,6 @@
 ;=====================================================================
 ; product specific variables  VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-10-27 13:25:07 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2018-02-08 14:30:02 +0100
 ;=====================================================================
 
 include_insert "%ScriptPath%\variables.opsiinc"
@@ -39,7 +39,7 @@ if (strPos($FullProductId$, "0_") = "0") and (strPos($FullProductId$, "test_") =
 	set $ProductId$  		= $FullProductId$ 
 	set $Testing$ 			= "false"
 	if ($LogLevelDefault$ = "default")
-		set $LogLevelDefault$  	= "5"
+		set $LogLevelDefault$  	= "{{DEFAULT_RELEASE_LOGLEVEL}}"
 	endif
 else
 	; this is a testing package
@@ -47,7 +47,7 @@ else
 	set $ProductId$  		= strPart($FullProductId$, calculate(strPos($FullProductId$,"_") + "+1"), strLength($FullProductId$))
 	set $Testing$ 			= "true"
 	if ($LogLevelDefault$ = "default")
-		set $LogLevelDefault$  	= "7"
+		set $LogLevelDefault$  	= "{{DEFAULT_TESTING_LOGLEVEL}}"
 	endif
 endif
 setlogLevel 				= $LogLevelDefault$

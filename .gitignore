@@ -2,6 +2,9 @@
 *.zsync
 *.md5
 *.ins~
-*.inc~
-OPSI/control
-
+*~
+*.log
+BUILD/
+PACKAGES/
+DOWNLOAD/
+product_downloader.sh

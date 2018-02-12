@@ -7,7 +7,7 @@
 #   PRODUCT_ID: id of the current product
 #   CLIENT_DATA_DIR: directory which contains the installed client data
 #=====================================================================
-# J. Boettge <boettge@mpi-halle.mpg.de>  2017-07-18 15:57:33 +0200
+# J. Boettge <boettge@mpi-halle.mpg.de>  2018-02-08 15:02:36 +0100
 #=====================================================================
 
 LOGFILE=/tmp/${PRODUCT_ID}__opsi_package_install.log
@@ -38,8 +38,8 @@ P=${P/#test_/}
 if [ $IS_DFN == true ]; then
 	 [ ! -d "${DST}" ] && mkdir $DST
 else
-	### symlink files directory to ../../source/${PRODUCT_ID##0_} only
-	### for non-DFN packages:
+	### symlink files directory to ../../source/${PRODUCT_ID##0_}
+	### only for non-DFN packages:
 	if [ -h "${DST}" ]; then
 		echo "Symlink to [${DST}] already exists. - Replacing"
 		rm ${DST}
@@ -80,28 +80,17 @@ echo "Removing temporary files..."
 rm -rf $TMP_DIR
 
 
-### download files from vendor:
-# link examples:
-#	https://downloads.vivaldi.com/stable/Vivaldi.1.10.867.46.exe
-#	https://downloads.vivaldi.com/stable/Vivaldi.1.10.867.46.x64.exe
-
-# VERSION=`opsi-admin -dS method getProduct_hash ${PRODUCT_ID} | grep productVersion | cut -d "=" -f 2`
-VERSION=${PRODUCT_VERSION}
-BASE="https://downloads.vivaldi.com/stable/"
-
-echo "Detected version for this package: ${VERSION}"
-
-CNT=0
-for ARCH in "exe" "x64.exe"; do
-	PACKAGE="Vivaldi.${VERSION}.${ARCH}"
-	let "CNT++"
-	echo "Retrieving [$PACKAGE]";
-	if [ -f "${DST}/${PACKAGE}" ]; then
-		echo -e "\tfile already exists"
-	else
-		wget -nv "${BASE}/${PACKAGE}" -O "${DST}/${PACKAGE}"
-		[ ! -s "${DST}/${PACKAGE}" ] && let "ERR+=1<<$CNT"
-		chmod g+r "${DST}/${PACKAGE}"
-	fi
-done
+{{^ifdef_allinc}}
+{{#ifdef_auto_download}}
+### product downloader
+if [[ -f "${CLIENT_DATA_DIR}/product_downloader.sh" ]]; then
+	echo "Calling product downloader"
+	DEST_DIR=${DST} ${CLIENT_DATA_DIR}/product_downloader.sh
+	ERR=$?
+else
+	echo "Product downloader not found!"
+	ERR=2
+fi
 exit $ERR
+{{/ifdef_auto_download}}
+{{/ifdef_allinc}}

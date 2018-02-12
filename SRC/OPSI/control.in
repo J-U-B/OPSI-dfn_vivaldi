@@ -1,5 +1,5 @@
 [Package]
-version: 8
+version: {{O_PKG_VER}}
 depends: 
 incremental: False
 
@@ -8,13 +8,13 @@ type: localboot
 id: {{TESTPREFIX}}{{ORGPREFIX}}vivaldi
 name: Vivaldi
 description: A Browser for Our Friends (Jón S. von Tetzchner)
- Recommended replacement for Opera
+ Recommended replacement for Opera and  Chrome
  WebSite: https://vivaldi.com/
- changelog: https://vivaldi.com/blog/minor-update-to-vivaldi-1-14/
-advice: Maintainer: Jens Boettge <boettge@mpi-halle.mpg.de>
+ changelog: {{O_CHANGELOG}}
+advice: Maintainer: {{O_MAINTAINER}}
 Organization: {{ORGNAME}}
-Release date: 2018-02-07
-version: 1.14.1077.45
+Release date: {{O_RELEASE_DATE}}
+version: {{O_SOFTWARE_VER}}
 priority: 0
 licenseRequired: False
 productClasses: web & mail
@@ -79,12 +79,28 @@ type: unicode
 name: log_level
 multivalue: False
 editable: False
-description: Loglevel for this package
+{{#ifdef_testing}}
+description: Loglevel for this package ({{DEFAULT_TESTING_LOGLEVEL}})
+{{/ifdef_testing}}
+{{^ifdef_testing}}
+description: Loglevel for this package ({{DEFAULT_RELEASE_LOGLEVEL}})
+{{/ifdef_testing}}
 values: ["default", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 default: ["default"]
 
 
 [Changelog]
+vivaldi 1.14.1077.45-9
+	* rearranged project structure for build environment
+	* configuration via spec.json
+	* new Makefile
+	* external product downloader skript (Makefile allows various packages)
+	* using python3-pystache to build package (pystache not included here!)
+	* update psdetail 0.1.9.0.dev -> 0.1.10.0dev
+	* refreshed readme.md
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-02-12 14:59:06 +0100
+
+
 {{ORGPREFIX}}vivaldi 1.14.1077.45-8 {{STAGE}}
 	* product update ==> 1.14.1077.45
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-02-07 07:51:38 +0100
@@ -226,25 +242,4 @@ vivaldi 1.7.735.46-1 testing:
 vivaldi 1.6.689.40-1 testing:
   * initial package
   -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-01-03 17:00:06 +0100
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

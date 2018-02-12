@@ -1,0 +1,81 @@
+#!/bin/bash
+#=======================================================================
+# Download files from vendor
+#
+# Version 1.1
+# Jens Boettge <boettge@mpi-halle.mpg.de>  2018-02-08 17:12:47 +0100
+#=======================================================================
+# link examples:
+#	https://downloads.vivaldi.com/stable/Vivaldi.1.14.1077.45.exe
+#	https://downloads.vivaldi.com/stable/Vivaldi.1.14.1077.45.x64.exe
+#=======================================================================
+
+ERR=0
+# VERSION=`opsi-admin -dS method getProduct_hash ${PRODUCT_ID} | grep productVersion | cut -d "=" -f 2`
+VERSION={{O_SOFTWARE_VER}}
+[[ -n "$PRODUCT_VERSION" ]] && VERSION=${PRODUCT_VERSION}
+[[ -z "$VERSION" ]] && ERR=100
+[[ "$VERSION" =~ "O_SOFTWARE_VER" ]] && ERR=110
+if [ "$ERR" -gt 0 ]; then
+	echo "Error: cannot get software version"
+	exit 100
+fi
+
+BASE="https://downloads.vivaldi.com/stable/Vivaldi.${VERSION}%%ARCH%%.exe"
+PKG_FILE="Vivaldi.${VERSION}%%ARCH%%.exe"
+
+# in postinst: DEST_DIR=DST="${CLIENT_DATA_DIR}/files"
+# in Makefile: DEST_DIR=./DOWNLOAD
+# ...otherwise use default:
+if [ -z "${DEST_DIR}" ]; then
+	THIS_DIR=$(dirname $(readlink -f $0))
+	[ -f "spec.json" ] && DEST_DIR="${THIS_DIR}/DOWNLOAD" || DEST_DIR="${THIS_DIR}/files"
+fi
+[ ! -d "${DEST_DIR}" ]  && mkdir ${DEST_DIR}
+# remove trailing "/" in path:
+DEST_DIR=${DEST_DIR%\/}
+CNT=0
+WGET_OPTS="--max-redirect=2 --no-cookies "
+FS_THRESHOLD=10000
+
+download()
+{       
+        DL_URL=$1
+        [ -n "$2" ] && PACKAGE=$2 || PACKAGE=`basename $DL_URL`
+        
+        let "CNT++"
+        echo -e "Retrieving [$PACKAGE]\n\tfrom: [${DL_URL}]";
+        if [ -f "${DEST_DIR}/${PACKAGE}" ]; then
+                echo -e "\tfile already exists"
+        else
+                eval wget ${WGET_OPTS} -nv "${DL_URL}" -O "${DEST_DIR}/${PACKAGE}"
+                if  [ ! -f "${DEST_DIR}/${PACKAGE}" ]; then
+                        let "ERR+=1<<$CNT"
+                else
+                        FILESIZE=$(stat -c%s "${DEST_DIR}/${PACKAGE}")
+                        if [ "${FS_THRESHOLD}" -gt "${FILESIZE}" ]; then
+                                echo -e "*E*  file has an unusual size; assuming error page"
+                                rm -f "${DEST_DIR}/${PACKAGE}"
+                                let "ERR+=1<<$CNT"
+                        else                    
+                                chmod g+r "${DEST_DIR}/${PACKAGE}"
+                        fi
+                fi
+        fi      
+}
+
+echo "=================================================================="
+echo "Downloading required files from vendor"
+echo "Detected version for this package: ${VERSION}"
+echo "Timestamp: $(date +'%Y-%m-%d %H:%M:%S')"
+echo "Targtet directory: ${DEST_DIR}"
+echo "=================================================================="
+
+CNT=0
+for ARCH in "" ".x64"; do
+		PACKAGE=${PKG_FILE//%%ARCH%%/$ARCH}
+        PKG_URL=${BASE//%%ARCH%%/$ARCH}
+         
+        download "${PKG_URL}"  "${PACKAGE}"
+done
+exit $ERR
