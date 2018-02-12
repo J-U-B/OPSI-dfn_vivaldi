@@ -10,6 +10,7 @@
   * [Verzeichnisstruktur](#verzeichnisstruktur)
   * [Makefile-Parameter](#makefile_parameter)
   * [spec.json](#spec_json)
+  * [opsi-makeproductfile](#opsi-makeproductfile)
 * [Installation](#installation)
 * [Allgemeines](#allgemeines)
   * [Aufbau des Paketes](#paketaufbau)
@@ -107,6 +108,25 @@ Versionsnummern und des Datums etc. In einigen Faellen ist jedoch auch das Anpas
 weiterer Variablen erforderlich, die sich auf verschiedene Files verteilen.  
 Auch das soll durch das Makefile vereinfacht werden. Die relevanten Variablen
 sollen nur noch in <code>spec.json</code> angepasst werden. Den Rest uebernimmt *<code>make</code>*
+
+
+<div id="opsi-makeproductfile"></div>
+
+### opsi-makeproductfile ###
+
+***Achtung***: Zur Erstellung der Pakete wird im <code>Makefile</code> eine
+modifizierte Version von **python-opsi** und der **opsi-utils** verwendet!   
+Die vorgenommenen Änderungen erweitern <code>opsi-makeproductfile</code> um
+zwei optionale Argumente:
+
+```
+  --prefix <package_prefix>, -p <package_prefix>  
+                        prefix for package file  
+  --pname <package_name>, -P <package_name>  
+                        custom package name (without version suffix)  
+```
+
+Diese Argumente werden derzeit <u>nicht</u> von den offiziellen Paketen unterstützt.
 
 
 
