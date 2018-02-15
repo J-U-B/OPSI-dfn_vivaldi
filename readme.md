@@ -114,7 +114,7 @@ sollen nur noch in <code>spec.json</code> angepasst werden. Den Rest uebernimmt 
 
 ### opsi-makeproductfile ###
 
-***Achtung***: Zur Erstellung der Pakete wird im <code>Makefile</code> eine
+<s>***Achtung***: Zur Erstellung der Pakete wird im <code>Makefile</code> eine
 modifizierte Version von **python-opsi** und der **opsi-utils** verwendet!   
 Die vorgenommenen Änderungen erweitern <code>opsi-makeproductfile</code> um
 zwei optionale Argumente:
@@ -126,7 +126,7 @@ zwei optionale Argumente:
                         custom package name (without version suffix)  
 ```
 
-Diese Argumente werden derzeit <u>nicht</u> von den offiziellen Paketen unterstützt.
+Diese Argumente werden derzeit <u>nicht</u> von den offiziellen Paketen unterstützt.</s>
 
 
 
@@ -276,4 +276,4 @@ zuvor gesichert und wiederhergestellt werden.</s>
 * Fuer die OPSI-Pakete wird noch ein ***Lizenzmodell*** benoetigt.
 
 -----
-Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2018-02-12 15:03:55 +0100
+Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2018-02-15 17:13:56 +0100
