@@ -1,8 +1,8 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 2.0
+# Version: 2.1
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2018-02-12 13:59:15 +0100
+# 2018-02-15 16:35:12 +0100
 ############################################################
 
 .PHONY: header clean mpimsp dfn mpimsp_test dfn_test all_test all_prod all help download
@@ -50,7 +50,7 @@ endif
 ifeq ($(ALLINCLUSIVE),true)
 	DLPREFIX := ""
 else
-	DLPREFIX := "dl_"
+	DLPREFIX := "dl"
 endif
 
 
@@ -264,11 +264,15 @@ build: download copy_from_src
 		rm -f $(BUILD_DIR)/CLIENT_DATA/$$F; \
 		${PYSTACHE} $(SRC_DIR)/CLIENT_DATA/$$F.in $(BUILD_JSON) > $(BUILD_DIR)/CLIENT_DATA/$$F; \
 	done
+	chmod +x $(BUILD_DIR)/CLIENT_DATA/*.sh
 	
 	@echo "* OPSI Archive Format: $(BUILD_FORMAT)"
 	@echo "* Building OPSI package"
-	@cd "$(CURDIR)/$(PACKAGE_DIR)" && $(OPSI_BUILDER) -F $(BUILD_FORMAT) -k -m $(CURDIR)/$(BUILD_DIR)  -P $(TESTPREFIX)$(ORGPREFIX)$(DLPREFIX)$(SW_NAME)
-	
+	@if [ -z $(DLPREFIX) ]; then \
+		cd "$(CURDIR)/$(PACKAGE_DIR)" && $(OPSI_BUILDER) -F $(BUILD_FORMAT) -k -m $(CURDIR)/$(BUILD_DIR); \
+	else \
+		cd "$(CURDIR)/$(PACKAGE_DIR)" && $(OPSI_BUILDER) -F $(BUILD_FORMAT) -k -m $(CURDIR)/$(BUILD_DIR) -c $(DLPREFIX); \
+	fi; \
 	cd $(CURDIR)
 
 

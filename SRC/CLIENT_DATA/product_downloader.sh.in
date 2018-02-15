@@ -3,11 +3,11 @@
 # Download files from vendor
 #
 # Version 1.1
-# Jens Boettge <boettge@mpi-halle.mpg.de>  2018-02-08 17:12:47 +0100
+# Jens Boettge <boettge@mpi-halle.mpg.de>  2018-02-15 17:04:35 +0100
 #=======================================================================
 # link examples:
-#	https://downloads.vivaldi.com/stable/Vivaldi.1.14.1077.45.exe
-#	https://downloads.vivaldi.com/stable/Vivaldi.1.14.1077.45.x64.exe
+#	https://downloads.vivaldi.com/stable/Vivaldi.1.14.1077.50.exe
+#	https://downloads.vivaldi.com/stable/Vivaldi.1.14.1077.50.x64.exe
 #=======================================================================
 
 ERR=0

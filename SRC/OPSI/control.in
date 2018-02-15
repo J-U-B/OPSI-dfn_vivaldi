@@ -90,6 +90,11 @@ default: ["default"]
 
 
 [Changelog]
+vivaldi 1.14.1077.50-10
+	* product update ==> 1.14.1077.50
+	* Makefile modified (using customProduct zu mark special packages)
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-02-15 16:36:53 +0100
+
 vivaldi 1.14.1077.45-9
 	* rearranged project structure for build environment
 	* configuration via spec.json
