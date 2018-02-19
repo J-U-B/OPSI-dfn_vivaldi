@@ -1,8 +1,8 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 2.2
+# Version: 2.2.1
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2018-02-19 07:19:32 +0100
+# 2018-02-19 08:14:42 +0100
 ############################################################
 
 .PHONY: header clean mpimsp dfn mpimsp_test dfn_test all_test all_prod all help download
@@ -68,7 +68,7 @@ endif
 SW_VER := $(shell grep '"O_SOFTWARE_VER"' $(SPEC)     | sed -e 's/^.*\s*:\s*\"\(.*\)\".*$$/\1/' )
 SW_BUILD := $(shell grep '"O_PKG_VER"' $(SPEC)        | sed -e 's/^.*\s*:\s*\"\(.*\)\".*$$/\1/' )
 SW_NAME := $(shell grep '"O_SOFTWARE"' $(SPEC)        | sed -e 's/^.*\s*:\s*\"\(.*\)\".*$$/\1/' )
-FILES_MASK := "*.$(SW_VER).*exe"
+FILES_MASK := *.$(SW_VER).*exe
 
 leave_err:
 	exit 1
@@ -87,6 +87,11 @@ var_test:
 	@echo "* Templates CLIENT_DATA : [$(FILES_IN)]"
 	@echo "* Files Mask            : [$(FILES_MASK)]"
 	@echo "=================================================================="
+	@echo "* Installer files in $(DL_DIR):"
+	for F in `ls -1 $(DL_DIR)/$(FILES_MASK) | sed -re 's/.*\/(.*)$$/\1/' `; do echo "    $$F"; done 
+	@ $(eval NUM_FILES := $(shell ls -l $(DL_DIR)/$(FILES_MASK) 2>/dev/null | wc -l))
+	@echo "* $(NUM_FILES) files found"
+	@echo "=================================================================="	
 
 
 header:
@@ -196,7 +201,7 @@ copy_from_src:	build_dirs
 	@cp -upr $(SRC_DIR)/CLIENT_DATA/bin  $(BUILD_DIR)/CLIENT_DATA/
 	@cp -upr $(SRC_DIR)/CLIENT_DATA/*.opsiscript  $(BUILD_DIR)/CLIENT_DATA/
 	@cp -upr $(SRC_DIR)/CLIENT_DATA/*.opsiinc     $(BUILD_DIR)/CLIENT_DATA/
-	$(eval NUM_FILES := $(shell ls -l $(DL_DIR)/*.$(SW_VER).*exe 2>/dev/null | wc -l))
+	$(eval NUM_FILES := $(shell ls -l $(DL_DIR)/$(FILES_MASK) 2>/dev/null | wc -l))
 	@if [ "$(ALLINCLUSIVE)" = "true" ]; then \
 		echo "  * building batteries included package"; \
 		if [ ! -d "$(BUILD_DIR)/CLIENT_DATA/files" ]; then \
@@ -210,7 +215,7 @@ copy_from_src:	build_dirs
 		echo "      * files found   : $(NUM_FILES)"; \
 		echo "      * files expected: $(FILES_EXPECTED)"; \
 		[ "$(NUM_FILES)" -lt "$(FILES_EXPECTED)" ] && exit 1; \
-		for F in `ls $(DL_DIR)/*.$(SW_VER).*exe`; do echo "      + $$F"; ln $$F $(BUILD_DIR)/CLIENT_DATA/files/; done; \
+		for F in `ls $(DL_DIR)/$(FILES_MASK)`; do echo "      + $$F"; ln $$F $(BUILD_DIR)/CLIENT_DATA/files/; done; \
 		ls -l $(BUILD_DIR)/CLIENT_DATA/files/ ;\
 	else \
 		echo "    * removing $(BUILD_DIR)/CLIENT_DATA/files"; \
