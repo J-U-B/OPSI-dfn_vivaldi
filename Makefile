@@ -1,8 +1,8 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 2.1
+# Version: 2.2
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2018-02-15 16:35:12 +0100
+# 2018-02-19 07:19:32 +0100
 ############################################################
 
 .PHONY: header clean mpimsp dfn mpimsp_test dfn_test all_test all_prod all help download
@@ -10,10 +10,10 @@
 
 PWD = ${CURDIR}
 OPSI_BUILDER = opsi-makeproductfile
-BUILD_DIR = ./BUILD
+BUILD_DIR = BUILD
 DL_DIR = $(PWD)/DOWNLOAD
-PACKAGE_DIR = ./PACKAGES
-SRC_DIR = ./SRC
+PACKAGE_DIR = PACKAGES
+SRC_DIR = SRC
 
 FILES_EXPECTED = 2
 
@@ -48,9 +48,9 @@ else
 endif
 
 ifeq ($(ALLINCLUSIVE),true)
-	DLPREFIX := ""
+	CUSTOMNAME := ""
 else
-	DLPREFIX := "dl"
+	CUSTOMNAME := "dl"
 endif
 
 
@@ -80,7 +80,7 @@ var_test:
 	@echo "* Package Build         : [$(SW_BUILD)]"
 	@echo "* SPEC file             : [$(SPEC)]"
 	@echo "* Batteries included    : [$(ALLINC)] --> [$(ALLINCLUSIVE)]"
-	@echo "* Download Prefix       : [$(DLPREFIX)]"
+	@echo "* Download Prefix       : [$(CUSTOMNAME)]"
 	@echo "* OPSI Archive Types    : [$(ARCHIVE_TYPES)]"
 	@echo "* OPSI Archive Format   : [$(ARCHIVE_FORMAT)] --> $(BUILD_FORMAT)"
 	@echo "* Templates OPSI        : [$(FILES_OPSI_IN)]"
@@ -145,7 +145,7 @@ dfn_test_noprefix: header
 	@make 	TESTPREFIX=""    			\
 			ORGNAME="DFN"    			\
 			ORGPREFIX="dfn_" 			\
-			DLPREFIX="$(DLPREFIX)"      \
+			CUSTOMNAME="$(CUSTOMNAME)"      \
 			STAGE="testing"  			\
 	build
 
@@ -250,7 +250,7 @@ download: build_json
 	fi
 	
 	
-build: download copy_from_src
+build: download clean copy_from_src
 	@make build_json
 	
 	for F in $(FILES_OPSI_IN); do \
@@ -268,10 +268,14 @@ build: download copy_from_src
 	
 	@echo "* OPSI Archive Format: $(BUILD_FORMAT)"
 	@echo "* Building OPSI package"
-	@if [ -z $(DLPREFIX) ]; then \
+	if [ -z $(CUSTOMNAME) ]; then \
 		cd "$(CURDIR)/$(PACKAGE_DIR)" && $(OPSI_BUILDER) -F $(BUILD_FORMAT) -k -m $(CURDIR)/$(BUILD_DIR); \
 	else \
-		cd "$(CURDIR)/$(PACKAGE_DIR)" && $(OPSI_BUILDER) -F $(BUILD_FORMAT) -k -m $(CURDIR)/$(BUILD_DIR) -c $(DLPREFIX); \
+		cd $(CURDIR)/$(BUILD_DIR) && \
+		for D in OPSI CLIENT_DATA SERVER_DATA; do \
+			if [ -d "$$D" ] ; then mv $$D $$D.$(CUSTOMNAME); fi; \
+		done && \
+		cd "$(CURDIR)/$(PACKAGE_DIR)" && $(OPSI_BUILDER) -F $(BUILD_FORMAT) -k -m $(CURDIR)/$(BUILD_DIR) -c $(CUSTOMNAME); \
 	fi; \
 	cd $(CURDIR)
 
