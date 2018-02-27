@@ -1,6 +1,6 @@
 ;=====================================================================
 ; product specific variables  VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2018-02-08 14:30:02 +0100
+; J. Boettge <boettge@mpi-halle.mpg.de>  2018-02-27 12:43:25 +0100
 ;=====================================================================
 
 include_insert "%ScriptPath%\variables.opsiinc"
@@ -18,7 +18,7 @@ Set $NTVersion$   		= GetMsVersionInfo
 ;-----------------------------------------------------------
 requiredWinstVersion >= "4.11.6"
 
-if not ($NTVersion$ >= "6.1")
+if CompareDotSeparatedNumbers($NTVersion$, "<", "6.1")
 	LogError "OS is not Windows 7 or above"
 	isFatalError
 endif

@@ -90,6 +90,10 @@ default: ["default"]
 
 
 [Changelog]
+vivaldi 1.14.1077.50-11
+	* fix OS detection for Windows 10
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-02-27 12:44:22 +0100
+
 vivaldi 1.14.1077.50-10
 	* product update ==> 1.14.1077.50
 	* Makefile modified (using customProduct zu mark special packages)
