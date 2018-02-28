@@ -90,6 +90,11 @@ default: ["default"]
 
 
 [Changelog]
+vivaldi 1.14.1077.55-11
+	* product update ==> 1.14.1077.55
+	* Makefile prepared for OPSI 4.1
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-02-28 13:03:41 +0100
+
 vivaldi 1.14.1077.50-11
 	* fix OS detection for Windows 10
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-02-27 12:44:22 +0100

@@ -1,19 +1,27 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 2.2.2
+# Version: 2.2.3
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2018-02-19 13:27:00 +0100
+# 2018-02-28 13:03:08 +0100
 ############################################################
 
 .PHONY: header clean mpimsp dfn mpimsp_test dfn_test all_test all_prod all help download
 .DEFAULT_GOAL := help
 
 PWD = ${CURDIR}
-OPSI_BUILDER = opsi-makeproductfile
 BUILD_DIR = BUILD
 DL_DIR = $(PWD)/DOWNLOAD
 PACKAGE_DIR = PACKAGES
 SRC_DIR = SRC
+
+OPSI_BUILDER := $(shell which opsi-makepackage)
+ifeq ($(OPSI_BUILDER),)
+	override OPSI_BUILDER := $(shell which opsi-makeproductfile)
+	ifeq ($(OPSI_BUILDER),)
+		$(error Error: opsi-make(package|productfile) not found!)
+	endif
+endif
+$(info * OPSI_BUILDER = $(OPSI_BUILDER))
 
 ### spec file:
 SPEC ?= spec.json
