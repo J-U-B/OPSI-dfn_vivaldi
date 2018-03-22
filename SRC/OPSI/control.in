@@ -90,6 +90,14 @@ default: ["default"]
 
 
 [Changelog]
+vivaldi 1.14.1077.55-12
+	* product update ==> 1.14.1077.60
+	* make target "download" creates md5sums for archives
+	* check md5sums of archives in self download packages
+	* postinst log file define in spec
+	* updated readme.md
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-03-22 17:57:17 +0100
+
 vivaldi 1.14.1077.55-11
 	* product update ==> 1.14.1077.55
 	* Makefile prepared for OPSI 4.1

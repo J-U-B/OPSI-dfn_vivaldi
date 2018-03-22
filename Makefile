@@ -1,8 +1,8 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 2.2.3
+# Version: 2.3.0
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2018-02-28 13:03:08 +0100
+# 2018-03-22 17:47:41 +0100
 ############################################################
 
 .PHONY: header clean mpimsp dfn mpimsp_test dfn_test all_test all_prod all help download
@@ -23,6 +23,17 @@ ifeq ($(OPSI_BUILDER),)
 endif
 $(info * OPSI_BUILDER = $(OPSI_BUILDER))
 
+PYSTACHE = ./SRC/SCRIPTS/pystache_opsi.py
+BUILD_JSON = $(BUILD_DIR)/build.json
+CONTROL_IN = $(SRC_DIR)/OPSI/control.in
+CONTROL = $(BUILD_DIR)/OPSI/control
+DOWNLOAD_SH_IN = ./SRC/CLIENT_DATA/product_downloader.sh.in
+DOWNLOAD_SH = $(PWD)/product_downloader.sh
+OPSI_FILES := control preinst postinst
+FILES_IN := $(basename $(shell (cd $(SRC_DIR)/CLIENT_DATA; ls *.in 2>/dev/null)))
+FILES_OPSI_IN := $(basename $(shell (cd $(SRC_DIR)/OPSI; ls *.in 2>/dev/null)))
+TODAY := $(shell date +"%Y-%m-%d")
+
 ### spec file:
 SPEC ?= spec.json
 ifeq ($(shell test -f $(SPEC) && echo OK),OK)
@@ -38,16 +49,7 @@ SW_NAME := $(shell grep '"O_SOFTWARE"' $(SPEC)        | sed -e 's/^.*\s*:\s*\"\(
 FILES_MASK := *.$(SW_VER).*exe
 FILES_EXPECTED = 2
 
-PYSTACHE = ./SRC/SCRIPTS/pystache_opsi.py
-BUILD_JSON = $(BUILD_DIR)/build.json
-CONTROL_IN = $(SRC_DIR)/OPSI/control.in
-CONTROL = $(BUILD_DIR)/OPSI/control
-DOWNLOAD_SH_IN = ./SRC/CLIENT_DATA/product_downloader.sh.in
-DOWNLOAD_SH = $(PWD)/product_downloader.sh
-OPSI_FILES := control preinst postinst
-FILES_IN := $(basename $(shell (cd $(SRC_DIR)/CLIENT_DATA; ls *.in 2>/dev/null)))
-FILES_OPSI_IN := $(basename $(shell (cd $(SRC_DIR)/OPSI; ls *.in 2>/dev/null)))
-TODAY := $(shell date +"%Y-%m-%d")
+MD5SUM_FILE := $(SW_NAME).md5sums
 
 ### Only download packages?
 ifeq ($(MAKECMDGOALS),download)
@@ -97,7 +99,8 @@ var_test:
 	@echo "* Package Build         : [$(SW_BUILD)]"
 	@echo "* SPEC file             : [$(SPEC)]"
 	@echo "* Batteries included    : [$(ALLINC)] --> [$(ALLINCLUSIVE)]"
-	@echo "* Download Prefix       : [$(CUSTOMNAME)]"
+	@echo "* Custom Name           : [$(CUSTOMNAME)]"
+	@echo "* Choosen package type  : [$(PACKAGE)][$(PKGX)][$(PKGY)][$(PKGZ)] --> $(PKG)	[build JRE:$(BUILD_FOR_JRE), build JDK:$(BUILD_FOR_JDK)]"
 	@echo "* OPSI Archive Types    : [$(ARCHIVE_TYPES)]"
 	@echo "* OPSI Archive Format   : [$(ARCHIVE_FORMAT)] --> $(BUILD_FORMAT)"
 	@echo "* Templates OPSI        : [$(FILES_OPSI_IN)]"
@@ -209,8 +212,16 @@ build_dirs:
 	@if [ ! -d "$(BUILD_DIR)/OPSI" ]; then mkdir -p "$(BUILD_DIR)/OPSI"; fi
 	@if [ ! -d "$(BUILD_DIR)/CLIENT_DATA" ]; then mkdir -p "$(BUILD_DIR)/CLIENT_DATA"; fi
 	@if [ ! -d "$(PACKAGE_DIR)" ]; then mkdir -p "$(PACKAGE_DIR)"; fi
+
+build_md5:
+	@echo "* Creating md5sum file for installation archives ($(MD5SUM_FILE))"
+	if [ -f "$(BUILD_DIR)/CLIENT_DATA/$(MD5SUM_FILE)" ]; then \
+		rm -f $(BUILD_DIR)/CLIENT_DATA/$(MD5SUM_FILE); \
+	fi
+	@grep -i "$(SW_NAME).$(SW_VER)." $(DL_DIR)/$(MD5SUM_FILE)>> $(BUILD_DIR)/CLIENT_DATA/$(MD5SUM_FILE) 
 	
-copy_from_src:	build_dirs
+	
+copy_from_src:	build_dirs build_md5
 	@echo "* Copying files"
 	@cp -upL $(SRC_DIR)/CLIENT_DATA/LICENSE  $(BUILD_DIR)/CLIENT_DATA/
 	@cp -upL $(SRC_DIR)/CLIENT_DATA/readme.md  $(BUILD_DIR)/CLIENT_DATA/

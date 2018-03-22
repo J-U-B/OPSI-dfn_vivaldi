@@ -5,18 +5,19 @@
 ## ToC ##
 * [Paketinfo](#paketinfo)
 * [Paket erstellen](#paket_erstellen)
+  * [Voraussetzungen](#voraussetzugen)
   * [Makefile und spec.json](#makefile_und_spec)
   * [pystache](#pystache)
   * [Verzeichnisstruktur](#verzeichnisstruktur)
   * [Makefile-Parameter](#makefile_parameter)
   * [spec.json](#spec_json)
-  * [opsi-makeproductfile](#opsi-makeproductfile)
 * [Installation](#installation)
 * [Allgemeines](#allgemeines)
   * [Aufbau des Paketes](#paketaufbau)
   * [Nomenklatur](#nomenklatur)
   * [Unattended-Switches](#unattended_switches) 
 * [Lizenzen](#lizenzen) 
+  * [Dieses Paket](#licPaket)
   * [psdetail](#lic_psdetail)
   * [7zip](#lic_7zip)
   * [Vivaldi](#lic_vivaldi)
@@ -39,6 +40,20 @@ Pakete erstellt.
 
 Dieser Abschnitt beschaeftigt sich mit der Erstellung des OPSI-Paketes aus
 dem Source-Paket und nicht mit dem OPSI-Paket selbst.
+
+
+<div id="voraussetzungen"></div>
+
+### Voraussetzungen ###
+
+Zur Erstellung der OPSI-Pakete aus den vorliegenden Quellen werden neben den
+**opsi-utils** noch weitere Tools benoetigt, die aus den Repositories der
+jeweiligen Distributionen zu beziehen sind.
+Das sind (angegebenen Namen entsprechen Paketen in Debian/Ubuntu):
+
+* make
+* python-pystache
+* wget
 
 
 <div id="makefile_und_spec"></div>
@@ -70,9 +85,12 @@ Unter Debian/Ubuntu erledigt das:
 
 ### Verzeichnisstruktur ###
 
-Die erstellten Pakete werden im Unterverzeichnis **<code>BUILD</code>** abgelegt.
+* **<code>PACKAGES</code>** - erstellte Pakete
+* **<code>DOWNLOAD</code>** - heruntergeladene Installationsarchive und md5sums
+* **<code>BUILD</code>** - Arbeitsverzeichnis zur Erstellung der jeweiligen Pakete
+* **<code>SRC</code>** - Skripte und Templates
 
-Einige Files (derzeit <code>control, preinst, postinst</code>) werden bei der Erstellung erst aus _<code>.in</code>_-Files
+Einige Files werden bei der Erstellung erst aus _<code>.in</code>_-Files
 generiert, welche sich in den Verzeichnissen <code>SRC/OPSI</code> und <code>SRC/CLIENT_DATA</code> befinden.
 Die <code>SRC</code>-Verzeichnisse sind in den OPSI-Paketen nicht mehr enthalten.
 
@@ -108,25 +126,6 @@ Versionsnummern und des Datums etc. In einigen Faellen ist jedoch auch das Anpas
 weiterer Variablen erforderlich, die sich auf verschiedene Files verteilen.  
 Auch das soll durch das Makefile vereinfacht werden. Die relevanten Variablen
 sollen nur noch in <code>spec.json</code> angepasst werden. Den Rest uebernimmt *<code>make</code>*
-
-
-<div id="opsi-makeproductfile"></div>
-
-### opsi-makeproductfile ###
-
-<s>***Achtung***: Zur Erstellung der Pakete wird im <code>Makefile</code> eine
-modifizierte Version von **python-opsi** und der **opsi-utils** verwendet!   
-Die vorgenommenen Änderungen erweitern <code>opsi-makeproductfile</code> um
-zwei optionale Argumente:
-
-```
-  --prefix <package_prefix>, -p <package_prefix>  
-                        prefix for package file  
-  --pname <package_name>, -P <package_name>  
-                        custom package name (without version suffix)  
-```
-
-Diese Argumente werden derzeit <u>nicht</u> von den offiziellen Paketen unterstützt.</s>
 
 
 
@@ -182,17 +181,17 @@ aufzuspueren.
 
 Praefixes in der Produkt-Id definieren die Art des Paketes:
 
-* **0_** - Es handelt sich um ein Test-Paket. Beim Uebergang zur Produktions-Release
+* **0_** oder **test_** - Es handelt sich um ein Test-Paket. Beim Uebergang zur Produktions-Release
 wird der Praefix entfernt.
 * **dfn_** - Das Paket ist zur Verwendung im DFN-Repository vorgesehen.
 
-* **dl_** - Es handelt sich um ein Paket, das die Software erst während der Installation
-auf dem Depot-Server vom Hersteller herunterlädt.
+Suffix:
+
+* ~dl - Das Paket enthaelt die Installationsarchive selbst nicht. Diese werden
+erst bei der Installation im Depot vom <code>postinst</code>-Skript heruntergeladen.
 
 Die Reihenfolge der Praefixes ist relevant; die Markierung als Testpaket ist 
-stets fuehrend.  
-***Zur Beachtung***: Im Gegensatz zu den *Test*- bzw *DFN*-Präfixes is die *dl_*-Markierung nicht 
-Teil der Produkt-ID!
+stets fuehrend.
 
 
 
@@ -213,6 +212,16 @@ angelegt.
 <div id="lizenzen"></div>
 
 ## Lizenzen ##
+
+
+<div id="licPaket"></div>
+
+###  Dieses Paket ###
+
+Dieses OPSI-Paket steht unter der *GNU General Public License* **GPLv3**.
+
+Ausgenommen von dieser Lizenz sind die unter **<code>bin/</code>** zu findenden
+Hilfsprogramme. Diese unterliegen ihren jeweiligen Lizenzen.
 
 
 <div id="lic_psdetail"></div>
@@ -256,6 +265,8 @@ Es gilt die Lizenz von http://www.7-zip.org/license.txt.
 
 ### Vivaldi ###
 
+Vivaldi steht unter [BSD-Lizenz](https://de.wikipedia.org/wiki/BSD-Lizenz) mit proprietären Bestandteilen.
+
 Das verwendete Vivialdi-Logo ist gemeinfrei.  
 Quelle: https://de.wikipedia.org/wiki/Vivaldi_(Browser)#/media/File:Vivaldi_web_browser_logo.svg
 
@@ -273,7 +284,6 @@ erfolgt aufgrund der Art der Installation derzeit nicht).
 Update geloescht. Ggf. kann das Verzeichnis analog zu <code>custom</code> 
 zuvor gesichert und wiederhergestellt werden.</s>
 * Policies fuer Chromium/Vivaldi sind bislang noch nicht realisiert.
-* Fuer die OPSI-Pakete wird noch ein ***Lizenzmodell*** benoetigt.
 
 -----
-Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2018-02-15 17:13:56 +0100
+Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2018-03-22 18:12:33 +0100

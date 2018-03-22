@@ -1,12 +1,13 @@
 {  
 	"_": "=== OPSI package variables ===",
-	"O_PKG_VER"         : "11",
-	"O_SOFTWARE_VER"    : "1.14.1077.55",
+	"O_PKG_VER"         : "12",
+	"O_SOFTWARE_VER"    : "1.14.1077.60",
 	"O_SOFTWARE"        : "vivaldi",
-	"O_CHANGELOG"       : "https://vivaldi.com/blog/minor-update-to-vivaldi-1-14-3/",
+	"O_CHANGELOG"       : "https://vivaldi.com/blog/",
 	"O_RELEASE_DATE"    : "{{M_TODAY}}",
 	"O_INST_LOG"        : "/tmp/vivaldi__opsi_package_install.log",
 	"O_MAINTAINER"      : "Jens Boettge <boettge@mpi-halle.mpg.de>",
+	"O_INST_LOG"        : "/tmp/${PRODUCT_ID}__opsi_package_install.log",
 	
 	"STAGE"             : "{{M_STAGE}}",
 	"TESTPREFIX"	    : "{{M_TESTPREFIX}}",
