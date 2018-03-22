@@ -5,7 +5,7 @@
 ## ToC ##
 * [Paketinfo](#paketinfo)
 * [Paket erstellen](#paket_erstellen)
-  * [Voraussetzungen](#voraussetzugen)
+  * [Voraussetzungen](#voraussetzungen)
   * [Makefile und spec.json](#makefile_und_spec)
   * [pystache](#pystache)
   * [Verzeichnisstruktur](#verzeichnisstruktur)
