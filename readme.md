@@ -149,6 +149,12 @@ In diesen ist - wie zu vermuten - die Software selbst bereits enthalten.
 *"batteries included"*-Pakete und *"self download"*-Pakete sind nach der Installation
 im Depot technisch identisch.
 
+Die Aktivitaeten von <code>preinst</code> und <code>postinst</code> werden in einem
+Logfile protokolliert. Standardmaessig (definiert in <code>spec.json</code>) ist dieses
+unter **<code>/tmp/${PRODUCT_ID}__opsi_package_install.log</code>** zu finden.  
+Hier auftretende Fehler werden an den opsi-package-manager uebergeben und setzen das
+Paket in einen Fehlerzustand.
+
 
 <div id="allgemeines"></div>
 
