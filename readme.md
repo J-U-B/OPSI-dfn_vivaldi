@@ -139,11 +139,15 @@ Standardmässig werden Pakete erstellt, bei denen die Software selbst <u>nicht</
 mit dem OPSI-Paket vertrieben wird. Dennoch ist ein manueller Download der
 Software hier nicht erforderlich. Bei der Installation des Paketes im Depot 
 erfolgt im <code>postinst</code>-Script  der Download der Software vom Hersteller
-(Windows, 32 und 64 Bit). Ensprechende Pakete sollten i.d.R. durch einen Präfix
-"dl_" gekennzeichnet sein.
+(Windows, 32 und 64 Bit). Ensprechende Pakete sollten i.d.R. durch einen Suffix
+"~dl" gekennzeichnet sein (siehe [Nomenklatur](#nomenklatur)). Beim Download
+der erforderlichen Files erfolgt eine Ueberpruefung der MD5-Summen; diese sind
+im OPSI-Paket hinterlegt.
 Alternativ lassen sich auch *"batteries included"*-Pakete per Makefile erstellen.
 In diesen ist - wie zu vermuten - die Software selbst bereits enthalten.
 
+*"batteries included"*-Pakete und *"self download"*-Pakete sind nach der Installation
+im Depot technisch identisch.
 
 
 <div id="allgemeines"></div>
@@ -188,7 +192,9 @@ wird der Praefix entfernt.
 Suffix:
 
 * ~dl - Das Paket enthaelt die Installationsarchive selbst nicht. Diese werden
-erst bei der Installation im Depot vom <code>postinst</code>-Skript heruntergeladen.
+erst bei der Installation im Depot vom <code>postinst</code>-Skript heruntergeladen.  
+Der Suffix ist kein Bestandteil der ProductId. Nach der Installation im Depot
+gibt es hierauf keinerlei Hinweis mehr.
 
 Die Reihenfolge der Praefixes ist relevant; die Markierung als Testpaket ist 
 stets fuehrend.
