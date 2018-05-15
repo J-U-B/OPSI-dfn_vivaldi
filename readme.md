@@ -111,6 +111,15 @@ dessen Installation:
 
 Standard ist hier die Erstellung des leichtgewichtigen Paketes (```ALLINC=false```).
 
+Bei der Installation des Paketes im Depot wird ein eventuell vorhandenes 
+```files```-Verzeichnis zunaechst gesichert und vom ```postinst```-Skript
+spaeter wiederhergestellt. Diese Verzeichnis beeinhaltet die eigentlichen
+Installationsfiles. Sollen alte Version aufgehoben werden, kann das ueber
+einen Parameter beeinflusst werden:
+> *<code>KEEPFILES=[true|false]</code>*
+
+Standardmaessig sollen die Files geloescht werden.
+
 OPSI erlaubt des Pakete im Format <code>cpio</code> und <code>tar</code> zu erstellen.  
 Als Standard ist <code>cpio</code> festgelegt.  
 Das Makefile erlaubt die Wahl des Formates ueber die Umgebungsvariable bzw. den Parameter:
@@ -298,4 +307,4 @@ zuvor gesichert und wiederhergestellt werden.</s>
 * Policies fuer Chromium/Vivaldi sind bislang noch nicht realisiert.
 
 -----
-Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2018-03-22 18:12:33 +0100
+Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2018-05-15 13:05:38 +0200

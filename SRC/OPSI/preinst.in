@@ -7,10 +7,10 @@
 #   PRODUCT_ID: id of the current product
 #   CLIENT_DATA_DIR: directory where client data will be installed
 #===================================================================
-# J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-27 11:50:22 +0200
+# J. Boettge <boettge@mpi-halle.mpg.de>  2018-05-15 14:10:23 +0200
 #=====================================================================
 
-LOGFILE=/tmp/${PRODUCT_ID}__opsi_package_install.log
+LOGFILE={{O_INST_LOG}}
 
 exec > $LOGFILE
 exec 2>&1
@@ -30,18 +30,31 @@ fi
 
 [ ! -d $CLIENT_DATA_DIR ] && exit 0
 mkdir $TMP_DIR
+[ -d $TMP_DIR ] && TMP_DIR=`realpath $TMP_DIR`
 
 echo "Saving previous directories..."
 for DIRNAME in custom files; do
 	path=$CLIENT_DATA_DIR/${DIRNAME}
 	echo "* [${path}]"
 	if [ -e $path -a ! -h ${path} ]; then
-		echo -e "\tmoving ${path} to ${TMP_DIR}"
+		echo -e "\tmoving ${path} to ${TMP_DIR}/"
 		mv ${path} ${TMP_DIR}/ || exit 2
 	else
 		echo -e "\tdoes not exist or is a symlink"
 	fi
 done
+
+{{^ifdef_keepfiles}}
+echo "Removing outdated files..."
+REVER=`echo {{O_SOFTWARE_VER}} | sed -e 's/\./\\\\./g'`
+REGEX="^.*/{{O_SOFTWARE}}\.${REVER}\..*"
+echo "* {{O_SOFTWARE}} version = '$REVER'"
+echo "* using regex: '${REGEX}'"
+[ -d $TMP_DIR/files ] && find  $TMP_DIR/files/ -type f -not -iregex "${REGEX}" -exec rm -vf {} \;
+{{/ifdef_keepfiles}}
+{{#ifdef_keepfiles}}
+echo "Keep everything in files/"
+{{/ifdef_keepfiles}}
 
 exit 0
 

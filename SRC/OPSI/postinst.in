@@ -7,7 +7,7 @@
 #   PRODUCT_ID: id of the current product
 #   CLIENT_DATA_DIR: directory which contains the installed client data
 #=====================================================================
-# J. Boettge <boettge@mpi-halle.mpg.de>  2018-03-22 17:31:56 +0100
+# J. Boettge <boettge@mpi-halle.mpg.de>  2018-05-15 13:37:49 +0200
 #=====================================================================
 
 LOGFILE={{O_INST_LOG}}
@@ -25,6 +25,7 @@ SRC="${CLIENT_DATA_DIR}/../../source/${PRODUCT_ID##0_}"
 DST="${CLIENT_DATA_DIR}/files"
 # remove trailing "/" in path:
 DST=${DST%\/}
+TMP_DIR=${CLIENT_DATA_DIR}/../${PRODUCT_ID}.tmp
 ERR=0
 
 ### check for testing and DFN package:
@@ -36,7 +37,7 @@ P=${P/#test_/}
 
 
 if [ $IS_DFN == true ]; then
-	 [ ! -d "${DST}" ] && mkdir $DST
+	 [ ! -d "${DST}" -a ! -d $TMP_DIR/files ] && mkdir $DST
 else
 	### symlink files directory to ../../source/${PRODUCT_ID##0_}
 	### only for non-DFN packages:
@@ -61,10 +62,9 @@ fi
 
 
 ### restore custom directories
-TMP_DIR=${CLIENT_DATA_DIR}/../${PRODUCT_ID}.tmp
 if [ -d $TMP_DIR ]; then
 	echo 'Restoring previous directories...'
-	
+	TMP_DIR=`realpath $TMP_DIR`
 	for DIRNAME in custom files; do
 		echo "* [${DIRNAME}]"
 		if [ -d $TMP_DIR/${DIRNAME} ]; then

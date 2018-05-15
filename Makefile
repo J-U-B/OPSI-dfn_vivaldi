@@ -1,8 +1,8 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 2.3.0
+# Version: 2.4.0
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2018-03-22 17:47:41 +0100
+# 2018-05-15 13:32:22 +0200
 ############################################################
 
 .PHONY: header clean mpimsp dfn mpimsp_test dfn_test all_test all_prod all help download
@@ -76,6 +76,17 @@ else
 	CUSTOMNAME := "dl"
 endif
 
+### Keep all files in files/ directory?
+KEEPFILES ?= false
+KEEPFILES_SEL := "[true] [false]"
+KFX := $(firstword $(KEEPFILES))
+override KFX := $(shell echo $(KFX) | tr A-Z a-z)
+override KFX := $(findstring [$(KFX)],$(KEEPFILES_SEL))
+ifeq (,$(KFX))
+	override KEEPFILES := false
+else
+	override KEEPFILES := $(shell echo $(KFX) | tr -d '[]')
+endif
 
 ARCHIVE_FORMAT ?= cpio
 ARCHIVE_TYPES :="[cpio] [tar]"
@@ -106,6 +117,7 @@ var_test:
 	@echo "* Templates OPSI        : [$(FILES_OPSI_IN)]"
 	@echo "* Templates CLIENT_DATA : [$(FILES_IN)]"
 	@echo "* Files Mask            : [$(FILES_MASK)]"
+	@echo "* Keep files            : [$(KEEPFILES)]"
 	@echo "=================================================================="
 	@echo "* Installer files in $(DL_DIR):"
 	@for F in `ls -1 $(DL_DIR)/$(FILES_MASK) | sed -re 's/.*\/(.*)$$/\1/' `; do echo "    $$F"; done 
@@ -200,9 +212,12 @@ help: header
 	@echo ""
 	@echo "Options:"
 	@echo "	SPEC=<filename>                 (default: spec.json)"
-	@echo "			...alternative spec file"
+	@echo "			Use the given alternative spec file."
 	@echo "	ALLINC=[true|false]             (default: false)"
-	@echo "			...include software in OPSI package?"
+	@echo "			Include software in OPSI package?"
+	@echo "	KEEPFILES=[true|false]          (default: false)"
+	@echo "			Keep really all previous files from files/?"
+	@echo "			If false only files matching this package version are kept."
 	@echo "	ARCHIVE_FORMAT=[cpio|tar]       (default: cpio)"
 	@echo ""
 
@@ -228,7 +243,8 @@ copy_from_src:	build_dirs build_md5
 	@cp -upr $(SRC_DIR)/CLIENT_DATA/bin  $(BUILD_DIR)/CLIENT_DATA/
 	@cp -upr $(SRC_DIR)/CLIENT_DATA/*.opsiscript  $(BUILD_DIR)/CLIENT_DATA/
 	@cp -upr $(SRC_DIR)/CLIENT_DATA/*.opsiinc     $(BUILD_DIR)/CLIENT_DATA/
-	$(eval NUM_FILES := $(shell ls -l $(DL_DIR)/$(FILES_MASK) 2>/dev/null | wc -l))
+	# @cp -upr $(SRC_DIR)/CLIENT_DATA/*.opsifunc    $(BUILD_DIR)/CLIENT_DATA/
+	@$(eval NUM_FILES := $(shell ls -l $(DL_DIR)/$(FILES_MASK) 2>/dev/null | wc -l))
 	@if [ "$(ALLINCLUSIVE)" = "true" ]; then \
 		echo "  * building batteries included package"; \
 		if [ ! -d "$(BUILD_DIR)/CLIENT_DATA/files" ]; then \
@@ -269,7 +285,8 @@ build_json:
 	                         \"M_ORGNAME\"    : \"$(ORGNAME)\",       \
 	                         \"M_ORGPREFIX\"  : \"$(ORGPREFIX)\",     \
 	                         \"M_TESTPREFIX\" : \"$(TESTPREFIX)\",    \
-	                         \"M_ALLINC\"     : \"$(ALLINCLUSIVE)\",    \
+	                         \"M_ALLINC\"     : \"$(ALLINCLUSIVE)\",  \
+	                         \"M_KEEPFILES\"  : \"$(KEEPFILES)\",     \
 	                         \"M_TESTING\"    : \"$(TESTING)\"        }" > $(BUILD_JSON)
 
 download: build_json

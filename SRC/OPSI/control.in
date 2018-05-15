@@ -90,6 +90,13 @@ default: ["default"]
 
 
 [Changelog]
+vivaldi 1.15.1147.42-13
+	* product update ==> 1.15.1147.42
+	* new parameter for Makefile: KEEPFILES
+	* modified preinst/postinst for KEEPFILES
+	* readme.md updated
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-05-15 12:40:53 +0200
+
 vivaldi 1.15.1147.36-12
 	* product update ==> 1.15.1147.36
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-04-25 12:22:09 +0200
