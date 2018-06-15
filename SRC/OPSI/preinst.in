@@ -7,7 +7,7 @@
 #   PRODUCT_ID: id of the current product
 #   CLIENT_DATA_DIR: directory where client data will be installed
 #===================================================================
-# J. Boettge <boettge@mpi-halle.mpg.de>  2018-05-15 14:10:23 +0200
+# J. Boettge <boettge@mpi-halle.mpg.de>  2018-06-15 08:15:28 +0200
 #=====================================================================
 
 LOGFILE={{O_INST_LOG}}
@@ -33,6 +33,7 @@ mkdir $TMP_DIR
 [ -d $TMP_DIR ] && TMP_DIR=`realpath $TMP_DIR`
 
 echo "Saving previous directories..."
+#...but no symlinks
 for DIRNAME in custom files; do
 	path=$CLIENT_DATA_DIR/${DIRNAME}
 	echo "* [${path}]"
@@ -45,12 +46,14 @@ for DIRNAME in custom files; do
 done
 
 {{^ifdef_keepfiles}}
-echo "Removing outdated files..."
-REVER=`echo {{O_SOFTWARE_VER}} | sed -e 's/\./\\\\./g'`
-REGEX="^.*/{{O_SOFTWARE}}\.${REVER}\..*"
-echo "* {{O_SOFTWARE}} version = '$REVER'"
-echo "* using regex: '${REGEX}'"
-[ -d $TMP_DIR/files ] && find  $TMP_DIR/files/ -type f -not -iregex "${REGEX}" -exec rm -vf {} \;
+if [ -d $TMP_DIR/files ] ; then
+	echo "Removing outdated files..."
+	REVER=`echo {{O_SOFTWARE_VER}} | sed -e 's/\./\\\\./g'`
+	REGEX="^.*/{{O_SOFTWARE}}\.${REVER}\..*"
+	echo "* {{O_SOFTWARE}} version = '$REVER'"
+	echo "* using regex: '${REGEX}'"
+	find  $TMP_DIR/files/ -type f -not -iregex "${REGEX}" -exec rm -vf {} \;
+fi
 {{/ifdef_keepfiles}}
 {{#ifdef_keepfiles}}
 echo "Keep everything in files/"

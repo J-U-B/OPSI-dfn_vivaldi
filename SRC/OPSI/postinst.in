@@ -7,7 +7,7 @@
 #   PRODUCT_ID: id of the current product
 #   CLIENT_DATA_DIR: directory which contains the installed client data
 #=====================================================================
-# J. Boettge <boettge@mpi-halle.mpg.de>  2018-05-15 13:37:49 +0200
+# J. Boettge <boettge@mpi-halle.mpg.de>  2018-06-15 08:15:55 +0200
 #=====================================================================
 
 LOGFILE={{O_INST_LOG}}
@@ -21,7 +21,7 @@ echo "=================================================="
 echo "${PRODUCT_ID} POSTINST LOG"
 echo "=================================================="
 
-SRC="${CLIENT_DATA_DIR}/../../source/${PRODUCT_ID##0_}"
+SRC="${CLIENT_DATA_DIR}/../_SOURCE/${PRODUCT_ID##0_}"
 DST="${CLIENT_DATA_DIR}/files"
 # remove trailing "/" in path:
 DST=${DST%\/}
@@ -68,10 +68,11 @@ if [ -d $TMP_DIR ]; then
 	for DIRNAME in custom files; do
 		echo "* [${DIRNAME}]"
 		if [ -d $TMP_DIR/${DIRNAME} ]; then
-			test -e $CLIENT_DATA_DIR/${DIRNAME} && rm -rf $CLIENT_DATA_DIR/${DIRNAME}
+			test -e $CLIENT_DATA_DIR/${DIRNAME} || mkdir $CLIENT_DATA_DIR/${DIRNAME}
 			echo -e "\tmoving $TMP_DIR/${DIRNAME} to $CLIENT_DATA_DIR/"
-			mv $TMP_DIR/${DIRNAME} $CLIENT_DATA_DIR/ || exit 1	
-		else
+			rsync -av --remove-source-files $TMP_DIR/${DIRNAME}/. $CLIENT_DATA_DIR/${DIRNAME}/ &&\
+			rm -rf $TMP_DIR/${DIRNAME} || exit 1
+		else$
 			echo -e "\tdoes not exist here"
 		fi
 	done

@@ -1,0 +1,192 @@
+vivaldi 1.15.1147.47-14
+	* product update ==> 1.15.1147.47
+	* changelog outsourced from control.in (combined again in final control file)
+	* adjusted postinst for changed $SRC directory (only valid for MPIMSP)
+	* fix restore custom directories in postinst
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-06-15 08:18:23 +0200
+	
+vivaldi 1.15.1147.42-13
+	* product update ==> 1.15.1147.42
+	* new parameter for Makefile: KEEPFILES
+	* modified preinst/postinst for KEEPFILES
+	* readme.md updated
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-05-15 12:40:53 +0200
+
+vivaldi 1.15.1147.36-12
+	* product update ==> 1.15.1147.36
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-04-25 12:22:09 +0200
+
+vivaldi 1.14.1077.55-12
+	* product update ==> 1.14.1077.60
+	* make target "download" creates md5sums for archives
+	* check md5sums of archives in self download packages
+	* postinst log file define in spec
+	* updated readme.md
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-03-22 17:57:17 +0100
+
+vivaldi 1.14.1077.55-11
+	* product update ==> 1.14.1077.55
+	* Makefile prepared for OPSI 4.1
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-02-28 13:03:41 +0100
+
+vivaldi 1.14.1077.50-11
+	* fix OS detection for Windows 10
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-02-27 12:44:22 +0100
+
+vivaldi 1.14.1077.50-10
+	* product update ==> 1.14.1077.50
+	* Makefile modified (using customProduct zu mark special packages)
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-02-15 16:36:53 +0100
+
+vivaldi 1.14.1077.45-9
+	* rearranged project structure for build environment
+	* configuration via spec.json
+	* new Makefile
+	* external product downloader skript (Makefile allows various packages)
+	* using python3-pystache to build package (pystache not included here!)
+	* update psdetail 0.1.9.0.dev -> 0.1.10.0dev
+	* refreshed readme.md
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-02-12 14:59:06 +0100
+
+
+{{ORGPREFIX}}vivaldi 1.14.1077.45-8 {{STAGE}}
+	* product update ==> 1.14.1077.45
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-02-07 07:51:38 +0100
+
+{{ORGPREFIX}}vivaldi 1.14.1077.41-8 {{STAGE}}
+	* product update ==> 1.14.1077.41
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-01-31 13:44:00 +0100
+
+{{ORGPREFIX}}vivaldi 1.13.1008.44-8 {{STAGE}}
+	* product update ==> 1.13.1008.44
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-01-22 11:05:00 +0100
+
+{{ORGPREFIX}}vivaldi 1.13.1008.40-8 {{STAGE}}
+	* product update ==> 1.13.1008.40
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2017-12-23 22:50:00 +0100
+
+{{ORGPREFIX}}vivaldi 1.13.1008.36-8 {{STAGE}}
+	* product update ==> 1.13.1008.36
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2017-12-13 12:47:00 +0100
+
+{{ORGPREFIX}}vivaldi 1.13.1008.34-8 {{STAGE}}
+	* product update ==> 1.13.1008.34
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2017-12-02 10:45:00 +0100
+
+{{ORGPREFIX}}vivaldi 1.13.1008.32-8 {{STAGE}}
+	* product update ==> 1.13.1008.32
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2017-11-23 07:27:27 +0100
+
+{{ORGPREFIX}}vivaldi 1.12.955.48-8 {{STAGE}}
+	* product update ==> 1.12.955.48
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2017-10-31 12:07:55 +0200
+
+{{ORGPREFIX}}vivaldi 1.12.955.42-8 {{STAGE}}
+	* product update ==> 1.12.955.42
+	* checkinstance extended by update_notifier.exe
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2017-10-27 13:34:23 +0200
+
+{{ORGPREFIX}}vivaldi 1.12.955.38-7 {{STAGE}}
+	* product update ==> 1.12.955.38
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2017-09-29 11:22:10 +0200
+
+{{ORGPREFIX}}vivaldi 1.12.955.36-7 {{STAGE}}
+	* product update ==> 1.12.955.36
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2017-09-20 18:16:31 +0200
+
+{{ORGPREFIX}}vivaldi 1.11.917.43-7 {{STAGE}}
+	* product update ==> 1.11.917.43
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2017-08-23 11:12:01 +0200
+
+{{ORGPREFIX}}vivaldi 1.11.917.39-7 {{STAGE}}
+	* product update ==> 1.11.917.39
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2017-08-11 12:47:00 +0200
+
+{{ORGPREFIX}}vivaldi 1.10.867.46-7 {{STAGE}}
+	* STAGE defined by Makefile
+	* hotfix errors in setup
+	* new property: log_level
+	* update PSDETAIL --> v0.1.9.0dev
+	* accept "test_" prefix; Makefile adjusted
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2017-07-18 15:52:19 +0200
+
+{{ORGPREFIX}}vivaldi 1.10.867.46-6 release
+	* product update ==> 1.10.867.48
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2017-07-13 15:07:51 +0200
+	
+{{ORGPREFIX}}vivaldi 1.10.867.46-6 testing
+	* product update ==> 1.10.867.46
+	* simple Makefile for creating packages; control moved to control.in
+	* disabled unused property: default_language
+	* calling delsub.opsiinc with function sub_delsub_main
+	* several small improvements and fixes
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2017-07-07 12:32:15 +0200
+
+
+dfn_vivaldi 1.10.867.42-5 testing:
+  * new property: desktoplink
+  * fixed: read properties for custom_post_install/custom_post_uninstall
+  * files directory will be saved/restored on update
+  * modified: readme.md
+  * o4i install logo added
+  * fixed: Files_MoveToInstallDir
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-27 12:32:19 +0200
+
+dfn_vivaldi 1.10.867.42-4 testing:
+  * renamed: *.ins to *.opsiscript/*.opsiinc
+  * preparation for DFN release
+  * detection of DFN package
+  * download packages from https://downloads.vivaldi.com/stable/ during postinst
+  * 7z_license.txt added
+  * new product properties: CustomPostInstall/CustomPostUninstall
+  * initial documentation added (readme.md)
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-26 17:00:29 +0200
+
+vivaldi 1.10.867.42-3 release:
+  * new product property: kill_running
+  * images moved to subfolder
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-26 12:00:27 +0200
+
+vivaldi 1.10.867.42-2 release:
+  * product update to 1.10.867.42
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-23 14:33:07 +0200
+
+vivaldi 1.10.867.38-2 release:
+  * product update to 1.10.867.38
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-06-15 15:51:40 +0200
+
+vivaldi 1.9.818.49-2 release:
+  * product update to 1.9.818.49
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-05-11 14:55:27 +0200
+
+vivaldi 1.9.818.44-2 release:
+  * product update to 1.9.818.44
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-04-28 10:35:11 +0200
+
+vivaldi 1.8.770.56-2 release:
+  * product update to 1.8.770.56
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-04-21 08:09:16 +0200
+
+vivaldi 1.8.770.54-2 release:
+  * product update to 1.8.770.54
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-04-04 15:29:01 +0200
+
+vivaldi 1.8.770.50-2 release:
+  * product update to 1.8.770.50
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-03-30 11:56:49 +0200
+
+vivaldi 1.7.735.46-2 release:
+  * meassure time for install/uninstall
+  * fixed: writing install date/time to registry
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-02-22 12:00:25 +0100
+
+vivaldi 1.7.735.46-1 release:
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-02-17 12:09:14 +0100
+
+vivaldi 1.7.735.46-1 testing:
+  * release update
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-02-10 08:08:40 +0100
+
+vivaldi 1.6.689.40-1 testing:
+  * initial package
+  -- J. Boettge <boettge@mpi-halle.mpg.de>  2017-01-03 17:00:06 +0100

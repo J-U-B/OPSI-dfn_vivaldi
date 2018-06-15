@@ -309,6 +309,10 @@ build: download clean copy_from_src
 		${PYSTACHE} $(SRC_DIR)/OPSI/$$F.in $(BUILD_JSON) > $(BUILD_DIR)/OPSI/$$F; \
 	done	
 	
+	if [ -e $(BUILD_DIR)/OPSI/control -a -e changelog ]; then \
+		cat changelog >> $(BUILD_DIR)/OPSI/control; \
+	fi
+	
 	for F in $(FILES_IN); do \
 		echo "* Creating CLIENT_DATA/$$F"; \
 		rm -f $(BUILD_DIR)/CLIENT_DATA/$$F; \
