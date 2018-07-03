@@ -1,6 +1,6 @@
 ;=====================================================================
 ; product specific variables  VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2018-02-27 12:43:25 +0100
+; J. Boettge <boettge@mpi-halle.mpg.de>  2018-07-02 15:23:00 +0200
 ;=====================================================================
 
 include_insert "%ScriptPath%\variables.opsiinc"
@@ -63,6 +63,13 @@ else
 endif
 
 ;-----------------------------------------------------------
+;*** select PSDETAIL:
+set $PSDETAIL$ 			= "%ScriptPath%\bin\psdetail.exe"
+if (CompareDotSeparatedNumbers($NTVersion$, ">=", "10.0"))
+	set $PSDETAIL$ 			= "%ScriptPath%\bin\psdetail4.exe"
+endif
+
+;-----------------------------------------------------------
 ; software architecture; valid values: "32 bit", "64 bit", "sysnative"
 
 Set $sw_arch$ = GetProductProperty("install_architecture","sysnative")
@@ -93,6 +100,10 @@ set $sw_lang$ = "en_US"
 ;-----------------------------------------------------------
 ; create desktop link?
 Set $sw_DesktopLink$ = GetProductProperty("DesktopLink","False")
+
+;-----------------------------------------------------------
+; make Vivaldi to the default browser?
+Set $pr_MakeDefault$ = GetProductProperty("make_default", "false")
 
 ;-----------------------------------------------------------
 ; post install/uninstall properties:

@@ -2,7 +2,7 @@
 ; variables.opsiinc
 ; This file contains all possible variables, excluding the opsi-system
 ; variables, for the opsi-winst scripts in use.
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-10-27 13:12:44 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2018-07-02 15:23:37 +0200
 ;=====================================================================
 
 DefStringList $MAP$
@@ -32,9 +32,11 @@ DefVar $MinimumSpace$
 defVar $MPIMSP_Reg$
 DefVar $NotifierBin$
 DefVar $NTVersion$
+DefVar $pr_MakeDefault$
 DefVar $ProductDir$
 DefVar $ProductId$
 DefVar $ProductName$
+DefVar $PSDETAIL$
 DefVar $RegPathUninstall$
 DefVar $RegPathUninstall32$
 DefVar $RegPathUninstall64$

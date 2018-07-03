@@ -7,7 +7,7 @@
 #   PRODUCT_ID: id of the current product
 #   CLIENT_DATA_DIR: directory where client data will be installed
 #===================================================================
-# J. Boettge <boettge@mpi-halle.mpg.de>  2018-06-15 08:15:28 +0200
+# J. Boettge <boettge@mpi-halle.mpg.de>  2018-06-18 12:25:13 +0200
 #=====================================================================
 
 LOGFILE={{O_INST_LOG}}

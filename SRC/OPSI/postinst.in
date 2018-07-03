@@ -7,7 +7,7 @@
 #   PRODUCT_ID: id of the current product
 #   CLIENT_DATA_DIR: directory which contains the installed client data
 #=====================================================================
-# J. Boettge <boettge@mpi-halle.mpg.de>  2018-06-15 08:15:55 +0200
+# J. Boettge <boettge@mpi-halle.mpg.de>  2018-06-18 12:26:55 +0200
 #=====================================================================
 
 LOGFILE={{O_INST_LOG}}
@@ -39,7 +39,7 @@ P=${P/#test_/}
 if [ $IS_DFN == true ]; then
 	 [ ! -d "${DST}" -a ! -d $TMP_DIR/files ] && mkdir $DST
 else
-	### symlink files directory to ../../source/${PRODUCT_ID##0_}
+	### symlink files directory to ../_SOURCE/${PRODUCT_ID##0_}
 	### only for non-DFN packages:
 	if [ -h "${DST}" ]; then
 		echo "Symlink to [${DST}] already exists. - Replacing"
@@ -72,7 +72,7 @@ if [ -d $TMP_DIR ]; then
 			echo -e "\tmoving $TMP_DIR/${DIRNAME} to $CLIENT_DATA_DIR/"
 			rsync -av --remove-source-files $TMP_DIR/${DIRNAME}/. $CLIENT_DATA_DIR/${DIRNAME}/ &&\
 			rm -rf $TMP_DIR/${DIRNAME} || exit 1
-		else$
+		else
 			echo -e "\tdoes not exist here"
 		fi
 	done

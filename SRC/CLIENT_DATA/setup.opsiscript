@@ -1,6 +1,6 @@
 ;======================================================================
 ; setup.opsiscript VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-07-14 14:05:56 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2018-07-02 13:08:47 +0200
 ;======================================================================
 
 ;======================================================================
@@ -114,9 +114,14 @@ else
 	;=== write helper info to registry
 	Set $OutStream$ = shellCall('echo %DATE%_%TIME%')
 	Set $DateTime$ = takeString(0, $OutStream$)
-	Registry_WriteVivaldiInfo /sysnative
 	
-	;??? Default-Browser, HTM(L)-Handler?
+	Message "Set up Vivaldi handler in registry "
+	Registry_WriteVivaldiHTM /sysnative
+	if ($pr_MakeDefault$ = "true")
+		Message "Making Vivaldi to default browser"
+		Registry_MakeVivaldiDefault /sysnative
+	endif
+	Registry_WriteVivaldiInfo /sysnative
 	
 	;=== custom post install
 	comment "include custom post install file"
@@ -203,3 +208,125 @@ set "Architecture"	= "$sw_arch$"
 set "DateTime"		= "$DateTime$"
 set "ProductName"	= "$ProductName$"
 
+
+;=====================================================================
+[Registry_WriteVivaldiHTM]
+;=====================================================================
+
+openkey [HKEY_CLASSES_ROOT\VivaldiHTM]
+set "" = "Vivaldi HTML Document"
+openkey [HKEY_CLASSES_ROOT\VivaldiHTM\DefaultIcon]
+set "" = "$InstallDir$\$MainBin$,0"
+openkey [HKEY_CLASSES_ROOT\VivaldiHTM\shell\open\command]
+set "" = '"$InstallDir$\$MainBin$" -- "%1"'
+;openkey [HKEY_CLASSES_ROOT\VivaldiHTM\ShellEx\IconHandler]
+;set "" = "{42042206-2D85-11D3-8CFF-005004838597}"
+
+;openkey [HKEY_CLASSES_ROOT\CLSID\{42042206-2D85-11D3-8CFF-005004838597}\Old Icon\VivaldiHTM\DefaultIcon]
+;set "" = "$InstallDir$\$MainBin$,0"
+
+openkey [HKEY_CLASSES_ROOT\.htm\OpenWithProgIDs]
+set "VivaldiHTM" = ""
+openkey [HKEY_CLASSES_ROOT\.html\OpenWithProgIDs]
+set "VivaldiHTM" = ""
+openkey [HKEY_CLASSES_ROOT\.xht\OpenWithProgIDs]
+set "VivaldiHTM" = ""
+openkey [HKEY_CLASSES_ROOT\.xhtml\OpenWithProgIDs]
+set "VivaldiHTM" = ""
+openkey [HKEY_CLASSES_ROOT\.xhtml\OpenWithProgIDs]
+set "VivaldiHTM" = ""
+openkey [HKEY_CLASSES_ROOT\.pdf\OpenWithProgIDs]
+set "VivaldiHTM" = ""
+openkey [HKEY_CLASSES_ROOT\.svg\OpenWithProgIDs]
+set "VivaldiHTM" = ""
+openkey [HKEY_CLASSES_ROOT\.webp\OpenWithProgIDs]
+set "VivaldiHTM" = ""
+openkey [HKEY_CLASSES_ROOT\.shtml\OpenWithProgIDs]
+set "VivaldiHTM" = ""
+
+
+openkey [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\Vivaldi]
+set "" = "Vivaldi"
+
+openkey [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\Vivaldi\Capabilities]
+set "ApplicationDescription" = "Vivaldi is a web browser that loads web pages and apps in seconds while being extremely stable and user-friendly. Integrated malware and phishing protection lets you surf the Internet with confidence."
+set "ApplicationIcon"="$InstallDir$\$MainBin$,0"
+set "ApplicationName"="Vivaldi"
+
+openkey [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\Vivaldi\Capabilities\Startmenu]
+set "StartMenuInternet"="Vivaldi"
+
+openkey [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\Vivaldi\Capabilities\FileAssociations]
+set ".htm"="VivaldiHTM"
+set ".html"="VivaldiHTM"
+set ".shtml"="VivaldiHTM"
+set ".xht"="VivaldiHTM"
+set ".xhtml"="VivaldiHTM"
+set ".pdf"="VivaldiHTM"
+set ".svg"="VivaldiHTM"
+set ".webp"="VivaldiHTM"
+
+openkey [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\Vivaldi\Capabilities\URLAssociations]
+set "ftp"="VivaldiHTM"
+set "http"="VivaldiHTM"
+set "https"="VivaldiHTM"
+;set "irc"="VivaldiHTM"
+;set "mailto"="VivaldiHTM"
+;set "mms"="VivaldiHTM"
+;set "news"="VivaldiHTM"
+;set "nntp"="VivaldiHTM"
+;set "sms"="VivaldiHTM"
+;set "smsto"="VivaldiHTM"
+;set "tel"="VivaldiHTM"
+;set "urn"="VivaldiHTM"
+;set "webcal"="VivaldiHTM"
+
+openkey [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\Vivaldi\DefaultIcon]
+set "" = "$InstallDir$\$MainBin$,0"
+
+openkey [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\Vivaldi\InstallInfo]
+set "ReinstallCommand" = '"$InstallDir$\$MainBin$" --make-default-browser'
+set "HideIconsCommand" = '"$InstallDir$\$MainBin$" --hide-icons'
+set "ShowIconsCommand" = '"$InstallDir$\$MainBin$" --show-icons'
+set "IconsVisible" = REG_DWORD:00000001
+
+openkey [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\Vivaldi\shell\open\command]
+set "" = "$InstallDir$\$MainBin$"
+
+openkey [HKEY_LOCAL_MACHINE\SOFTWARE\RegisteredApplications]
+set "Vivaldi" = "Software\Clients\StartMenuInternet\Vivaldi\Capabilities"
+
+
+;=====================================================================
+[Registry_MakeVivaldiDefault]
+;=====================================================================
+openkey [HKEY_CLASSES_ROOT\.htm]
+set "" = "VivaldiHTM"
+openkey [HKEY_CLASSES_ROOT\.html]
+set "" = "VivaldiHTM"
+openkey [HKEY_CLASSES_ROOT\.xht]
+set "" = "VivaldiHTM"
+openkey [HKEY_CLASSES_ROOT\.xhtml]
+set "" = "VivaldiHTM"
+openkey [HKEY_CLASSES_ROOT\.shtml]
+set "" = "VivaldiHTM"
+openkey [HKEY_CLASSES_ROOT\.svg]
+set "" = "VivaldiHTM"
+
+openkey [HKEY_CLASSES_ROOT\http\DefaultIcon]
+set "" = "$InstallDir$\$MainBin$,0"
+openkey [HKEY_CLASSES_ROOT\http\shell\open\command]
+set "" = '"$InstallDir$\$MainBin$" -- "%1"'
+
+openkey [HKEY_CLASSES_ROOT\https\DefaultIcon]
+set "" = "$InstallDir$\$MainBin$,0"
+openkey [HKEY_CLASSES_ROOT\https\shell\open\command]
+set "" = '"$InstallDir$\$MainBin$" -- "%1"'
+
+openkey [HKEY_CLASSES_ROOT\ftp\DefaultIcon]
+set "" = "$InstallDir$\$MainBin$,0"
+openkey [HKEY_CLASSES_ROOT\ftp\shell\open\command]
+set "" = '"$InstallDir$\$MainBin$" -- "%1"'
+
+openkey [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet]
+set "" = "Vivaldi"

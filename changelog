@@ -1,3 +1,10 @@
+vivaldi 1.15.1147.52-15
+	* product update ==> 1.15.1147.52
+	* write/remove handler settings in registry; optional mark Vivaldi as default
+	* new property: make_default
+	* use dotNet4 version of psDetail for Windows 10; declaration moved
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-07-03 10:41:19 +0200
+
 vivaldi 1.15.1147.47-14
 	* product update ==> 1.15.1147.47
 	* changelog outsourced from control.in (combined again in final control file)

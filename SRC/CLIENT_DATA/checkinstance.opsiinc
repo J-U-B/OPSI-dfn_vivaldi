@@ -1,6 +1,6 @@
 ;===============================================================================
 ; checkinstance.opsiinc
-; J. Boettge <boettge@mpi-halle.mpg.de> 2017-10-27 13:21:45 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de> 2018-07-02 15:23:55 +0200
 ;===============================================================================
 
 ;===============================================================================
@@ -10,11 +10,8 @@ comment "Checking for running instances and kill it (if allowed)."
 
 DefVar $Proc_Cnt$
 DefVar $Proc_Killed$
-DefVar $PSDETAIL$
 DefVar $Kill_Running$
 DefVar $CheckBin$
-
-set $PSDETAIL$ = "%ScriptPath%\bin\psdetail.exe"
 
 set $Kill_Running$ = GetProductProperty("kill_running", "False")
 

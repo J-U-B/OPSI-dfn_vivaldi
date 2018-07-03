@@ -1,3 +1,7 @@
+{{! ========================================================================== }}
+{{!  Vivaldi CONTROL                                                           }}
+{{!  J. Boettge <boettge@mpi-halle.mpg.de> 2018-07-02 13:12:38 +0200           }}
+{{! ========================================================================== }}
 [Package]
 version: {{O_PKG_VER}}
 depends: 
@@ -49,6 +53,12 @@ default: ["64 bit"]
 ;description: application default language (currently unused!)
 ;values: ["de", "en-GB", "en-US"]
 ;default: ["en-US"]
+
+[ProductProperty]
+type: bool
+name: make_default
+description: make Vivaldi to the systems default browser?
+default: False
 
 [ProductProperty]
 type: bool

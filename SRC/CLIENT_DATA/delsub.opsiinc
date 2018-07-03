@@ -1,6 +1,6 @@
 ;=====================================================================
 ; delsub.opsiinc VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-07-07 11:33:58 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2018-07-02 14:16:16 +0200
 ;=====================================================================
 
 ;=======================================
@@ -56,7 +56,15 @@ if FileExists($UninstDir$)
 	SetLogLevel=5
 	Files_RemoveInstallDir
 	SetLogLevel=$LogLevel$
-	Message "removing uninstall information"
+
+	;if ($pr_MakeDefault$ = "true")
+	;	Message "Removing Vivaldi as default handler"
+	;	Registry_RemoveVivaldiDefault /sysnative
+	;endif
+	Message "Removing Vivaldi handler settings from registry"
+	Registry_RemoveVivaldiHTM /sysnative
+	
+	Message "Removing uninstall information"
 	Registry_RemoveVivaldiInfo /sysnative
 	
 	
@@ -102,3 +110,68 @@ delete_element $ProductName$
 [Registry_RemoveVivaldiInfo]
 ;=====================================================================
 deletekey [$MPIMSP_Reg$]
+
+
+;=====================================================================
+[Registry_RemoveVivaldiHTM]
+;=====================================================================
+deleteKey [HKEY_CLASSES_ROOT\VivaldiHTM]
+deleteKey [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\Vivaldi]
+;deleteKey [HKEY_CLASSES_ROOT\CLSID\{42042206-2D85-11D3-8CFF-005004838597}\Old Icon\VivaldiHTM\DefaultIcon]
+
+openkey [HKEY_LOCAL_MACHINE\SOFTWARE\RegisteredApplications]
+deleteVar "Vivaldi"
+
+openkey [HKEY_CLASSES_ROOT\.htm\OpenWithProgIDs]
+deleteVar "VivaldiHTM"
+openkey [HKEY_CLASSES_ROOT\.html\OpenWithProgIDs]
+deleteVar "VivaldiHTM"
+openkey [HKEY_CLASSES_ROOT\.xht\OpenWithProgIDs]
+deleteVar "VivaldiHTM"
+openkey [HKEY_CLASSES_ROOT\.xhtml\OpenWithProgIDs]
+deleteVar "VivaldiHTM"
+openkey [HKEY_CLASSES_ROOT\.xhtml\OpenWithProgIDs]
+deleteVar "VivaldiHTM"
+openkey [HKEY_CLASSES_ROOT\.pdf\OpenWithProgIDs]
+deleteVar "VivaldiHTM"
+openkey [HKEY_CLASSES_ROOT\.svg\OpenWithProgIDs]
+deleteVar "VivaldiHTM"
+openkey [HKEY_CLASSES_ROOT\.webp\OpenWithProgIDs]
+deleteVar "VivaldiHTM"
+openkey [HKEY_CLASSES_ROOT\.shtml\OpenWithProgIDs]
+deleteVar "VivaldiHTM"
+
+
+;=====================================================================
+[Registry_RemoveVivaldiDefault]
+;=====================================================================
+openkey [HKEY_CLASSES_ROOT\.htm]
+deleteVar ""
+openkey [HKEY_CLASSES_ROOT\.html]
+deleteVar ""
+openkey [HKEY_CLASSES_ROOT\.xht]
+deleteVar ""
+openkey [HKEY_CLASSES_ROOT\.xhtml]
+deleteVar ""
+openkey [HKEY_CLASSES_ROOT\.shtml]
+deleteVar ""
+openkey [HKEY_CLASSES_ROOT\.svg]
+deleteVar ""
+
+openkey [HKEY_CLASSES_ROOT\http\DefaultIcon]
+deleteVar ""
+openkey [HKEY_CLASSES_ROOT\http\shell\open\command]
+deleteVar ""
+
+openkey [HKEY_CLASSES_ROOT\https\DefaultIcon]
+deleteVar ""
+openkey [HKEY_CLASSES_ROOT\https\shell\open\command]
+deleteVar ""
+
+openkey [HKEY_CLASSES_ROOT\ftp\DefaultIcon]
+deleteVar ""
+openkey [HKEY_CLASSES_ROOT\ftp\shell\open\command]
+deleteVar ""
+
+openkey [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet]
+deleteVar ""
