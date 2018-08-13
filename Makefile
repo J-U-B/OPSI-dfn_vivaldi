@@ -123,7 +123,7 @@ var_test:
 	@for F in `ls -1 $(DL_DIR)/$(FILES_MASK) | sed -re 's/.*\/(.*)$$/\1/' `; do echo "    $$F"; done 
 	@ $(eval NUM_FILES := $(shell ls -l $(DL_DIR)/$(FILES_MASK) 2>/dev/null | wc -l))
 	@echo "* $(NUM_FILES) files found"
-	@echo "=================================================================="	
+	@echo "=================================================================="
 
 
 header:
@@ -235,7 +235,7 @@ build_md5:
 	fi
 	@grep -i "$(SW_NAME).$(SW_VER)." $(DL_DIR)/$(MD5SUM_FILE)>> $(BUILD_DIR)/CLIENT_DATA/$(MD5SUM_FILE) 
 	
-	
+
 copy_from_src:	build_dirs build_md5
 	@echo "* Copying files"
 	@cp -upL $(SRC_DIR)/CLIENT_DATA/LICENSE  $(BUILD_DIR)/CLIENT_DATA/

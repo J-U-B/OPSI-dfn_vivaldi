@@ -1,3 +1,7 @@
+vivaldi 1.15.1147.64-15
+	* product update ==> 1.15.1147.64
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-08-13 07:29:44 +0200
+
 vivaldi 1.15.1147.55-15
 	* product update ==> 1.15.1147.55
 	* ORGPREFIX for preinst/postinst logfile
