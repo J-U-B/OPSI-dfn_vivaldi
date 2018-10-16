@@ -1,6 +1,6 @@
 ;=====================================================================
 ; product specific variables  VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2018-07-02 15:23:00 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-16 12:24:50 +0200
 ;=====================================================================
 
 include_insert "%ScriptPath%\variables.opsiinc"
@@ -54,7 +54,7 @@ setlogLevel 				= $LogLevelDefault$
 
 ;-----------------------------------------------------------
 ;*** detect DFN package:
-if strPos($FullProductId$, "dfn_") = "0"
+if (strPos($FullProductId$, "o4i_") = "0") AND (strPos($FullProductId$, "dfn_") = "0")
 	set $isDFN$ = "false"
 	set $StrippedProductId$ = $ProductId$
 else

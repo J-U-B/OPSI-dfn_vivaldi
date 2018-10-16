@@ -1,11 +1,11 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 2.4.0
+# Version: 2.4.1
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2018-05-15 13:32:22 +0200
+# 2018-10-16 12:29:45 +0200
 ############################################################
 
-.PHONY: header clean mpimsp dfn mpimsp_test dfn_test all_test all_prod all help download
+.PHONY: header clean mpimsp mpimsp_test o4i o4i_test dfn dfn_test all_test all_prod all help download
 .DEFAULT_GOAL := help
 
 PWD = ${CURDIR}
@@ -145,20 +145,54 @@ mpimsp: header
 			STAGE="release"  			\
 	build
 
-dfn: header
-	@echo "---------- building DFN package ----------------------------------"
-	@make 	TESTPREFIX=""    			\
-			ORGNAME="DFN"    			\
-			ORGPREFIX="dfn_" 			\
-			STAGE="release"  			\
-	build
-
 mpimsp_test: header
 	@echo "---------- building MPIMSP testing package -----------------------"
 	@make 	TESTPREFIX="0_"	 			\
 			ORGNAME="MPIMSP" 			\
 			ORGPREFIX=""     			\
 			STAGE="testing"  			\
+	build
+
+
+o4i: header
+	@echo "---------- building O4I package ----------------------------------"
+	@make 	TESTPREFIX=""    			\
+			ORGNAME="O4I"    			\
+			ORGPREFIX="o4i_" 			\
+			STAGE="release"  			\
+	build
+
+o4i_test: header
+	@echo "---------- building O4I testing package --------------------------"
+	@make 	TESTPREFIX="test_"  		\
+			ORGNAME="O4I"    			\
+			ORGPREFIX="o4i_" 			\
+			STAGE="testing"  			\
+	build
+
+o4i_test_0: header
+	@echo "---------- building O4I testing package --------------------------"
+	@make 	TESTPREFIX="0_"  			\
+			ORGNAME="O4I"    			\
+			ORGPREFIX="o4i_" 			\
+			STAGE="testing"  			\
+	build
+
+o4i_test_noprefix: header
+	@echo "---------- building O4I testing package --------------------------"
+	@make 	TESTPREFIX=""    			\
+			ORGNAME="O4I"    			\
+			ORGPREFIX="o4i_" 			\
+			STAGE="testing"  			\
+	build
+
+
+dfn: header
+	@echo "---------- building DFN package ----------------------------------"
+	@make 	TESTPREFIX=""    			\
+			ORGNAME="DFN"    			\
+			ORGPREFIX="dfn_" 			\
+			STAGE="release"  			\
 	build
 
 dfn_test: header
@@ -185,6 +219,7 @@ dfn_test_noprefix: header
 			STAGE="testing"  			\
 	build
 
+
 clean_packages: header
 	@echo "---------- cleaning packages, checksums and zsync ----------------"
 	@rm -f $(PACKAGE_DIR)/*.md5 $(PACKAGE_DIR)/*.opsi $(PACKAGE_DIR)/*.zsync
@@ -201,6 +236,10 @@ help: header
 	@echo "Valid targets: "
 	@echo "	mpimsp"
 	@echo "	mpimsp_test"
+	@echo "	o4i"
+	@echo "	o4i_test"
+	@echo "	o4i_test_0"
+	@echo "	o4i_test_noprefix"	
 	@echo "	dfn"
 	@echo "	dfn_test"
 	@echo "	dfn_test_0"
@@ -334,8 +373,8 @@ build: download clean copy_from_src
 	cd $(CURDIR)
 
 
-all_test:  header mpimsp_test dfn_test dfn_test_0
+all_test:  header mpimsp_test o4i_test dfn_test dfn_test_0
 
-all_prod : header mpimsp dfn
+all_prod : header mpimsp o4i dfn
 
-all : header mpimsp dfn mpimsp_test dfn_test dfn_test_0
+all : header download mpimsp o4i dfn

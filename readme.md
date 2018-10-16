@@ -26,13 +26,8 @@
 
 <div id="paketinfo"></div>
 
-Diese OPSI-Paket fuer **Vivaldi** wurde aus dem internen Paket des *Max-Planck-Institut fuer Mikrostrukturphysik*
-abgeleitet und fuer die Verwendung im *DFN*-Repository angepasst und erweitert.
-Es wird versucht auf die Besonderheiten der jeweiligen Repositories einzugehen;
-entsprechend werden durch ein einfaches ***Makefile*** aus den Quellen verschiedene
-Pakete erstellt.
-
-
+Diese OPSI-Paket fuer **Vivaldi** wurde fuer die Verwendung im *OPSI-4-Institutes*-Repository
+angepasst und erweitert.
 
 <div id="paket_erstellen"></div>
 
@@ -202,11 +197,11 @@ Praefixes in der Produkt-Id definieren die Art des Paketes:
 
 * **0_** oder **test_** - Es handelt sich um ein Test-Paket. Beim Uebergang zur Produktions-Release
 wird der Praefix entfernt.
-* **dfn_** - Das Paket ist zur Verwendung im DFN-Repository vorgesehen.
+* **o4i** oder **dfn_** - Das Paket ist zur Verwendung im O4I/DFN-Repository vorgesehen.
 
 Suffix:
 
-* ~dl - Das Paket enthaelt die Installationsarchive selbst nicht. Diese werden
+* **~dl** - Das Paket enthaelt die Installationsarchive selbst nicht. Diese werden
 erst bei der Installation im Depot vom <code>postinst</code>-Skript heruntergeladen.  
 Der Suffix ist kein Bestandteil der ProductId. Nach der Installation im Depot
 gibt es hierauf keinerlei Hinweis mehr.
@@ -307,4 +302,4 @@ zuvor gesichert und wiederhergestellt werden.</s>
 * Policies fuer Chromium/Vivaldi sind bislang noch nicht realisiert.
 
 -----
-Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2018-05-15 13:05:38 +0200
+Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2018-10-16 12:29:03 +0200
