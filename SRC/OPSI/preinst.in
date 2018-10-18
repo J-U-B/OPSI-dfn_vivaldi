@@ -7,7 +7,7 @@
 #   PRODUCT_ID: id of the current product
 #   CLIENT_DATA_DIR: directory where client data will be installed
 #===================================================================
-# J. Boettge <boettge@mpi-halle.mpg.de>  2018-06-18 12:25:13 +0200
+# J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-18 07:55:09 +0200
 #=====================================================================
 
 LOGFILE={{O_INST_LOG}}
@@ -22,10 +22,15 @@ echo "${PRODUCT_ID} PREINST LOG"
 echo "=================================================="
 
 TMP_DIR=${CLIENT_DATA_DIR}/../${PRODUCT_ID}.tmp
+NOW=`date +"%F_%H%M%S"`
 
 if [ -d $TMP_DIR ]; then
-	echo "Temporary directory $TMP_DIR already exist, aborting!"
-	exit 1
+	# echo "Temporary directory $TMP_DIR already exist, aborting!"
+	# exit 1
+	TMP_DIR_OLD=${CLIENT_DATA_DIR}/../${PRODUCT_ID}_${NOW}.tmp
+	echo "Temporary directory $TMP_DIR already exist. Moving to: ${TMP_DIR_OLD}"
+	[ -d $TMP_DIR_OLD ] && rm -rf $TMP_DIR_OLD
+	mv $TMP_DIR $TMP_DIR_OLD
 fi
 
 [ ! -d $CLIENT_DATA_DIR ] && exit 0

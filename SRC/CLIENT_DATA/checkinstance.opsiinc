@@ -1,6 +1,6 @@
 ;===============================================================================
 ; checkinstance.opsiinc
-; J. Boettge <boettge@mpi-halle.mpg.de> 2018-07-02 15:23:55 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de> 2018-10-16 15:56:09 +0200
 ;===============================================================================
 
 ;===============================================================================
@@ -40,8 +40,10 @@ if not ($CheckBin$ = "")
 				logWarning "Number of killed instances (" + $Proc_Killed$ + ") does not match expectations (" + $Proc_Cnt$ + ")."
 			endif
 		else
-			logError $Proc_Cnt$+" running instance(s) of " + $CheckBin$ + " found, but I'm not allowed to kill them."
-			isFatalError "running instance"
+			; logError $Proc_Cnt$+" running instance(s) of " + $CheckBin$ + " found, but I'm not allowed to kill them."
+			; isFatalError "running instance"
+			logWarning $Proc_Cnt$ + " running instance(s) of " + $CheckBin$ + " found, but I'm not allowed to kill them."
+			isSuspended
 		endif
 	else
 		if $Proc_Cnt$ = "0"

@@ -1,3 +1,9 @@
+vivaldi 2.0.1309.42-17
+	* product update ==> 2.0.1309.42
+	* leave actionRequest unchanged if application is runnig and OPSI is not allowed to kill it
+	* changed behavior of preinst script if $TMP_DIR already exists
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-18 08:00:23 +0200
+
 vivaldi 2.0.1309.40-16
 	* product update ==> 2.0.1309.40
 	* support for building packages with o4i prefix

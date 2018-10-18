@@ -6,8 +6,8 @@
 ;=======================================
 [sub_delsub_main]
 ;=======================================
-Message "Removing previous version(s) of " + $ProductName$
-ShowBitmap $Img_Prepare$ $ProductName$
+;Message "Removing previous version(s) of " + $ProductName$
+;ShowBitmap $Img_Prepare$ $ProductName$
 marktime
 
 ;=== search for uninstall info
