@@ -1,3 +1,8 @@
+vivaldi 2.1.1337.36-18
+	* product update ==> 2.1.1337.36
+	* fixed support for O4I prefix (postinst.in)
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-25 13:49:16 +0200
+
 vivaldi 2.0.1309.42-17
 	* product update ==> 2.0.1309.42
 	* leave actionRequest unchanged if application is runnig and OPSI is not allowed to kill it

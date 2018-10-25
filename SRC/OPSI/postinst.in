@@ -7,7 +7,7 @@
 #   PRODUCT_ID: id of the current product
 #   CLIENT_DATA_DIR: directory which contains the installed client data
 #=====================================================================
-# J. Boettge <boettge@mpi-halle.mpg.de>  2018-06-18 12:26:55 +0200
+# J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-25 13:34:36 +0200
 #=====================================================================
 
 LOGFILE={{O_INST_LOG}}
@@ -28,15 +28,15 @@ DST=${DST%\/}
 TMP_DIR=${CLIENT_DATA_DIR}/../${PRODUCT_ID}.tmp
 ERR=0
 
-### check for testing and DFN package:
+### check for testing and O4I package:
 P=${PRODUCT_ID}
 [ "${P}" = "${P##0_}" -a "${P}" = "${P##test_}" ] &&  IS_TESTING=false || IS_TESTING=true
 P=${P/#0_/}
 P=${P/#test_/}
+[ "${P}" = "${P##o4i_}" ] && IS_O4I=false || IS_O4I=true
 [ "${P}" = "${P##dfn_}" ] && IS_DFN=false || IS_DFN=true
 
-
-if [ $IS_DFN == true ]; then
+if [ $IS_O4I == true -o $IS_DFN == true]; then
 	 [ ! -d "${DST}" -a ! -d $TMP_DIR/files ] && mkdir $DST
 else
 	### symlink files directory to ../_SOURCE/${PRODUCT_ID##0_}
