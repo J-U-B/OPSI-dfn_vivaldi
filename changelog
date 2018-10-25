@@ -1,3 +1,8 @@
+vivaldi 2.1.1337.36-19
+	* command realpath replaced by readlink (preinst & postinst)
+	* fixed o4i/dfn check (postinst)
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-25 16:49:20 +0200
+
 vivaldi 2.1.1337.36-18
 	* product update ==> 2.1.1337.36
 	* fixed support for O4I prefix (postinst.in)

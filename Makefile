@@ -234,6 +234,7 @@ realclean: header clean
 		
 help: header
 	@echo "Valid targets: "
+	@echo "	download"
 	@echo "	mpimsp"
 	@echo "	mpimsp_test"
 	@echo "	o4i"

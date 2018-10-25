@@ -35,7 +35,7 @@ fi
 
 [ ! -d $CLIENT_DATA_DIR ] && exit 0
 mkdir $TMP_DIR
-[ -d $TMP_DIR ] && TMP_DIR=`realpath $TMP_DIR`
+[ -d $TMP_DIR ] && TMP_DIR=`readlink -f $TMP_DIR`
 
 echo "Saving previous directories..."
 #...but no symlinks

@@ -7,7 +7,7 @@
 #   PRODUCT_ID: id of the current product
 #   CLIENT_DATA_DIR: directory which contains the installed client data
 #=====================================================================
-# J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-25 13:34:36 +0200
+# J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-25 16:52:30 +0200
 #=====================================================================
 
 LOGFILE={{O_INST_LOG}}
@@ -36,7 +36,8 @@ P=${P/#test_/}
 [ "${P}" = "${P##o4i_}" ] && IS_O4I=false || IS_O4I=true
 [ "${P}" = "${P##dfn_}" ] && IS_DFN=false || IS_DFN=true
 
-if [ $IS_O4I == true -o $IS_DFN == true]; then
+if [ $IS_O4I == true -o $IS_DFN == true ]; then
+	 echo "*** O4I package detected ***"
 	 [ ! -d "${DST}" -a ! -d $TMP_DIR/files ] && mkdir $DST
 else
 	### symlink files directory to ../_SOURCE/${PRODUCT_ID##0_}
@@ -64,7 +65,7 @@ fi
 ### restore custom directories
 if [ -d $TMP_DIR ]; then
 	echo 'Restoring previous directories...'
-	TMP_DIR=`realpath $TMP_DIR`
+	TMP_DIR=`readlink -f $TMP_DIR`
 	for DIRNAME in custom files; do
 		echo "* [${DIRNAME}]"
 		if [ -d $TMP_DIR/${DIRNAME} ]; then
