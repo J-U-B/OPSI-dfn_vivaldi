@@ -11,7 +11,7 @@
 #   PRODUCT_ID: id of the current product
 #   CLIENT_DATA_DIR: directory where client data will be installed
 #=====================================================================
-# J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-25 16:39:39 +0200
+# J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-26 08:08:20 +0200
 #=====================================================================
 
 TS=$(date +"%s")
@@ -40,36 +40,39 @@ if [ -d $TMP_DIR ]; then
 	mv $TMP_DIR $TMP_DIR_OLD
 fi
 
-[ ! -d $CLIENT_DATA_DIR ] && exit 0
-mkdir $TMP_DIR
-[ -d $TMP_DIR ] && TMP_DIR=`readlink -f $TMP_DIR`
+if [ -d $CLIENT_DATA_DIR ]; then
+	mkdir $TMP_DIR
+	[ -d $TMP_DIR ] && TMP_DIR=`readlink -f $TMP_DIR`
 
-echo "Saving previous directories..."
-#...but no symlinks
-for DIRNAME in custom files; do
-	path=$CLIENT_DATA_DIR/${DIRNAME}
-	echo "* [${path}]"
-	if [ -e $path -a ! -h ${path} ]; then
-		echo -e "\tmoving ${path} to ${TMP_DIR}/"
-		mv ${path} ${TMP_DIR}/ || exit 2
-	else
-		echo -e "\tdoes not exist or is a symlink"
+	echo "Saving previous directories..."
+	#...but no symlinks
+	for DIRNAME in custom files; do
+		path=$CLIENT_DATA_DIR/${DIRNAME}
+		echo "* [${path}]"
+		if [ -e $path -a ! -h ${path} ]; then
+			echo -e "\tmoving ${path} to ${TMP_DIR}/"
+			mv ${path} ${TMP_DIR}/ || exit 2
+		else
+			echo -e "\tdoes not exist or is a symlink"
+		fi
+	done
+
+	{{^ifdef_keepfiles}}
+	if [ -d $TMP_DIR/files ] ; then
+		echo "Removing outdated files..."
+		REVER=`echo {{O_SOFTWARE_VER}} | sed -e 's/\./\\\\./g'`
+		REGEX="^.*/{{O_SOFTWARE}}\.${REVER}\..*"
+		echo "* {{O_SOFTWARE}} version = '$REVER'"
+		echo "* using regex: '${REGEX}'"
+		find  $TMP_DIR/files/ -type f -not -iregex "${REGEX}" -exec rm -vf {} \;
 	fi
-done
-
-{{^ifdef_keepfiles}}
-if [ -d $TMP_DIR/files ] ; then
-	echo "Removing outdated files..."
-	REVER=`echo {{O_SOFTWARE_VER}} | sed -e 's/\./\\\\./g'`
-	REGEX="^.*/{{O_SOFTWARE}}\.${REVER}\..*"
-	echo "* {{O_SOFTWARE}} version = '$REVER'"
-	echo "* using regex: '${REGEX}'"
-	find  $TMP_DIR/files/ -type f -not -iregex "${REGEX}" -exec rm -vf {} \;
+	{{/ifdef_keepfiles}}
+	{{#ifdef_keepfiles}}
+	echo "Keep everything in files/"
+	{{/ifdef_keepfiles}}
+else
+	echo "Nothing to do. -- [${CLIENT_DATA_DIR}] does not exist yet."
 fi
-{{/ifdef_keepfiles}}
-{{#ifdef_keepfiles}}
-echo "Keep everything in files/"
-{{/ifdef_keepfiles}}
 
 date +'Finish: %F  %H:%M:%S'
 TE=$(date +"%s")
