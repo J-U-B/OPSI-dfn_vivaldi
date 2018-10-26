@@ -1,25 +1,32 @@
 #! /bin/bash
-#===================================================================
-# preinst script for softprod
-# This script executes before that package will be unpacked from its archive file.
+#=====================================================================
+# preinst script for: (generic)
+# Version 2.0
 #
-# The following environment variables can be used to obtain information about the current installation:
+# This script executes before that package will be unpacked from its
+# archive file.
+#
+# The following environment variables can be used to obtain information
+# about the current installation:
 #   PRODUCT_ID: id of the current product
 #   CLIENT_DATA_DIR: directory where client data will be installed
-#===================================================================
-# J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-18 07:55:09 +0200
+#=====================================================================
+# J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-25 16:39:39 +0200
 #=====================================================================
 
+TS=$(date +"%s")
 LOGFILE={{O_INST_LOG}}
 
-exec > $LOGFILE
+exec >> $LOGFILE
 exec 2>&1
 chgrp opsiadmin $LOGFILE
 chmod g+rw $LOGFILE
 
+echo -e '\n\n'
 echo "=================================================="
-echo "${PRODUCT_ID} PREINST LOG"
+echo "${PRODUCT_ID} ({{ORGNAME}}) PREINST LOG"
 echo "=================================================="
+date +'Start: %F  %H:%M:%S'
 
 TMP_DIR=${CLIENT_DATA_DIR}/../${PRODUCT_ID}.tmp
 NOW=`date +"%F_%H%M%S"`
@@ -64,5 +71,7 @@ fi
 echo "Keep everything in files/"
 {{/ifdef_keepfiles}}
 
+date +'Finish: %F  %H:%M:%S'
+TE=$(date +"%s")
+echo  "*** Script runtime: $(($TE - $TS)) seconds ***"
 exit 0
-

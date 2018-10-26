@@ -1,15 +1,20 @@
 #! /bin/bash
 #=====================================================================
-# postinst script
-# This script executes after unpacking files from that archive and registering the product at the depot.
+# postinst script for: (generic)
+# Version: 2.0
 #
-# The following environment variables can be used to obtain information about the current installation:
+# This script executes after unpacking files from that archive and
+# registering the product at the depot.
+#
+# The following environment variables can be used to obtain information
+# about the current installation:
 #   PRODUCT_ID: id of the current product
 #   CLIENT_DATA_DIR: directory which contains the installed client data
 #=====================================================================
-# J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-25 16:52:30 +0200
+# J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-26 07:44:50 +0200
 #=====================================================================
 
+TS=$(date +"%s")
 LOGFILE={{O_INST_LOG}}
 
 exec >> $LOGFILE
@@ -18,8 +23,9 @@ chgrp opsiadmin $LOGFILE
 chmod g+rw $LOGFILE
 
 echo "=================================================="
-echo "${PRODUCT_ID} POSTINST LOG"
+echo "${PRODUCT_ID} ({{ORGNAME}}) POSTINST LOG"
 echo "=================================================="
+date +'Start: %F  %H:%M:%S'
 
 SRC="${CLIENT_DATA_DIR}/../_SOURCE/${PRODUCT_ID##0_}"
 DST="${CLIENT_DATA_DIR}/files"
@@ -86,13 +92,17 @@ rm -rf $TMP_DIR
 {{#ifdef_auto_download}}
 ### product downloader
 if [[ -f "${CLIENT_DATA_DIR}/product_downloader.sh" ]]; then
-	echo "Calling product downloader"
+	echo -e "\nCalling product downloader"
 	DEST_DIR=${DST} ${CLIENT_DATA_DIR}/product_downloader.sh
 	ERR=$?
 else
-	echo "Product downloader not found!"
+	echo -e "\nProduct downloader not found!"
 	ERR=2
 fi
-exit $ERR
 {{/ifdef_auto_download}}
 {{/ifdef_allinc}}
+
+date +'Finish: %F  %H:%M:%S'
+TE=$(date +"%s")
+echo  "*** Script runtime: $(($TE - $TS)) seconds ***"
+exit $ERR
