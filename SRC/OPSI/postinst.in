@@ -22,9 +22,9 @@ exec 2>&1
 chgrp opsiadmin $LOGFILE
 chmod g+rw $LOGFILE
 
-echo "=================================================="
+echo "==========================================================================="
 echo "${PRODUCT_ID} ({{ORGNAME}}) POSTINST LOG"
-echo "=================================================="
+echo "==========================================================================="
 date +'Start: %F  %H:%M:%S'
 
 SRC="${CLIENT_DATA_DIR}/../_SOURCE/${PRODUCT_ID##0_}"
@@ -47,7 +47,7 @@ if [ $IS_O4I == true -o $IS_DFN == true ]; then
 	 [ ! -d "${DST}" -a ! -d $TMP_DIR/files ] && mkdir $DST
 else
 	### symlink files directory to ../_SOURCE/${PRODUCT_ID##0_}
-	### only for non-DFN packages:
+	### only for non-O4I packages:
 	if [ -h "${DST}" ]; then
 		echo "Symlink to [${DST}] already exists. - Replacing"
 		rm ${DST}

@@ -53,7 +53,7 @@ endif
 setlogLevel 				= $LogLevelDefault$
 
 ;-----------------------------------------------------------
-;*** detect DFN package:
+;*** detect O4I/DFN package:
 if (strPos($FullProductId$, "o4i_") = "0") AND (strPos($FullProductId$, "dfn_") = "0")
 	set $isDFN$ = "false"
 	set $StrippedProductId$ = $ProductId$
