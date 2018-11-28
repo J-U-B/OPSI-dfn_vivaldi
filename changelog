@@ -1,3 +1,7 @@
+vivaldi 2.1.1337.51-19
+	* product update ==> 2.1.1337.51
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2018-11-28 08:27:56 +0100
+
 vivaldi 2.1.1337.47-19
 	* product update ==> 2.1.1337.47
 	* renamed: SRC/CLIENT_DATA/product_variables.opsiinc to product_variables.opsiinc.in
