@@ -256,7 +256,7 @@ help: header
 	@echo "	ALLINC=[true|false]             (default: false)"
 	@echo "			Include software in OPSI package?"
 	@echo "	KEEPFILES=[true|false]          (default: false)"
-	@echo "			Keep really all previous files from files/?"
+	@echo "			Keep really all previous files from files?"
 	@echo "			If false only files matching this package version are kept."
 	@echo "	ARCHIVE_FORMAT=[cpio|tar]       (default: cpio)"
 	@echo ""
