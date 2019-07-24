@@ -15,19 +15,22 @@
 * [Allgemeines](#allgemeines)
   * [Aufbau des Paketes](#paketaufbau)
   * [Nomenklatur](#nomenklatur)
-  * [Unattended-Switches](#unattended_switches) 
-* [Lizenzen](#lizenzen) 
+  * [Unattended-Switches](#unattended_switches)
+* [Lizenzen](#lizenzen)
   * [Dieses Paket](#licPaket)
   * [psdetail](#lic_psdetail)
   * [7zip](#lic_7zip)
   * [Vivaldi](#lic_vivaldi)
-* [Anmerkungen/ToDo](#anmerkungen_todo) 
+* [Anmerkungen/ToDo](#anmerkungen_todo)
 
 
 <div id="paketinfo"></div>
 
-Diese OPSI-Paket fuer **Vivaldi** wurde fuer die Verwendung im *OPSI-4-Institutes*-Repository
-angepasst und erweitert.
+Das vorliegende OPSI-Paket fuer **Vivaldi** wurde fuer das Repository des
+*DFN* (*O4I*) entwickelt.  
+Die Erstellung der eigentlichen OPSI-Pakete aus den Quellen erfolgt durch
+ein einfaches *Makefile*.
+
 
 <div id="paket_erstellen"></div>
 
@@ -48,7 +51,7 @@ Das sind (angegebenen Namen entsprechen Paketen in Debian/Ubuntu):
 
 * make
 * python-pystache
-* wget
+* curl oder wget
 
 
 <div id="makefile_und_spec"></div>
@@ -57,10 +60,10 @@ Das sind (angegebenen Namen entsprechen Paketen in Debian/Ubuntu):
 
 Da aus den Quellen verschiedene Versionen des Paketes mit entsprechenden Anpassungen
 generiert werden sollen (intern, DFN; testing/release) wurde hierfuer ein
-**<code>Makefile</code>** erstellt. Darueber hinaus steuert **<code>spec.json</code>** 
+**<code>Makefile</code>** erstellt. Darueber hinaus steuert **<code>spec.json</code>**
 die Erstellung der Pakete.
 
-Im Idealfall ist beim Erscheinen einer neuen Release von Claws Mail lediglich die
+Im Idealfall ist beim Erscheinen einer neuen Release von Vivaldi lediglich die
 **<code>spec.json</code>** anzupassen.
 
 
@@ -153,11 +156,12 @@ In diesen ist - wie zu vermuten - die Software selbst bereits enthalten.
 *"batteries included"*-Pakete und *"self download"*-Pakete sind nach der Installation
 im Depot technisch identisch.
 
-Die Aktivitaeten von <code>preinst</code> und <code>postinst</code> werden in einem
-Logfile protokolliert. Standardmaessig (definiert in <code>spec.json</code>) ist dieses
-unter **<code>/tmp/${PRODUCT_ID}__opsi_package_install.log</code>** zu finden.  
-Hier auftretende Fehler werden an den opsi-package-manager uebergeben und setzen das
-Paket in einen Fehlerzustand.
+Die Aktivitaeten von <code>preinst</code> und <code>postinst</code> werden
+auf dem Depot-Server in einem Logfile protokolliert. Standardmaessig (definiert
+in <code>spec.json</code>) ist dieses unter 
+**<code>/tmp/${PRODUCT_ID}__opsi_package_install.log</code>** zu finden.  
+Hier eventuell auftretende Fehler werden an den opsi-package-manager uebergeben
+und setzen das Paket in einen Fehlerzustand.
 
 
 <div id="allgemeines"></div>
@@ -220,7 +224,7 @@ aus dem manuellen entpacken des Archivs und Erzeugen der Startmenueeintraege.
 
 In der Folge gibt es auch keinen Eintrag in den Uninstall-Sektionen der Registry.  
 Damit OPSI sich dennoch "orientieren" und den Installationsstatus abfragen kann, 
-wird unter *<code>$MPIMSP_Reg$</code>* ein Eintrag fuer derart installierte Pakete 
+wird unter *<code>$PackageReg$</code>* ein Eintrag fuer derart installierte Pakete 
 angelegt.
 
 
@@ -273,7 +277,8 @@ Fuer die Nutzung wird das *.NET Framework ab v3.5*  benoetigt.
 
 ### 7zip ###
 
-Es gilt die Lizenz von http://www.7-zip.org/license.txt.
+Es gilt die Lizenz von [http://www.7-zip.org/license.txt](http://www.7-zip.org/license.txt).  
+Die Lizenz liegt diesem Paket in <code>CLIENT_DATA/bin/</code> ebenfalls bei.
 
 
 
@@ -294,12 +299,8 @@ Quelle: https://de.wikipedia.org/wiki/Vivaldi_(Browser)#/media/File:Vivaldi_web_
 
 * Die vollstaendige Integration des Browsers ins System (Default-Browser, HTML-Handler, Self-Updater
 erfolgt aufgrund der Art der Installation derzeit nicht).
-* Die Product-Property *default_language* wird derzeit nicht ausgewertet.
-* Das <code>postinst</code>-Script legt unter <code>/tmp/${PRODUCT_ID}__opsi_package_install.log</code> ein Logfile an.
-* <s>Bereits heruntergeladene Software (unter <code>files</code>) werden beim 
-Update geloescht. Ggf. kann das Verzeichnis analog zu <code>custom</code> 
-zuvor gesichert und wiederhergestellt werden.</s>
+* Die Product-Property *default_language* wird derzeit nicht ausgewertet uns ist daher deaktiviert
 * Policies fuer Chromium/Vivaldi sind bislang noch nicht realisiert.
 
 -----
-Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2018-10-16 12:29:03 +0200
+Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2019-07-24 13:56:11 +0200

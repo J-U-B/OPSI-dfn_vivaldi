@@ -1,7 +1,7 @@
 #! /bin/bash
 #=====================================================================
 # preinst script for: (generic)
-# Version 2.0
+# Version 2.0.0.2
 #
 # This script executes before that package will be unpacked from its
 # archive file.
@@ -11,7 +11,7 @@
 #   PRODUCT_ID: id of the current product
 #   CLIENT_DATA_DIR: directory where client data will be installed
 #=====================================================================
-# J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-26 08:08:20 +0200
+# J. Boettge <boettge@mpi-halle.mpg.de>  2019-06-18 16:04:34 +0200
 #=====================================================================
 
 TS=$(date +"%s")
@@ -22,11 +22,26 @@ exec 2>&1
 chgrp opsiadmin $LOGFILE
 chmod g+rw $LOGFILE
 
+IAM=$(id -un)
+
 echo -e '\n\n'
 echo "==========================================================================="
-echo "${PRODUCT_ID} ({{ORGNAME}}) PREINST LOG"
+echo "${PRODUCT_ID} ({{ORGNAME}}) PREINST LOG (user: ${IAM})"
 echo "==========================================================================="
 date +'Start: %F  %H:%M:%S'
+
+if [[ "${IAM}" = "root" && -d ${CLIENT_DATA_DIR} ]]; then
+	UG=$(stat --printf="%U.%G" ${CLIENT_DATA_DIR})
+	if [ "$UG" = "root.root" ]; then
+		echo "Fixing rights for [${CLIENT_DATA_DIR}]"
+		opsi-set-rights ${CLIENT_DATA_DIR}
+	fi
+else
+	if  [[ -d ${CLIENT_DATA_DIR} ]]; then
+		UG=$(stat --printf="%U.%G" ${CLIENT_DATA_DIR})
+		[ "$UG" = "root.root" ] && 	echo "I have to change permissions, but I don't have the necessary permissions to do that"
+	fi
+fi
 
 TMP_DIR=${CLIENT_DATA_DIR}/../${PRODUCT_ID}.tmp
 NOW=`date +"%F_%H%M%S"`
@@ -61,8 +76,9 @@ if [ -d $CLIENT_DATA_DIR ]; then
 	if [ -d $TMP_DIR/files ] ; then
 		echo "Removing outdated files..."
 		REVER=`echo {{O_SOFTWARE_VER}} | sed -e 's/\./\\\\./g'`
-		REGEX="^.*/{{O_SOFTWARE}}\.${REVER}\..*"
-		echo "* {{O_SOFTWARE}} version = '$REVER'"
+		REGSW={{O_SOFTWARE}}
+		REGEX="^.*/${REGSW%%[0-9]*}\.${REVER}\..*"
+		echo "* ${REGSW%%[0-9]*} version = '$REVER'"
 		echo "* using regex: '${REGEX}'"
 		find  $TMP_DIR/files/ -type f -not -iregex "${REGEX}" -exec rm -vf {} \;
 	fi

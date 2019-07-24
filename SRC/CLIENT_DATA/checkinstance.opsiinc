@@ -1,53 +1,86 @@
 ;===============================================================================
 ; checkinstance.opsiinc
-; J. Boettge <boettge@mpi-halle.mpg.de> 2018-10-16 15:56:09 +0200
+; Version: 1.3
+; J. Boettge <boettge@mpi-halle.mpg.de>		2019-07-24 17:01:18 +0200
 ;===============================================================================
+
+;===============================================================================
+[sub_checkinstance_init]
+;===============================================================================
+set $bCheckInstance$ = "true"
+
+DefVar $PSDETAIL_opr$
+;*** do not modify this externally (internal variable):
+set $PSDETAIL_opr$  = "-e"
+;*** use this in calling script
+set $PSDETAIL_MODE$ = ""
+
+if FileExists($PSDETAIL$)
+	set $bPSDetail$ = "true"
+else
+	logError "Can't find psdetail. I'm not able to detect and kill running processes."
+endif
 
 ;===============================================================================
 [sub_checkinstance]
 ;===============================================================================
 comment "Checking for running instances and kill it (if allowed)."
+if ($bPSDetail$ = "true")
+	switch strPart(lower($PSDETAIL_MODE$),"1","1")
+		case "c"
+			;*** commandline:
+			;*** retrieve details for process(es) which commandline matching the argument
+			set $PSDETAIL_opr$ = "-c"
+		endCase
+		case "p"
+			;*** pid:
+			;*** retrieve details for process with the given process id
+			set $PSDETAIL_opr$ = "-p"
+		endCase
+		case "n"
+			;*** [name]
+			;*** retrieve details for process(es) with the given name
+			set $PSDETAIL_opr$ = "-n"
+		endCase	
+		defaultCase
+			;*** executable:
+			;*** retrieve details for process(es) with the given executable (full path)
+			;*** "%" accepted as placeholder
+			set $PSDETAIL_opr$ = "-e"
+		endCase
+	endSwitch
 
-DefVar $Proc_Cnt$
-DefVar $Proc_Killed$
-DefVar $Kill_Running$
-DefVar $CheckBin$
-
-set $Kill_Running$ = GetProductProperty("kill_running", "False")
-
-if FileExists($PSDETAIL$) 
-	set $CheckBin$ = $MainBin$
-	sub_CheckBin
-	set $CheckBin$ = $NotifierBin$
-	sub_CheckBin
-else
-	logError "can't find psdetail.exe"
-endif
-
-;===============================================================================
-[sub_CheckBin]
-;===============================================================================
-if not ($CheckBin$ = "")
 	winbatch_psdetail_count
 	set $Proc_Cnt$ = getLastExitCode
-	if $Proc_Cnt$ > "0"
-		if $Kill_Running$ = "True"
-			comment $Proc_Cnt$ + " running instance(s) of " + $CheckBin$ + " found, killing them."
+
+	if $Proc_Cnt$ INT > "0"
+		if ($Kill_Running$ = "True") or ( ($Kill_Running$ = "False") and ($Kill_Override$ = "true") )
+			if (($Kill_Running$ = "False") and ($Kill_Override$ = "true"))
+				comment "NOTICE: Kill_Running is not generally allowed here, but KILL_OVERRIDE is set now!"
+			endif
+			comment $Proc_Cnt$ + " running instance(s) of [" + $CheckProcess$ + "] found, killing them."
 			winbatch_psdetail_kill
 			set $Proc_Killed$ = getLastExitCode
-			comment $Proc_Killed$ + " instance(s) of " + $CheckBin$ + " were killed."
-			if not ($Proc_Cnt$=$Proc_Killed$)
-				logWarning "Number of killed instances (" + $Proc_Killed$ + ") does not match expectations (" + $Proc_Cnt$ + ")."
+			comment $Proc_Killed$ + " instance(s) of [" + $CheckProcess$ + "] were killed."
+			if not ($Proc_Cnt$ = $Proc_Killed$)
+				; logWarning "Number of killed instances (" + $Proc_Killed$ + ") does not match expectations (" + $Proc_Cnt$ + ")."
+				comment "NOTICE: Number of killed instances (" + $Proc_Killed$ + ") does not match expectations (" + $Proc_Cnt$ + ")."
 			endif
 		else
-			; logError $Proc_Cnt$+" running instance(s) of " + $CheckBin$ + " found, but I'm not allowed to kill them."
+			; logError $Proc_Cnt$+" running instance(s) of " + $CheckProcess$ + " found, but I'm not allowed to kill them."
 			; isFatalError "running instance"
-			logWarning $Proc_Cnt$ + " running instance(s) of " + $CheckBin$ + " found, but I'm not allowed to kill them."
+			logWarning $Proc_Cnt$+" running instance(s) of " + $MainBin$ + " found, but I'm not allowed to kill them."
+			comment "DEFERRING ACTION"
+			if (FileExists($Img_Defer$))
+				ShowBitmap $Img_Defer$	 $ProductName$
+			endif
+			Message "Deferring action for running application"
+			set $result$ = currentProductSetReport("deferred")
 			isSuspended
 		endif
 	else
 		if $Proc_Cnt$ = "0"
-			comment "no running instance of " + $CheckBin$ + " found"
+			comment "no running instance of " + $CheckProcess$ + " found"
 		else
 			logError "psdetail returns " + $Proc_Cnt$ + " (unexpected)"
 		endif
@@ -57,9 +90,9 @@ endif
 ;===============================================================================
 [winbatch_psdetail_count]
 ;===============================================================================
-"$PSDETAIL$" -e "$CheckBin$"
+"$PSDETAIL$" $PSDETAIL_opr$ "$CheckProcess$"
 
 ;===============================================================================
 [winbatch_psdetail_kill]
 ;===============================================================================
-"$PSDETAIL$" -k -e "$CheckBin$"
+"$PSDETAIL$" -k $PSDETAIL_opr$ "$CheckProcess$"

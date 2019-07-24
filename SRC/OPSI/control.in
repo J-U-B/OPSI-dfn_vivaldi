@@ -1,6 +1,6 @@
 {{! ========================================================================== }}
 {{!  Vivaldi CONTROL                                                           }}
-{{!  J. Boettge <boettge@mpi-halle.mpg.de> 2018-07-02 13:12:38 +0200           }}
+{{!  J. Boettge <boettge@mpi-halle.mpg.de> 2019-07-24 14:33:40 +0200           }}
 {{! ========================================================================== }}
 [Package]
 version: {{O_PKG_VER}}
@@ -11,13 +11,14 @@ incremental: False
 type: localboot
 id: {{TESTPREFIX}}{{ORGPREFIX}}vivaldi
 name: Vivaldi
-description: A Browser for Our Friends (Jón S. von Tetzchner)
- Recommended replacement for Opera and  Chrome
- WebSite: https://vivaldi.com/
- changelog: {{O_CHANGELOG}}
+description: • Free an powerful webbrowser based on the chromium engine
+	• Freier und leistungsfaehiger Web-Browser, basierend auf Chromium
+    ___
+    WebSite: https://vivaldi.com/
+    Changelog: {{O_CHANGELOG}}
 advice: Maintainer: {{O_MAINTAINER}}
-Organization: {{ORGNAME}}
-Release date: {{O_RELEASE_DATE}}
+    Organization: {{ORGNAME}}
+    Release date: {{O_RELEASE_DATE}}
 version: {{O_SOFTWARE_VER}}
 priority: 0
 licenseRequired: False
@@ -53,6 +54,12 @@ default: ["64 bit"]
 ;description: application default language (currently unused!)
 ;values: ["de", "en-GB", "en-US"]
 ;default: ["en-US"]
+
+[ProductProperty]
+type: bool
+name: disable_update_notifier
+description: disable the update notifier (by removing binary)
+default: False
 
 [ProductProperty]
 type: bool

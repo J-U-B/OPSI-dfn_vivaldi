@@ -1,12 +1,12 @@
 ;=====================================================================
 ; uninstall.opsiscript (generic)
-; J. Boettge <boettge@mpi-halle.mpg.de>  2017-07-07 11:27:06 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2019-07-23 12:22:09 +0200
 ;=====================================================================
 
 ;======================================================================
 [Initial]
 ;======================================================================
-setLogLevel=6
+setLogLevel=5
 ; Log Errors in Logfile but don't abort:
 ExitOnError=true
 ; Show syntax errors in the script:

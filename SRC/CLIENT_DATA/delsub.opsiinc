@@ -1,73 +1,49 @@
 ;=====================================================================
 ; delsub.opsiinc VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2018-07-02 14:16:16 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2019-07-24 14:39:12 +0200
 ;=====================================================================
 
 ;=======================================
 [sub_delsub_main]
 ;=======================================
-;Message "Removing previous version(s) of " + $ProductName$
-;ShowBitmap $Img_Prepare$ $ProductName$
+Message "Removing previous version(s) of " + $ProductName$
+ShowBitmap $Img_Prepare$ $ProductName$
 marktime
 
-;=== search for uninstall info
-Set $UninstRegKeyPath$ = "[" + $MPIMSP_Reg$ + "]"
-Set $UninstDir$  = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " InstallDir")
-Set $UninstVer$  = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " Version")
-Set $UninstArch$ = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " Architecture")
-Set $UninstName$ = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " ProductName")
-
-if ($UninstDir$ = "")
-	comment "no uninstall info found in regisrty at " + $UninstRegKeyPath$
-	comment "trying default folder and architecture: [" + $InstallDir$ + "]"
-	set $UninstDir$ = $InstallDir$
-endif
-
-if ($UninstName$ = "")
-	Set $UninstName$ = $ProductName$
-endif
-
-;=== normalize:
-if not (strPart($UninstDir$, strLength($UninstDir$),"1") = "\" )
-	set $UninstDir$ = $UninstDir$ + "\"
-endif
-
-
-if FileExists($UninstDir$)
-
-	;=== kill running instances
+if FileExists("%ScriptPath%\checkinstance.opsiinc")
 	include_append "%ScriptPath%\checkinstance.opsiinc"
+	sub_checkinstance_init
+else
+	isFatalError "File not found: checkinstance.opsiinc"
+endif
+
+;=== search for OPSI package uninstall info (not the native installer!)
+Set $bInstalled$ 	= "0"
+Set $UninstList$ 	= emptyList($UninstList$)
+Set $UninstRegList$ = emptyList($UninstRegList$)
+for %s% in $SrchLst$ do sub_search_opsi_inst_reg
+Set $bInstalled$ 	= count($UninstList$)
+
+if ($bInstalled$ INT> "0")
+	ShowBitmap $Img_Uninstall$	 $ProductName$
+
+	;=== kill running update notifier
+	; allow to kill update notifier in any case:
+	set $Kill_Override$ = "true"
+	set $CheckProcess$  = $NotifierPattern$
 	sub_checkinstance
 
-	
-	ShowBitmap $Img_Uninstall$	 $ProductName$
-	if ($UninstVer$="") or ($UninstArch$="")
-		Message "Uninstalling previous setup of " + $ProductName$
-	else
-		Message "Uninstalling previous setup of " + $UninstName$ + " (" + $UninstArch$ + " bit)"
-	endif
+	;=== kill running instances
+	set $Kill_Override$ = "false"
+	set $CheckProcess$  = $MainBin$
+	sub_checkinstance
 
+	;=== remove general settings (links, registry settings)
+	sub_do_opsi_inst_remove_generals
 
-	Message "removing link from startmenu"
-	LinkFolder_RemoveVivaldi
-	LinkFolder_RemoveDesktopLink
-	Message "removing installation directory"
-	set $LogLevel$ = getLogLevel
-	SetLogLevel=5
-	Files_RemoveInstallDir
-	SetLogLevel=$LogLevel$
+	;=== remove found setups
+	for %s% in $UninstList$ do sub_do_opsi_inst_remove
 
-	;if ($pr_MakeDefault$ = "true")
-	;	Message "Removing Vivaldi as default handler"
-	;	Registry_RemoveVivaldiDefault /sysnative
-	;endif
-	Message "Removing Vivaldi handler settings from registry"
-	Registry_RemoveVivaldiHTM /sysnative
-	
-	Message "Removing uninstall information"
-	Registry_RemoveVivaldiInfo /sysnative
-	
-	
 	;=== custom post uninstall
 	comment "include custom post uninstall file"
 	if not ($CustomPostUninstall$ = "none")
@@ -75,11 +51,94 @@ if FileExists($UninstDir$)
 			include_insert "%ScriptPath%\custom\" + $CustomPostUninstall$
 		endif
 	endif
-	
-	set $TimeDiff$ = getDiffTimeSec
-	Message  "Setup time: " + $TimeDiff$ + " seconds"
 endif
 
+if (count($UninstRegList$) INT> "0")
+	Message "Removing opsi_inst uninstall information"
+	for %s% in $UninstRegList$ do Registry_RemoveVivaldiInfo_loop /sysnative
+endif
+
+;=== update productOnClient information on depot server
+Message "Updating status information on depot"
+set $result$ = removeProductVerOnClientStatus($ProductFilter$, $ProductVersionFilter$)
+
+;=== measure time
+set $TimeDiff$ = getDiffTimeSec
+Message  "Removal time: " + $TimeDiff$ + " seconds"
+
+
+;=======================================
+[sub_search_opsi_inst_reg]
+;=======================================
+Set $UninstRegKeyPath$ = "[" + $PackageRegBase$ + "%s%\" + $ProductName$ + "]"
+Set $UninstDir$  = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " InstallDir")
+Set $UninstVer$  = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " Version")
+Set $UninstArch$ = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " Architecture")
+Set $UninstName$ = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " ProductName")
+
+if ($UninstDir$ = "")
+	comment "NOTICE: no uninstall location info found in registry at " + $UninstRegKeyPath$
+	Set $UninstRegList$ = addToList($UninstRegList$, $UninstRegKeyPath$)
+else
+	if not($UninstName$ = $ProductName$)
+		logWarning "ProductName in " + $UninstRegKeyPath$ + " does not match expected value. Found: " + $UninstName$
+		comment "***** Skipping key! *****"
+	else
+		if FileExists($UninstDir$)
+			;=== normalize:
+			if not (strPart($UninstDir$, strLength($UninstDir$),"1") = "\" )
+				set $UninstDir$ = $UninstDir$ + "\"
+			endif
+			;=== add to removal list
+			Set $ListVal$ = $UninstDir$ + "|" + $UninstArch$ + "|" + $UninstVer$
+			if (count(getSubListByMatch($ListVal$, $UninstList$))="0")
+				set $UninstList$ = addToList($UninstList$, $ListVal$)
+			endif
+		else
+			comment "NOTICE: No Files found at location given by " + $UninstRegKeyPath$
+		endif
+		Set $UninstRegList$ = addToList($UninstRegList$, $UninstRegKeyPath$)
+	endif
+endif
+
+
+;=======================================
+[sub_do_opsi_inst_remove_generals]
+;=======================================
+Message "removing link from startmenu"
+LinkFolder_RemoveVivaldi
+LinkFolder_RemoveDesktopLink
+;if ($pr_MakeDefault$ = "true")
+;	Message "Removing Vivaldi as default handler"
+;	Registry_RemoveVivaldiDefault /sysnative
+;endif
+Message "Removing Vivaldi handler settings from registry"
+Registry_RemoveVivaldiHTM /sysnative
+
+
+;=======================================
+[sub_do_opsi_inst_remove]
+;=======================================
+Set $UninstDir$  = takeString(0, splitString("%s%","|"))
+Set $UninstVer$  = takeString(2, splitString("%s%","|"))
+Set $UninstArch$ = takeString(1, splitString("%s%","|"))
+
+if FileExists($UninstDir$)
+	if ($UninstVer$="") or ($UninstArch$="")
+		Message "Uninstalling previous setup of " + $ProductName$
+	else
+		Message "Uninstalling previous setup of " + $UninstName$ + " (" + $UninstArch$ + " bit)"
+	endif
+
+	Message "removing installation directory"
+	set $LogLevel$ = getLogLevel
+	SetLogLevel=5
+	Files_RemoveInstallDir
+	if (FileExists("$UninstDir$"))
+		logWarning "Install directory still exists: [" + "$UninstDir$" + "]"
+	endif
+	SetLogLevel=$LogLevel$
+endif
 
 
 ;=====================================================================
@@ -107,9 +166,9 @@ delete_element $ProductName$
 
 
 ;=====================================================================
-[Registry_RemoveVivaldiInfo]
+[Registry_RemoveVivaldiInfo_loop]
 ;=====================================================================
-deletekey [$MPIMSP_Reg$]
+deletekey %s%
 
 
 ;=====================================================================

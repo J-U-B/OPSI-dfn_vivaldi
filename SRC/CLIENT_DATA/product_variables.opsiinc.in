@@ -1,22 +1,29 @@
 ;=====================================================================
 ; product specific variables  VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-16 12:24:50 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2019-07-24 16:58:05 +0200
 ;=====================================================================
 
 include_insert "%ScriptPath%\variables.opsiinc"
-;include_append "%ScriptPath%\exitcode_msi.opsiinc"
 
-Set $MAP$ 				= getProductMap
-Set $FullProductId$     = getValue("id", $MAP$)
-Set $ProductName$   	= getValue("name", $MAP$)
-Set $Version$       	= getValue("ProductVersion", $MAP$)
-Set $SystemType$    	= GetSystemType
-Set $NTVersion$   		= GetMsVersionInfo
+Set $MAP$				= getProductMap
+Set $FullProductId$		= getValue("id", $MAP$)
+Set $ProductName$		= getValue("name", $MAP$)
+Set $Version$			= getValue("ProductVersion", $MAP$)
+Set $ActionRequest$		= getValue("actionrequest", $MAP$)
+Set $SystemType$		= GetSystemType
+Set $NTVersion$			= GetMsVersionInfo
+Set $Stage$				= lower("{{STAGE}}")
 
-;-----------------------------------------------------------
-; basic requirements
-;-----------------------------------------------------------
 requiredWinstVersion >= "4.11.6"
+
+;-----------------------------------------------------------
+;*** helper functions
+;-----------------------------------------------------------
+importlib "helpers.opsifunc"
+
+;-----------------------------------------------------------
+;*** basic requirements
+;-----------------------------------------------------------
 
 if CompareDotSeparatedNumbers($NTVersion$, "<", "6.1")
 	LogError "OS is not Windows 7 or above"
@@ -24,63 +31,116 @@ if CompareDotSeparatedNumbers($NTVersion$, "<", "6.1")
 endif
 
 if not ($SystemType$ = "64 Bit System")
-	LogError "OS is not a 64 Bit System"
-	isFatalError
+	; LogError "OS is not a 64 Bit System"
+	; isFatalError
+
+	LogWarning "OS is not a 64 Bit System; 32 Bit is not explicitly supported"
 endif
 
 ;-----------------------------------------------------------
 ;*** get LogLevel from property
+;-----------------------------------------------------------
 Set $LogLevelDefault$ = GetProductProperty("log_level","default")
 
 ;-----------------------------------------------------------
 ;*** detect testing package:
-if (strPos($FullProductId$, "0_") = "0") and (strPos($FullProductId$, "test_") = "0")
-	; no a testing package
-	set $ProductId$  		= $FullProductId$ 
-	set $Testing$ 			= "false"
+;-----------------------------------------------------------
+if (strPos($FullProductId$, "0_") = "0") and (strPos($FullProductId$, "test_") = "0") and (strPos($Stage$,"test") = "0")
+	; not a testing package
+	comment "INFO: RELEASE package detected"
+	set $ProductId$  	= $FullProductId$
+	set $Testing$ 		= "false"
 	if ($LogLevelDefault$ = "default")
 		set $LogLevelDefault$  	= "{{DEFAULT_RELEASE_LOGLEVEL}}"
 	endif
 else
 	; this is a testing package
-	comment "Prefix for testing package detected"
-	set $ProductId$  		= strPart($FullProductId$, calculate(strPos($FullProductId$,"_") + "+1"), strLength($FullProductId$))
-	set $Testing$ 			= "true"
+	comment "INFO: TESTING package detected"
+	if (strPos($FullProductId$, "0_") = "0") and (strPos($FullProductId$, "test_") = "0")
+		set $ProductId$	= $FullProductId$
+	else
+		set $ProductId$	= strPart($FullProductId$, calculate(strPos($FullProductId$,"_") + "+1"), strLength($FullProductId$))
+	endif
+	set $Testing$ 		= "true"
 	if ($LogLevelDefault$ = "default")
 		set $LogLevelDefault$  	= "{{DEFAULT_TESTING_LOGLEVEL}}"
 	endif
 endif
-setlogLevel 				= $LogLevelDefault$
+setlogLevel = $LogLevelDefault$
 
 ;-----------------------------------------------------------
 ;*** detect O4I/DFN package:
+;-----------------------------------------------------------
 if (strPos($FullProductId$, "o4i_") = "0") AND (strPos($FullProductId$, "dfn_") = "0")
-	set $isDFN$ = "false"
+	set $isO4I$ = "false"
 	set $StrippedProductId$ = $ProductId$
 else
-	set $isDFN$ = "true"
+	set $isO4I$ = "true"
 	set $StrippedProductId$ = strPart($ProductId$,"5",strLength($ProductId$))
 endif
 
 ;-----------------------------------------------------------
-;*** select PSDETAIL:
-set $PSDETAIL$ 			= "%ScriptPath%\bin\psdetail.exe"
-if (CompareDotSeparatedNumbers($NTVersion$, ">=", "10.0"))
-	set $PSDETAIL$ 			= "%ScriptPath%\bin\psdetail4.exe"
+;*** Images
+;-----------------------------------------------------------
+if (FileExists("%ScriptPath%\..\lib\icons\%installingProdName%.png"))
+	set $Img_Install$               = "%ScriptPath%\..\lib\icons\%installingProdName%.png"
+	set $Img_Install_Custom$        = "%ScriptPath%\..\lib\icons\%installingProdName%.png"
+	Set $Img_Uninstall$             = "%ScriptPath%\..\lib\icons\%installingProdName%.png"
+	Set $Img_Uninstall_Custom$      = "%ScriptPath%\..\lib\icons\%installingProdName%.png"
+	Set $Img_Prepare$               = "%ScriptPath%\..\lib\icons\%installingProdName%.png"
+	Set $Img_Addons$        		= "%ScriptPath%\..\lib\icons\%installingProdName%.png"
+	Set $Img_Config$                = "%ScriptPath%\..\lib\icons\%installingProdName%.png"
+	Set $Img_Update$                = "%ScriptPath%\..\lib\icons\%installingProdName%.png"
+	Set $Img_Defer$                 = "%ScriptPath%\..\lib\icons\%installingProdName%.png"
+else
+	if ($isO4I$ = "true")
+		set $Img_Install$		= "%ScriptPath%\images\" + $StrippedProductId$ + "_install_o4i.png"
+	else
+		set $Img_Install$		= "%ScriptPath%\images\" + $StrippedProductId$ + "_install.png"
+	endif
+	set $Img_Install_Custom$    = "%ScriptPath%\images\" + $StrippedProductId$ + "_install_custom.png"
+	Set $Img_Uninstall$         = "%ScriptPath%\images\" + $StrippedProductId$ + "_uninstall.png"
+	Set $Img_Uninstall_Custom$  = "%ScriptPath%\images\" + $StrippedProductId$ + "_uninstall_custom.png"
+	Set $Img_Prepare$           = "%ScriptPath%\images\" + $StrippedProductId$ + "_prepare.png"
+	Set $Img_Addons$            = "%ScriptPath%\images\" + $StrippedProductId$ + "_addons.png"
+	Set $Img_Config$            = "%ScriptPath%\images\" + $StrippedProductId$ + "_config.png"
+	Set $Img_Update$            = "%ScriptPath%\images\" + $StrippedProductId$ + "_update.png"
+	Set $Img_Defer$             = "%ScriptPath%\images\" + $StrippedProductId$ + "_defer.png"
 endif
 
+comment "preparing..."
+ShowBitmap $Img_Prepare$ $ProductName$
+
 ;-----------------------------------------------------------
-; software architecture; valid values: "32 bit", "64 bit", "sysnative"
+;*** software architecture; valid values: "32 bit", "64 bit", "sysnative"
+;-----------------------------------------------------------
+;*** simplify SystemType
+Switch $SystemType$
+	case "64 Bit System"
+		Set $SystemType$ = "x64"
+	endCase
+	case "x86 System"
+		Set $SystemType$ = "x32"
+	endCase
+	defaultCase
+		Set $SystemType$ = ""
+	endCase
+endSwitch
 
 Set $sw_arch$ = GetProductProperty("install_architecture","sysnative")
 Set $sw_arch$ = takeString(0, splitString($sw_arch$, " "))
 
 if ( $sw_arch$ = "sysnative" )
-	if ($SystemType$ = "64 Bit System")
+	if ($SystemType$ = "x64")
 		Set $sw_arch$ = "64"
 	else
 		Set $sw_arch$ = "32"
 	endif
+endif
+
+if ($SystemType$="x32") and ($sw_arch$="64")
+	LogError "Cannot install 64 bit version of " + $ProductName$ + " on a 32 bit operating system!"
+	isFatalError
 endif
 
 if ($sw_arch$ = "64")
@@ -88,9 +148,44 @@ if ($sw_arch$ = "64")
 	set $InstallBase$ = "%ProgramFiles64Dir%"
 else
 	; 32 bit software
-	set $InstallBase$ = EnvVar("ProgramFiles(x86)")
+	set $InstallBase$ = "%ProgramFiles32Dir%"
 endif
 
+Set $RegPathUninstall$	 	= "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
+Set $RegPathUninstall64$ 	= "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
+Set $RegPathUninstall32$ 	= "HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+
+;-----------------------------------------------------------
+;*** helper binaries:
+;-----------------------------------------------------------
+set $PSDETAIL$ 			= "%ScriptPath%\bin\psdetail.exe"
+if (CompareDotSeparatedNumbers($NTVersion$, ">=", "10.0"))
+	set $PSDETAIL$ 		= "%ScriptPath%\bin\psdetail4.exe"
+endif
+
+; set $GETREALNAME$		= "%ScriptPath%\bin\GetRealName.exe"
+set $SEVENZIP$			= "%ScriptPath%\bin\7z.exe"
+
+; changed to "true" on running sub_checkinstance_init:
+set $bCheckInstance$ 	= "false"
+; changed to "true" on init if $PSDETAIL$ exists:
+set $bPSDetail$			= "false"
+
+;-----------------------------------------------------------
+;*** logs & temp
+;-----------------------------------------------------------
+if $isO4I$ = "true"
+	Set $LogDir$		= "%opsiLogDir%"
+else
+	Set $LogDir$		= "%SystemDrive%\tmp"
+endif
+Set $InstallLog$		= $LogDir$ + "\"+$ProductId$+"_install.log"
+Set $UninstallLog$		= $LogDir$ + "\"+$ProductId$+"_uninstall.log"
+
+Set $TempDir$			= "%opsiTmpDir%\"
+
+;-----------------------------------------------------------
+;*** product language
 ;-----------------------------------------------------------
 ;; language property: "de, "en_US", "en_GB"
 ; Set $sw_lang$ = GetProductProperty("default_language","en_US")
@@ -98,65 +193,65 @@ endif
 set $sw_lang$ = "en_US"
 
 ;-----------------------------------------------------------
-; create desktop link?
-Set $sw_DesktopLink$ = GetProductProperty("DesktopLink","False")
+;*** misc settings
+;-----------------------------------------------------------
+set $Kill_Running$		= GetProductProperty("kill_running", "False")
+Set $sw_DesktopLink$ 	= GetProductProperty("DesktopLink","False")
 
 ;-----------------------------------------------------------
-; make Vivaldi to the default browser?
-Set $pr_MakeDefault$ = GetProductProperty("make_default", "false")
-
+;*** properties: post install/uninstall
 ;-----------------------------------------------------------
-; post install/uninstall properties:
 set $CustomPostInstall$ 	= getProductProperty("custom_post_install","none")
 set $CustomPostUninstall$ 	= getProductProperty("custom_post_uninstall","none")
+
+;___________________________________________________________
+; product specific settings
+;___________________________________________________________
+
+;-------------------------------------------------------
+; filter for opsiServiceCall productOnClient_getObjects:
+;-------------------------------------------------------
+Set $ProductFilter$			= "*" + $StrippedProductId$
+Set $ProductVersionFilter$ 	= "*"
+
+;-----------------------------------------------------------
+; disable the Update Notifier?
+; make Vivaldi to the default browser?
+;-----------------------------------------------------------
+Set $pr_NoUpdNotify$ = GetProductProperty("disable_update_notifier", "false")
+Set $pr_MakeDefault$ = GetProductProperty("make_default", "false")
 
 ;-----------------------------------------------------------
 Set $ProductDir$	= stringReplace($ProductName$," ","")
 ;Set $ProductDir$	= $ProductId$
 Set $SrcDir$		= "%ScriptPath%\files\" 
 Set $InstallDir$    = $InstallBase$+"\"+$ProductDir$
-Set $LogDir$ 	    = "%SystemDrive%\tmp"
-Set $InstallLog$    = $LogDir$ + "\"+$ProductId$+"_install.log"
-Set $UninstallLog$  = $LogDir$ + "\"+$ProductId$+"_uninstall.log"
 Set $ExDir$			= $ProductName$ + "-bin"
-Set $ExDirLong$		= "%opsiTmpDir%\" + $ProductName$ + "-bin\"
+Set $ExDirLong$		= $TempDir$ + $ExDir$ + "\"
 Set $Archive$		= $ProductName$ + "." + $Version$ + ".x" + $sw_arch$ + ".7z"
-Set $TempDir$		= "%opsiTmpDir%"
-Set $UnZip$         = "%ScriptPath%\bin\7z.exe"
-
-if ($isDFN$ = "true")
-	set $Img_Install$	= "%ScriptPath%\images\" + $StrippedProductId$ +"_install_dfn.png"
-else
-	set $Img_Install$	= "%ScriptPath%\images\" + $StrippedProductId$ +"_install.png"
-endif
-set $Img_Uninstall$	= "%ScriptPath%\images\" + $StrippedProductId$ +"_uninstall.png"
-set $Img_Prepare$	= "%ScriptPath%\images\" + $StrippedProductId$ +"_prepare.png"
-
-ShowBitmap $Img_Prepare$ $ProductName$
 
 ;-----------------------------------------------------------
-Set $MinimumSpace$ 	= "360 MB"
-Set $MainBin$      	= $StrippedProductId$ +".exe"
-Set $NotifierBin$	= $InstallDir$ + "\" + "update_notifier.exe"
+Set $MainBin$      		= $StrippedProductId$ +".exe"
+Set $NotifierBin$		= $InstallDir$ + "\" + "update_notifier.exe"
+Set $NotifierPattern$	= $StrippedProductId$ + "%\update_notifier.exe"
+Set $PathToExe$			= $InstallDir$ + $MainBin$
 
 ;-----------------------------------------------------------
 if ( $sw_arch$ = "32" )
-	Set $Installer$		  = $SrcDir$ + $ProductName$ + "." + $Version$ + ".exe"
+	Set $Installer$		= $SrcDir$ + $ProductName$ + "." + $Version$ + ".exe"
+	Set $MinimumSpace$	= "360 MB"
 else
 	; $sw_arch$ = "64" 
-	Set $Installer$		  = $SrcDir$ + $ProductName$ + "." + $Version$ + ".x64.exe"	
-	Set $MinimumSpace$ 	= "400 MB"
+	Set $Installer$		= $SrcDir$ + $ProductName$ + "." + $Version$ + ".x64.exe"
+	Set $MinimumSpace$	= "400 MB"
 endif
 
 ;-----------------------------------------------------------
-if ($isDFN$ = "true")
-	Set $MPIMSP_Reg$		 = "HKEY_Local_Machine\Software\_DFN\" + $ProductName$
+Set $PackageRegBase$	= "HKEY_Local_Machine\Software\"
+Set $SrchLst$			= createStringList('_DFN','_O4I','_MPIMSP')
+if ($isO4I$ = "true")
+	Set $PackageReg$	= $PackageRegBase$ + "_O4I\" + $ProductName$
 else
-	Set $MPIMSP_Reg$		 = "HKEY_Local_Machine\Software\_MPIMSP\" + $ProductName$
+	Set $PackageReg$	= $PackageRegBase$ + "_MPIMSP\" + $ProductName$
 endif
-
-Set $RegPathUninstall$	 = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
-Set $RegPathUninstall64$ = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
-Set $RegPathUninstall32$ = "HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
-
 

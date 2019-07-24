@@ -1,3 +1,32 @@
+vivaldi 2.6.1566.49-20
+	* product update ==> 2.6.1566.49
+	* added code of conduct
+	* pystache: use UTF-8 encoding
+	* updated checkvars.sh to v1.0.2
+	* updated preinst & postinst
+	* product_downloader: support for curl added
+	* added helpers.opsifunc v1.4
+	* support for 32 bit operating system (testing)
+	* delsub_opsiinc completely revised
+	* deferring action if running instance is found (no success/error, keep action_request unchanged)
+	* update status information for other packages providing the same product on depot
+	* updated checkinstance.opsiinc to v1.3 (sub_checkinstance_init, allow kill_override)
+	* kill update_notifier.exe independently from kill_running property (issue #1)
+	* new property "disable_update_notifier" (issue #2)
+	* added feature: local images (according to guideline)
+	* variable $PathToExe$ (according to guideline)
+	* adjusted log directory for o4i
+	* detect testing stage even if package has no matching prefix
+	* for distinction: explicit comment in logs for TESTING / RELEASE package
+	* for 32 bit compatibility: use %ProgramFiles32Dir% instead of EnvVar("ProgramFiles(x86)")
+	* renamed some variables
+	* adjusted writing registry values
+	* adjusted description in control (en/de)
+	* refreshed/completed icon set
+	* updated 7zip vo v19.00 x86
+	* documentation updated
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2019-07-24 15:37:44 +0200
+
 vivaldi 2.6.1566.44-19
 	* product update ==> 2.6.1566.44
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2019-06-25 13:35:10 +0200

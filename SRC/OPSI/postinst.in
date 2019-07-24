@@ -1,7 +1,7 @@
 #! /bin/bash
 #=====================================================================
 # postinst script for: (generic)
-# Version: 2.0
+# Version: 2.1
 #
 # This script executes after unpacking files from that archive and
 # registering the product at the depot.
@@ -11,7 +11,7 @@
 #   PRODUCT_ID: id of the current product
 #   CLIENT_DATA_DIR: directory which contains the installed client data
 #=====================================================================
-# J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-26 07:44:50 +0200
+# J. Boettge <boettge@mpi-halle.mpg.de>  2018-10-26 07:45:20 +0200
 #=====================================================================
 
 TS=$(date +"%s")
@@ -77,8 +77,25 @@ if [ -d $TMP_DIR ]; then
 		if [ -d $TMP_DIR/${DIRNAME} ]; then
 			test -e $CLIENT_DATA_DIR/${DIRNAME} || mkdir $CLIENT_DATA_DIR/${DIRNAME}
 			echo -e "\tmoving $TMP_DIR/${DIRNAME} to $CLIENT_DATA_DIR/"
-			rsync -av --remove-source-files $TMP_DIR/${DIRNAME}/. $CLIENT_DATA_DIR/${DIRNAME}/ &&\
+			
+			IFS=$'\n'
+			PR=$TMP_DIR/${DIRNAME}
+			for D in `find ${PR} -xtype d`; do
+				if [ -n "${D##${PR}}" -a ! -d "$CLIENT_DATA_DIR/${DIRNAME}/${D##${PR}}" ]; then
+					TGT=$CLIENT_DATA_DIR/${DIRNAME}/${D##${PR}}
+					echo -e "\t* mdir [${D##${PR}}] --> [${TGT}]"
+					mkdir -p "${TGT}"
+				fi
+			done &&\
+			for F in `find ${PR} -xtype f`; do
+				if [ -n "$F" -a ! -e "$CLIENT_DATA_DIR/${DIRNAME}/${F##${PR}/}" ]; then
+					echo -e "\t* fmov [${F##${PR}/}]"
+					mv "${F}" "$CLIENT_DATA_DIR/${DIRNAME}/${F##${PR}/}"
+				fi
+			done &&\
 			rm -rf $TMP_DIR/${DIRNAME} || exit 1
+			## rsync -av --remove-source-files $TMP_DIR/${DIRNAME}/. $CLIENT_DATA_DIR/${DIRNAME}/ && \
+			## rm -rf $TMP_DIR/${DIRNAME} || exit 1
 		else
 			echo -e "\tdoes not exist here"
 		fi

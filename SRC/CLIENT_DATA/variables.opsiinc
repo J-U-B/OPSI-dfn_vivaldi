@@ -2,13 +2,21 @@
 ; variables.opsiinc
 ; This file contains all possible variables, excluding the opsi-system
 ; variables, for the opsi-winst scripts in use.
-; J. Boettge <boettge@mpi-halle.mpg.de>  2018-07-02 15:23:37 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2019-07-24 16:56:57 +0200
 ;=====================================================================
 
 DefStringList $MAP$
 DefStringList $OutStream$
+DefStringList $SrchLst$
+DefStringList $UninstList$
+DefStringList $UninstRegList$
 
+DefVar $ActionRequest$
 DefVar $Archive$
+DefVar $bCheckInstance$
+DefVar $bPSDetail$
+DefVar $bInstalled$
+DefVar $CheckProcess$
 DefVar $CustomPostInstall$
 DefVar $CustomPostUninstall$
 DefVar $DateTime$
@@ -16,44 +24,66 @@ DefVar $ExDir$
 DefVar $ExDirLong$
 DefVar $ExitCode$
 DefVar $FullProductId$
+; DefVar $GETREALNAME$
+DefVar $Img_Addons$
+DefVar $Img_Config$
+DefVar $Img_Defer$
 DefVar $Img_Install$
+DefVar $Img_Install_Custom$
 DefVar $Img_Prepare$
 DefVar $Img_Uninstall$
+DefVar $Img_Uninstall_Custom$
+DefVar $Img_Update$
 DefVar $InstallBase$
 DefVar $InstallDir$
 DefVar $Installer$
 DefVar $InstallLog$
-DefVar $isDFN$
+DefVar $isO4I$
+DefVar $Kill_Override$
+DefVar $Kill_Running$
+DefVar $ListVal$
 DefVar $LogDir$
 DefVar $LogLevel$
 DefVar $LogLevelDefault$
 DefVar $MainBin$
 DefVar $MinimumSpace$
-defVar $MPIMSP_Reg$
 DefVar $NotifierBin$
+DefVar $NotifierPattern$
 DefVar $NTVersion$
+DefVar $PackageReg$
+DefVar $PackageRegBase$
+DefVar $PathToExe$
 DefVar $pr_MakeDefault$
+DefVar $pr_NoUpdNotify$
+DefVar $Proc_Cnt$
+DefVar $Proc_Killed$
 DefVar $ProductDir$
+DefVar $ProductFilter$
 DefVar $ProductId$
 DefVar $ProductName$
+DefVar $ProductVersionFilter$
 DefVar $PSDETAIL$
+DefVar $PSDETAIL_MODE$
 DefVar $RegPathUninstall$
 DefVar $RegPathUninstall32$
 DefVar $RegPathUninstall64$
+DefVar $result$
+DefVar $SEVENZIP$
 DefVar $SrcDir$
+DefVar $Stage$
 DefVar $StrippedProductId$
 DefVar $sw_arch$
 DefVar $sw_DesktopLink$
 DefVar $sw_lang$
 DefVar $SystemType$
-DefVar $TimeDiff$
 DefVar $TempDir$
 DefVar $Testing$
+DefVar $TimeDiff$
 DefVar $UninstallLog$
 DefVar $UninstArch$
 DefVar $UninstDir$
 DefVar $UninstName$
 DefVar $UninstRegKeyPath$
 DefVar $UninstVer$
-DefVar $UnZip$
 DefVar $Version$
+

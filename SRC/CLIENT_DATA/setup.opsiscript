@@ -1,12 +1,12 @@
 ;======================================================================
 ; setup.opsiscript VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2018-07-02 13:08:47 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2019-07-24 15:37:02 +0200
 ;======================================================================
 
 ;======================================================================
 [Initial]
 ;======================================================================
-setLogLevel=6
+setLogLevel=5
 ; Log Errors in Logfile and abort:
 ExitOnError=true
 ; Show syntax errors in the script:
@@ -35,11 +35,6 @@ else
 		isFatalError "delsub.opsiinc not found"
 	endif
 	
-	if ($SystemType$="x86 System") and ($sw_arch$="64")
-		LogError "Cannot install 64 bit version of " + $ProductName$ + " on a 32 bit operating system!"
-		isFatalError
-	endif
-
 	ShowBitmap $Img_Install$ $ProductName$
 	message "Installing " + $ProductName$ + " " + $Version$ + " (" + $sw_arch$ + " bit)"
 	
@@ -63,6 +58,7 @@ else
 	set $ExitCode$ = getLastExitCode
 	if not($ExitCode$ = "0")
 		LogError "Error " + $ExitCode$ + " while extracting archive"
+		; isFatalError "Error extracting installer"
 	endif
 	
 	if not(FileExists($TempDir$+"\"+$Archive$))
@@ -70,7 +66,7 @@ else
 		isFatalError "Archive not found"
 	endif
 	
-	;=== extract 7Z archive to $TmpDir$
+	;=== extract 7Z archive to $TempDir$
 	ShellInAnIcon_UnzipArchive
 	set $ExitCode$ = getLastExitCode
 	if not($ExitCode$ = "0")
@@ -82,7 +78,7 @@ else
 	
 	if not(FileExists($ExDirLong$))
 		LogError "Temporary application folder does not exist: " $ExDirLong$
-		isFatalError $ExDir$ +" folder not found"
+		isFatalError $ExDir$ +" - folder not found!"
 	endif	
 	
 	set $LogLevel$ = getLogLevel
@@ -102,7 +98,10 @@ else
 		LogError "Main binary " + $MainBin$ +" not found"
 		isFatalError "MainBin not found"	
 	endif
-	
+
+
+	ShowBitmap $Img_Config$ $ProductName$
+
 	;=== create start menu entry
 	LinkFolder_CreateVivaldi
 	
@@ -111,18 +110,27 @@ else
 		LinkFolder_CreateDesktopLink
 	endif
 	
+	;=== deactivate update notifier if requested
+	if ($pr_NoUpdNotify$ = "true") and (FileExists($NotifierBin$))
+		Message "Disabling update notifier"
+		Files_disable_update_notifier
+	endif
+
 	;=== write helper info to registry
 	Set $OutStream$ = shellCall('echo %DATE%_%TIME%')
 	Set $DateTime$ = takeString(0, $OutStream$)
-	
+
 	Message "Set up Vivaldi handler in registry "
 	Registry_WriteVivaldiHTM /sysnative
+
+	;=== make vivaldi to default browser if requested
 	if ($pr_MakeDefault$ = "true")
 		Message "Making Vivaldi to default browser"
 		Registry_MakeVivaldiDefault /sysnative
 	endif
 	Registry_WriteVivaldiInfo /sysnative
-	
+
+
 	;=== custom post install
 	comment "include custom post install file"
 	if not ($CustomPostInstall$ = "none")
@@ -142,12 +150,12 @@ endif
 ;=====================================================================
 [ShellInAnIcon_UnzipExe]
 ;=====================================================================
-$UnZip$ e -y -so "$Installer$" > "$TempDir$\$Archive$"
+$SEVENZIP$ e -y -so "$Installer$" > "$TempDir$\$Archive$"
 
 ;=====================================================================
 [ShellInAnIcon_UnzipArchive]
 ;=====================================================================
-$UnZip$  x -y -o"$TempDir$" "$TempDir$\$Archive$"
+$SEVENZIP$ x -y -o"$TempDir$" "$TempDir$\$Archive$"
 
 ;=====================================================================
 [Files_CleanupTempFolder]
@@ -169,6 +177,11 @@ del -f "$TempDir$\$Archive$"
 SourcePath 		= "$ExDirLong$"
 CheckTargetPath	= "$InstallDir$"
 copy -secr "$ExDirLong$\*.*" "$InstallDir$"
+
+;=====================================================================
+[Files_disable_update_notifier]
+;=====================================================================
+rename "$NotifierBin$" "$NotifierBin$.disabled"
 
 ;=====================================================================
 [LinkFolder_CreateVivaldi]
@@ -201,7 +214,7 @@ end_link
 ;=====================================================================
 [Registry_WriteVivaldiInfo]
 ;=====================================================================
-openkey [$MPIMSP_Reg$]
+openkey [$PackageReg$]
 set "InstallDir"	= "$InstallDir$"
 set "Version"		= "$Version$"
 set "Architecture"	= "$sw_arch$"
@@ -301,32 +314,32 @@ set "Vivaldi" = "Software\Clients\StartMenuInternet\Vivaldi\Capabilities"
 [Registry_MakeVivaldiDefault]
 ;=====================================================================
 openkey [HKEY_CLASSES_ROOT\.htm]
-set "" = "VivaldiHTM"
+set "" = REG_SZ:"VivaldiHTM"
 openkey [HKEY_CLASSES_ROOT\.html]
-set "" = "VivaldiHTM"
+set "" = REG_SZ:"VivaldiHTM"
 openkey [HKEY_CLASSES_ROOT\.xht]
-set "" = "VivaldiHTM"
+set "" = REG_SZ:"VivaldiHTM"
 openkey [HKEY_CLASSES_ROOT\.xhtml]
-set "" = "VivaldiHTM"
+set "" = REG_SZ:"VivaldiHTM"
 openkey [HKEY_CLASSES_ROOT\.shtml]
-set "" = "VivaldiHTM"
+set "" = REG_SZ:"VivaldiHTM"
 openkey [HKEY_CLASSES_ROOT\.svg]
-set "" = "VivaldiHTM"
+set "" = REG_SZ:"VivaldiHTM"
 
 openkey [HKEY_CLASSES_ROOT\http\DefaultIcon]
-set "" = "$InstallDir$\$MainBin$,0"
+set "" = REG_SZ:'"$InstallDir$\$MainBin$",0'
 openkey [HKEY_CLASSES_ROOT\http\shell\open\command]
-set "" = '"$InstallDir$\$MainBin$" -- "%1"'
+set "" = REG_SZ:'"$InstallDir$\$MainBin$" -- "%1"'
 
 openkey [HKEY_CLASSES_ROOT\https\DefaultIcon]
-set "" = "$InstallDir$\$MainBin$,0"
+set "" = REG_SZ:'"$InstallDir$\$MainBin$",0'
 openkey [HKEY_CLASSES_ROOT\https\shell\open\command]
-set "" = '"$InstallDir$\$MainBin$" -- "%1"'
+set "" = REG_SZ:'"$InstallDir$\$MainBin$" -- "%1"'
 
 openkey [HKEY_CLASSES_ROOT\ftp\DefaultIcon]
-set "" = "$InstallDir$\$MainBin$,0"
+set "" = REG_SZ:'"$InstallDir$\$MainBin$",0'
 openkey [HKEY_CLASSES_ROOT\ftp\shell\open\command]
-set "" = '"$InstallDir$\$MainBin$" -- "%1"'
+set "" = REG_SZ:'"$InstallDir$\$MainBin$" -- "%1"'
 
 openkey [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet]
-set "" = "Vivaldi"
+set "" = REG_SZ:"Vivaldi"
