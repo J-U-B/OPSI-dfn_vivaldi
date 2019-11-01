@@ -1,17 +1,20 @@
 ;==========================================================================
 ; helpers.opsifunc
-;
+; 
 ; Some general helper functions...
 ;
-; Version: 	v1.4
+; Version: 	v1.5
 ; Author : 	J. Boettge <boettge@mpi-halle.mpg.de>
-; Date   :	2019-07-08 16:32:04 +0200
+; Date   :	2019-10-23 15:09:53 +0200
 ;==========================================================================
 ; Changelog
 ; ---------
+; v1.5
+; * fixed valid actions for productSetActionRequest
+;
 ; v1.4
 ; * added function currentProductSetReport
-
+;
 ; v1.3
 ; * added function productVerGetOnClient
 ; * added function removeProductVerOnClientStatus
@@ -74,13 +77,13 @@ DefFunc setEnvVar(val $key$:string, val $value$:string, val $type$:string) : str
 		set $result$="2"
 	endif
 	setLogLevel=$logLvl$
-
+	
 	[Registry_setEnvVar]
 	Openkey [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\control\Session Manager\Environment]
 	Set "$key$" = $type$:"$value$"
 	FlushKey
 	;end Registry_setEnvVar
-
+		
 EndFunc
 
 
@@ -105,13 +108,13 @@ DefFunc delEnvVar(val $key$:string) : string
 		set $result$="1"
 	endif
 	setLogLevel=$logLvl$
-
+	
 	[Registry_delEnvVar]
 	Openkey [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\control\Session Manager\Environment]
 	DeleteVar "$key$"
 	FlushKey
 	;end Registry_delEnvVar
-
+		
 EndFunc
 
 
@@ -156,7 +159,7 @@ DefFunc addPath(val $fullPaths$:string, val $pathToAdd$:string) : string
 		Set $result$ = composeString($pathList$, ";")
 	endif
 	setLogLevel=$logLvl$
-
+	
 	[sub_compare_path]
 	if ("%p%" = $pathToAdd$)
 		set $found$ = "true"
@@ -187,8 +190,8 @@ EndFunc
 DefFunc powershellSetExecPolicy(val $policy$:string) : string
 ;-------------------------------------------------------------------------
 ; set the execution policy for PowerShell
-; valid values for policy:
-;		Unrestricted | RemoteSigned | AllSigned | Restricted
+; valid values for policy: 
+;		Unrestricted | RemoteSigned | AllSigned | Restricted 
 ;		| Default | Bypass | Undefined
 ; Return value:
 ;		* result of powershell call
@@ -210,7 +213,7 @@ EndFunc
 DefFunc productSetActionRequest(val $prodId$:string, val $actRequest$: string) : string
 ;-------------------------------------------------------------------------
 ; set action request for the given prodId
-; valid values for $actRequest$:
+; valid values for $actRequest$: 
 ;		"" | setup | update | uninstall | always | once | always | custom
 ; Return value:
 ;		* empty string in case of no error
@@ -223,16 +226,16 @@ DefFunc productSetActionRequest(val $prodId$:string, val $actRequest$: string) :
 	DefStringList $outStream$
 	DefVar $ValidActions$
 	set $actRequest$ = lower($actRequest$)
-	set $ValidActions$ = "||setup|update|uninstall|always|once|always|custom|"
+	set $ValidActions$ = "|setup|update|uninstall|always|once|always|custom|none|"
 	if contains($ValidActions$, "|"+$actRequest$+"|")
 		set $outStream$ = getReturnListFromSection("opsiServiceCall_setActionRequest")
 		set $result$ = takeString("0", $outStream$)
 		if ($result$='[]')
 			set $result$ = ''
-		endif
+		endif	
 		if strPos($result$,'-> ') INT> "0"
 			set $result$ = strPart($result$, "4", strLength($result$))
-		endif
+		endif	
 		if jsonIsObject($result$)
 			set $result$ = jsonAsObjectGetValueByKey($result$, "message")
 		endif
@@ -241,18 +244,18 @@ DefFunc productSetActionRequest(val $prodId$:string, val $actRequest$: string) :
 		logError $result$
 	endif
 	setLogLevel=$logLvl$
-
+	
 ;.................................................
 [opsiServiceCall_setActionRequest]
 ;.................................................
 "method": "setProductActionRequest"
-"params": [
+"params": [ 
 "$prodId$"
 "%opsiserviceUser%"
 "$actRequest$"
-]
+]	
 ;.................................................
-EndFunc
+EndFunc	
 
 
 ;-------------------------------------------------------------------------
@@ -309,7 +312,7 @@ DefFunc productGetOnClient(val $product$:string) : string
 	DefStringList $outStream$
 	set $outStream$ = getReturnListFromSection("opsiServiceCall_get_productOnClient")
 	set $result$ = takeString("0", $outStream$)
-
+	
 ;.................................................
 [opsiServiceCall_get_productOnClient]
 ;.................................................
@@ -361,11 +364,11 @@ DefFunc productUpdateOnClient(val $product$:string, val $tgtConfig$:string, val 
 	DefVar $logLvl$
 	set $logLvl$=getLoglevel
 	setLogLevel=7
-
+	
 	DefStringList $outStream$
 	DefVar $prodJSON$
 	set $prodJSON$ = '{"ident" : "' + $product$ + ';LocalbootProduct;%opsiserviceUser%", "type":"ProductOnClient", "actionResult":"", "lastAction":"", "actionProgress":"set by '+  getValue("id", getProductMap) +'"}}'
-
+	
 	if ($tgtConfig$ = '') AND ($instStatus$ = '')
 		; *** nothing to do
 		set $result$ = ""
@@ -383,8 +386,8 @@ DefFunc productUpdateOnClient(val $product$:string, val $tgtConfig$:string, val 
 			else
 				set $prodJSON$ = jsonAsObjectSetStringtypeValueByKey($prodJSON$,"installationStatus", $instStatus$)
 			endif
-		endif
-
+		endif	
+		
 		if ($prodJSON$ = '')
 			set $result$ = "productUpdateOnClient: Failed to build JSON object"
 			logError $result$
@@ -409,7 +412,7 @@ DefFunc productUpdateOnClient(val $product$:string, val $tgtConfig$:string, val 
 [opsiServiceCall_update_productOnClient]
 ;.................................................
 "method": "productOnClient_updateObjects"
-"params": [
+"params": [ 
 '$prodJSON$'
 ]
 ;.................................................
@@ -433,22 +436,22 @@ DefFunc removeProductOnClientStatus(val $productFilter$:string) : string
 	DefVar $p_prodId$
 	DefVar $p_actProgess$
 	DefVar $thisProductId$
-
+	
 	DefVar $logLvl$
 	set $logLvl$=getLoglevel
 	setLogLevel=7	
-
+	
 	set $thisProductId$   = getValue("id", getProductMap)
-
+	
 	set $productArray$ = productGetOnClient($productFilter$)
 	if jsonIsArray($productArray$)
 		set $count$ = jsonAsArrayCountElements($productArray$)
 		comment "Found products for [" + $productFilter$ +"]: " + $count$
-
+		
 		if ($count$ INT> "0")
 			for %prod_idx% = "0" to calculate($count$ + "-1")  do sub_process_depot_info
-
-		endif
+		
+		endif		
 	endif
 	setLogLevel=$logLvl$
 
@@ -475,7 +478,7 @@ if not ($p_prodId$ = $thisProductId$)
 			comment "* installationStatus  = " + $p_instStatus$
 			comment "* targetConfiguration = " + $p_tgtConfig$
 		endif
-	endif
+	endif	
 else
 	comment "skipping processing for actual produtId: " + $thisProductId$
 endif
