@@ -1,3 +1,8 @@
+vivaldi 2.10.1745.27-21
+	* product update ==> 2.10.1745.27
+	* product_downloader: modified detection of curl/wget
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2020-01-20 11:15:54 +0100
+
 vivaldi 2.10.1745.26-20
 	* product update ==> 2.10.1745.26
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2020-01-13 07:04:16 +0100

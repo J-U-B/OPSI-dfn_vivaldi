@@ -2,8 +2,8 @@
 #=======================================================================
 # Download files from vendor
 #
-# Version 1.4
-# Jens Boettge <boettge@mpi-halle.mpg.de>  2019-07-23 12:51:37 +0200
+# Version 1.5
+# Jens Boettge <boettge@mpi-halle.mpg.de>  2020-01-20 11:14:34 +0100
 #=======================================================================
 # link examples:
 #	https://downloads.vivaldi.com/stable/Vivaldi.1.14.1077.60.exe
@@ -17,21 +17,57 @@ DOWNLOADER="curl"
 MD5EXE=$(which md5sum)
 if [ -z "$MD5EXE" ]; then echo "Error: md5sum not found"; exit 200 ; fi
 
-if [ "$DOWNLOADER" = "wget" ]; then
+# --- detect downloader
+case $DOWNLOADER in
+curl)
+	CURL=$(which curl)
+	if [ -z "$CURL" ]; then
+		echo "Warning: Preferred downloader CURL not found. Trying wget."
+		WGET=$(which wget)
+		if [ -z "$WGET" ]; then
+			echo "Error: WGET also not found. Giving up!"
+			exit 201
+		else
+			DOWNLOADER=wget
+		fi
+	fi
+	;;
+wget)
 	WGET=$(which wget)
-	if [ -z "$WGET" ];   then echo "Error: wget not found" ;  exit 201 ; fi
+	if [ -z "$WGET" ]; then
+		echo "Warning: Preferred downloader WGET not found. Trying curl."
+		CURL=$(which curl)
+		if [ -z "$CURL" ]; then
+			echo "Error: CURL also not found. Giving up!"
+			exit 202
+		else
+			DOWNLOADER=curl
+		fi
+	fi
+	;;
+*)
+	echo "Error: none of the supported downloaders (curl, wget) was requested!"
+	exit 203
+	;;
+esac
+
+
+if [ "$DOWNLOADER" = "wget" ]; then
 	#options for wget:
+	DOWNLOADER=$WGET
 	DL_OPTS="--max-redirect=6 --no-cookies -nv "
 	DL_OUT="-O"
 fi
 
 if [ "$DOWNLOADER" = "curl" ]; then
-	CURL=$(which curl)
-	if [ -z "$CURL" ];   then echo "Error: curl not found" ;  exit 202 ; fi
 	#options for curl:
+	DOWNLOADER=$CURL
 	DL_OPTS="--silent --show-error -L "
 	DL_OUT="-o"
 fi
+
+echo "[DBG] DOWNLOADER = $DOWNLOADER"
+# ---
 
 if [ -f "${THIS_DIR}/Makefile" ] ; then
 	# Skript is running in the context of building OPSI package via make
