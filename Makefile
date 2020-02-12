@@ -1,12 +1,18 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 2.4.1
+# Version: 2.4.2
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2018-10-16 12:29:45 +0200
+# 2020-02-12 11:56:09 +0100
 ############################################################
 
 .PHONY: header clean mpimsp mpimsp_test o4i o4i_test dfn dfn_test all_test all_prod all help download
 .DEFAULT_GOAL := help
+
+### defaults:
+DEFAULT_SPEC = spec.json
+DEFAULT_ALLINC = false
+DEFAULT_KEEPFILES = false
+DEFAULT_ARCHIVEFORMAT = cpio
 
 PWD = ${CURDIR}
 BUILD_DIR = BUILD
@@ -35,7 +41,7 @@ FILES_OPSI_IN := $(basename $(shell (cd $(SRC_DIR)/OPSI; ls *.in 2>/dev/null)))
 TODAY := $(shell date +"%Y-%m-%d")
 
 ### spec file:
-SPEC ?= spec.json
+SPEC ?= $(DEFAULT_SPEC)
 ifeq ($(shell test -f $(SPEC) && echo OK),OK)
     $(info * spec file found: $(SPEC))
 else
@@ -59,7 +65,7 @@ else
 endif
 
 ### build "batteries included' package?
-ALLINC ?= false
+ALLINC ?= $(DEFAULT_ALLINC)
 ALLINC_SEL := "[true] [false]"
 AFX := $(firstword $(ALLINC))
 AFY := $(shell echo $(AFX) | tr A-Z a-z)
@@ -77,7 +83,7 @@ else
 endif
 
 ### Keep all files in files/ directory?
-KEEPFILES ?= false
+KEEPFILES ?= $(DEFAULT_KEEPFILES)
 KEEPFILES_SEL := "[true] [false]"
 KFX := $(firstword $(KEEPFILES))
 override KFX := $(shell echo $(KFX) | tr A-Z a-z)
@@ -88,7 +94,7 @@ else
 	override KEEPFILES := $(shell echo $(KFX) | tr -d '[]')
 endif
 
-ARCHIVE_FORMAT ?= cpio
+ARCHIVE_FORMAT ?= $(DEFAULT_ARCHIVEFORMAT)
 ARCHIVE_TYPES :="[cpio] [tar]"
 AFX := $(firstword $(ARCHIVE_FORMAT))
 AFY := $(shell echo $(AFX) | tr A-Z a-z)
@@ -251,14 +257,14 @@ help: header
 	@echo "	clean_packages"
 	@echo ""
 	@echo "Options:"
-	@echo "	SPEC=<filename>                 (default: spec.json)"
+	@echo "	SPEC=<filename>                 (default: $(DEFAULT_SPEC))"
 	@echo "			Use the given alternative spec file."
-	@echo "	ALLINC=[true|false]             (default: false)"
+	@echo "	ALLINC=[true|false]             (default: $(DEFAULT_ALLINC))"
 	@echo "			Include software in OPSI package?"
-	@echo "	KEEPFILES=[true|false]          (default: false)"
+	@echo "	KEEPFILES=[true|false]          (default: $(DEFAULT_KEEPFILES))"
 	@echo "			Keep really all previous files from files?"
 	@echo "			If false only files matching this package version are kept."
-	@echo "	ARCHIVE_FORMAT=[cpio|tar]       (default: cpio)"
+	@echo "	ARCHIVE_FORMAT=[cpio|tar]       (default: $(DEFAULT_ARCHIVEFORMAT))"
 	@echo ""
 
 build_dirs:

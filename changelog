@@ -1,3 +1,8 @@
+vivaldi 2.11.1811.33-22
+	* product update ==> 2.11.1811.33
+	* Makefile: handling of default values made more comfortable
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2020-02-12 11:56:22 +0100
+	
 vivaldi 2.10.1745.27-21
 	* product update ==> 2.10.1745.27
 	* product_downloader: modified detection of curl/wget
