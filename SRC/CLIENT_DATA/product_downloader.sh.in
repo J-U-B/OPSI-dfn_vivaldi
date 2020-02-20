@@ -51,7 +51,6 @@ wget)
 	;;
 esac
 
-
 if [ "$DOWNLOADER" = "wget" ]; then
 	#options for wget:
 	DOWNLOADER=$WGET

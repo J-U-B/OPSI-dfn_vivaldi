@@ -1,9 +1,9 @@
 {  
 	"_": "=== OPSI package variables ===",
 	"O_PKG_VER"         : "22",
-	"O_SOFTWARE_VER"    : "2.11.1811.33",
+	"O_SOFTWARE_VER"    : "2.11.1811.38",
 	"O_SOFTWARE"        : "vivaldi",
-	"O_CHANGELOG"       : "https://vivaldi.com/de/blog/vivaldi-2-11-improves-pop-out-video/",
+	"O_CHANGELOG"       : "https://vivaldi.com/de/blog/teamblog/minor-update-for-vivaldi-2-11/",
 	"O_RELEASE_DATE"    : "{{M_TODAY}}",
 	"O_INST_LOG"        : "/tmp/{{M_ORGPREFIX}}vivaldi__opsi_package_install.log",
 	"O_MAINTAINER"      : "Jens Boettge <boettge@mpi-halle.mpg.de>",

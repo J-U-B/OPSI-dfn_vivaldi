@@ -1,3 +1,7 @@
+vivaldi 2.11.1811.38-22
+	* product update ==> 2.11.1811.38
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2020-02-20 07:18:22 +0100
+
 vivaldi 2.11.1811.33-22
 	* product update ==> 2.11.1811.33
 	* Makefile: handling of default values made more comfortable
