@@ -1,6 +1,6 @@
 ;=====================================================================
 ; product specific variables  VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2019-07-24 16:58:05 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2020-04-22 11:50:09 +0200
 ;=====================================================================
 
 include_insert "%ScriptPath%\variables.opsiinc"
@@ -11,7 +11,8 @@ Set $ProductName$		= getValue("name", $MAP$)
 Set $Version$			= getValue("ProductVersion", $MAP$)
 Set $ActionRequest$		= getValue("actionrequest", $MAP$)
 Set $SystemType$		= GetSystemType
-Set $NTVersion$			= GetMsVersionInfo
+Set $OS$                = GetOS
+; Set $NTVersion$		= GetMsVersionInfo
 Set $Stage$				= lower("{{STAGE}}")
 
 requiredWinstVersion >= "4.11.6"
@@ -24,7 +25,14 @@ importlib "helpers.opsifunc"
 ;-----------------------------------------------------------
 ;*** basic requirements
 ;-----------------------------------------------------------
+set $OS$ = GetOS
 
+if not($OS$ = "Windows_NT")
+       logError "Installation aborted: wrong OS  — This package only supports Windows"
+       isFatalError
+endif
+
+Set $NTVersion$	= GetMsVersionInfo
 if CompareDotSeparatedNumbers($NTVersion$, "<", "6.1")
 	LogError "OS is not Windows 7 or above"
 	isFatalError

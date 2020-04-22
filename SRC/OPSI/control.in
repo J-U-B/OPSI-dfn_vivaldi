@@ -1,6 +1,6 @@
 {{! ========================================================================== }}
 {{!  Vivaldi CONTROL                                                           }}
-{{!  J. Boettge <boettge@mpi-halle.mpg.de> 2019-07-24 14:33:40 +0200           }}
+{{!  J. Boettge <boettge@mpi-halle.mpg.de> 2020-04-22 11:22:47 +0200           }}
 {{! ========================================================================== }}
 [Package]
 version: {{O_PKG_VER}}
@@ -108,4 +108,5 @@ default: ["default"]
 
 [Changelog]
 {{! The changelog is outsourced  to a separate file in the root of this project. }}
-{{! It will be included on building the OPSI package. }}
+{{! It will be included on building the OPSI package or kept in a separate file  }}
+{{! in this directory. }}
