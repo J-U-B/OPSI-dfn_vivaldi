@@ -1,3 +1,8 @@
+vivaldi 3.0.1874.32-24
+	* product update ==> 3.0.1874.32
+	* Makefile: copy readme.[txt|md|pdf] (if exists) to OPSI/
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2020-04-24 11:54:09 +0200
+
 vivaldi 3.0.1874.23-23
 	* product update ==> 3.0.1874.23
 	* Makefile: keep changelog optionally in a separate file (changelog.txt)

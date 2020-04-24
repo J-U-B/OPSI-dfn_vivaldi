@@ -1,8 +1,8 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 2.4.3
+# Version: 2.4.4
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2020-04-22 11:40:27 +0200
+# 2020-04-24 12:00:37 +0200
 ############################################################
 
 .PHONY: header clean mpimsp mpimsp_test o4i o4i_test dfn dfn_test all_test all_prod all help download
@@ -358,7 +358,14 @@ build: download clean copy_from_src
 		echo "* Creating OPSI/$$F"; \
 		rm -f $(BUILD_DIR)/OPSI/$$F; \
 		${PYSTACHE} $(SRC_DIR)/OPSI/$$F.in $(BUILD_JSON) > $(BUILD_DIR)/OPSI/$$F; \
-	done	
+	done
+
+	for E in txt md pdf; do \
+		if [ -e readme.$$E ]; then \
+			echo "Copying additional file: readme.$$E"; \
+			cp -f readme.$$E $(BUILD_DIR)/OPSI/; \
+		fi; \
+	done
 	
 	if [ -e $(BUILD_DIR)/OPSI/control -a -e changelog ]; then \
 		if [ -n "$(CHANGELOG_TGT)" ]; then \
