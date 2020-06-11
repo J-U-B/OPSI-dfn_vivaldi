@@ -1,9 +1,9 @@
 {  
 	"_": "=== OPSI package variables ===",
 	"O_PKG_VER"         : "24",
-	"O_SOFTWARE_VER"    : "3.0.1874.38",
+	"O_SOFTWARE_VER"    : "3.1.1929.29",
 	"O_SOFTWARE"        : "vivaldi",
-	"O_CHANGELOG"       : "https://vivaldi.com/blog/news/minor-update-3-for-vivaldi-desktop-3-0/",
+	"O_CHANGELOG"       : "https://vivaldi.com/blog/vivaldi-gets-notes-manager-and-configurable-menus/",
 	"O_RELEASE_DATE"    : "{{M_TODAY}}",
 	"O_INST_LOG"        : "/tmp/{{M_ORGPREFIX}}vivaldi__opsi_package_install.log",
 	"O_MAINTAINER"      : "Jens Boettge <boettge@mpi-halle.mpg.de>",
