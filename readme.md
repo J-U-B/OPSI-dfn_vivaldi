@@ -1,33 +1,34 @@
-![](./SRC/CLIENT_DATA/images/vivaldi_install.png "Vivaldi")
-
-# Vivaldi #
+# ![](./SRC/CLIENT_DATA/images/vivaldi_32x32.png "Vivaldi") Vivaldi #
 
 ## ToC ##
 * [Paketinfo](#paketinfo)
 * [Paket erstellen](#paket_erstellen)
-  * [Voraussetzungen](#voraussetzungen)
-  * [Makefile und spec.json](#makefile_und_spec)
-  * [pystache](#pystache)
-  * [Verzeichnisstruktur](#verzeichnisstruktur)
-  * [Makefile-Parameter](#makefile_parameter)
-  * [spec.json](#spec_json)
+	* [Voraussetzungen](#voraussetzungen)
+	* [Makefile und spec.json](#makefile_und_spec)
+	* [pystache](#pystache)
+	* [Verzeichnisstruktur](#verzeichnisstruktur)
+	* [Makefile-Parameter](#makefile_parameter)
+	* [spec.json](#spec_json)
 * [Installation](#installation)
 * [Allgemeines](#allgemeines)
-  * [Aufbau des Paketes](#paketaufbau)
-  * [Nomenklatur](#nomenklatur)
-  * [Unattended-Switches](#unattended_switches)
+	* [Aufbau des Paketes](#paketaufbau)
+	* [Nomenklatur](#nomenklatur)
+	* [Unattended-Switches](#unattended_switches)
 * [Lizenzen](#lizenzen)
-  * [Dieses Paket](#licPaket)
-  * [psdetail](#lic_psdetail)
-  * [7zip](#lic_7zip)
-  * [Vivaldi](#lic_vivaldi)
+	* [Dieses Paket](#licPaket)
+	* [psdetail](#lic_psdetail)
+	* [7zip](#lic_7zip)
+	* [Vivaldi](#lic_vivaldi)
 * [Anmerkungen/ToDo](#anmerkungen_todo)
 
+----
 
 <div id="paketinfo"></div>
 
-Das vorliegende OPSI-Paket fuer **Vivaldi** wurde fuer das Repository des
-*DFN* (*O4I*) entwickelt.  
+## Paketinfo ##
+
+Das vorliegende OPSI-Paket fuer **Vivaldi** wurde fuer das Repository von
+*opsi4institutes (O4I)* entwickelt.  
 Die Erstellung der eigentlichen OPSI-Pakete aus den Quellen erfolgt durch
 ein einfaches *Makefile*.
 
@@ -59,7 +60,7 @@ Das sind (angegebenen Namen entsprechen Paketen in Debian/Ubuntu):
 ### Makefile und spec.json ###
 
 Da aus den Quellen verschiedene Versionen des Paketes mit entsprechenden Anpassungen
-generiert werden sollen (intern, DFN; testing/release) wurde hierfuer ein
+generiert werden sollen (intern, O4I; testing/release) wurde hierfuer ein
 **<code>Makefile</code>** erstellt. Darueber hinaus steuert **<code>spec.json</code>**
 die Erstellung der Pakete.
 
@@ -201,7 +202,7 @@ Praefixes in der Produkt-Id definieren die Art des Paketes:
 
 * **0_** oder **test_** - Es handelt sich um ein Test-Paket. Beim Uebergang zur Produktions-Release
 wird der Praefix entfernt.
-* **o4i** oder **dfn_** - Das Paket ist zur Verwendung im O4I/DFN-Repository vorgesehen.
+* **o4i_** oder **dfn_** - Das Paket ist zur Verwendung im O4I/DFN-Repository vorgesehen.
 
 Suffix:
 
@@ -303,4 +304,4 @@ erfolgt aufgrund der Art der Installation derzeit nicht).
 * Policies fuer Chromium/Vivaldi sind bislang noch nicht realisiert.
 
 -----
-Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2019-07-24 13:56:11 +0200
+Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2020-08-05 10:15:37 +0200
