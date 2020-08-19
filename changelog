@@ -1,3 +1,9 @@
+vivaldi 3.2.1967.45-25
+	* product update ==> 3.2.1967.45
+	* optimized product_downloader.sh (v1.6)
+	* Makefile: remove product_downloader from batteries included package
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2020-08-19 08:05:46 +0200
+	
 vivaldi 3.2.1967.41-24
 	* product update ==> 3.2.1967.41
 	* minor changes in readme.md

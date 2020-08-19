@@ -1,8 +1,8 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 2.4.4
+# Version: 2.4.5
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2020-04-24 12:00:37 +0200
+# 2020-08-19 07:39:27 +0200
 ############################################################
 
 .PHONY: header clean mpimsp mpimsp_test o4i o4i_test dfn dfn_test all_test all_prod all help download
@@ -383,7 +383,11 @@ build: download clean copy_from_src
 		rm -f $(BUILD_DIR)/CLIENT_DATA/$$F; \
 		${PYSTACHE} $(SRC_DIR)/CLIENT_DATA/$$F.in $(BUILD_JSON) > $(BUILD_DIR)/CLIENT_DATA/$$F; \
 	done
-	chmod +x $(BUILD_DIR)/CLIENT_DATA/*.sh
+	@if [ "$(ALLINCLUSIVE)" = "true" ]; then \
+		rm -f $(BUILD_DIR)/CLIENT_DATA/product_downloader.sh; \
+	fi
+	find $(BUILD_DIR)/CLIENT_DATA -type f -name "*.sh" -exec chmod +x {} \;
+	@#chmod +x $(BUILD_DIR)/CLIENT_DATA/*.sh; \
 	
 	@echo "* OPSI Archive Format: $(BUILD_FORMAT)"
 	@echo "* Building OPSI package"

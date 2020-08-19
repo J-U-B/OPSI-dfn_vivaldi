@@ -2,8 +2,8 @@
 #=======================================================================
 # Download files from vendor
 #
-# Version 1.5
-# Jens Boettge <boettge@mpi-halle.mpg.de>  2020-01-20 11:14:34 +0100
+# Version 1.6
+# Jens Boettge <boettge@mpi-halle.mpg.de>  2020-08-19 07:34:57 +0200
 #=======================================================================
 # link examples:
 #	https://downloads.vivaldi.com/stable/Vivaldi.1.14.1077.60.exe
@@ -138,31 +138,73 @@ check_md5()
 		fi
 }
 
+check_package_md5()
+{
+		PKG=$1
+		[ -z "$2" ] && FP=0 || FP=$2
+		[ $FP -eq 1 ] && S_FORCE="; forcing download" || S_FORCE=""
+		[ "$MODE" = "depot" ] && MD5FILE="${THIS_DIR}/$MD5SUMS" || MD5FILE="${DEST_DIR}/$MD5SUMS"
+		echo -e "\tChecking MD5SUM for existing package [$PKG]"
+		MD5LINE=$(grep -E "\\s${PKG}\$" ${MD5FILE} | cut -f 1 -d " ")
+		if [ -z "$MD5LINE" ]; then
+			echo -e "\tNo matching MD5SUM found in ${MD5FILE} ${S_FORCE}"
+			return 1
+		else
+			echo -e "\tMD5SUM found: [$MD5LINE]"
+			THIS_MD5=$(md5sum ${DEST_DIR}/$PKG | cut -f 1 -d " " )
+			if [ "$MD5LINE" = "$THIS_MD5" ]; then
+				echo -e "\tMD5SUM for [$PKG] matching"
+				return 0
+			else
+				echo -e "\tMD5SUM for [$PKG] does NOT match ${S_FORCE}"
+				return 1
+			fi
+		fi
+}
+
 download()
-{       
-        DL_URL=$1
+{   
+		DL_URL=$1  
+		FORCE_DL=1  
+		echo "*D* Download URL : [$DL_URL]"
+        if [ -z "$1" ];  then 
+			echo "*E* No download URL given. - Nothing to do."; 
+			return
+		fi
         [ -n "$2" ] && PACKAGE=$2 || PACKAGE=`basename $DL_URL`
         
         let "CNT++"
-        echo -e "Retrieving [$PACKAGE]\n\tfrom: [${DL_URL}]";
-        if [ -f "${DEST_DIR}/${PACKAGE}" ]; then
-                echo -e "\tFile already exists"
-        else
-                eval ${DOWNLOADER} ${DL_OPTS} "${DL_URL}" ${DL_OUT} "${DEST_DIR}/${PACKAGE}"
-                if  [ ! -f "${DEST_DIR}/${PACKAGE}" ]; then
-                        let "ERR+=1"
-                else
-                        FILESIZE=$(stat -c%s "${DEST_DIR}/${PACKAGE}")
-                        if [ "${FS_THRESHOLD}" -gt "${FILESIZE}" ]; then
-                                echo -e "*E*  file has an unusual size; assuming error page"
-                                rm -f "${DEST_DIR}/${PACKAGE}"
-                                let "ERR+=1"
-                        else                    
-                                chmod g+r "${DEST_DIR}/${PACKAGE}"
-                        fi
-                fi
-        fi  
-        [ "$MODE" = "make" ] && calc_md5 ${PACKAGE}    
+        
+        {{#ifdef_auto_download}}
+		if [ -f "${DEST_DIR}/${PACKAGE}" ]; then
+				echo -e "File already exists: $PACKAGE"
+				check_package_md5 ${PACKAGE} 1
+				FORCE_DL=$?
+		fi
+		if [ $FORCE_DL -eq 1 ]; then
+				echo -e "Retrieving [$PACKAGE]\n\tfrom: [${DL_URL}]";
+				eval ${DOWNLOADER} ${DL_OPTS} "${DL_URL}" ${DL_OUT} "${DEST_DIR}/${PACKAGE}"
+				if  [ ! -f "${DEST_DIR}/${PACKAGE}" ]; then
+						let "ERR+=1"
+				else
+						FILESIZE=$(stat -c%s "${DEST_DIR}/${PACKAGE}")
+						if [ "${FS_THRESHOLD}" -gt "${FILESIZE}" ]; then
+								echo -e "*E*  file has an unusual size; assuming error page"
+								rm -f "${DEST_DIR}/${PACKAGE}"
+								let "ERR+=1"
+						else                    
+								chmod g+r "${DEST_DIR}/${PACKAGE}"
+						fi
+				fi
+				if [ "$MODE" = "depot" ]; then
+					check_package_md5 ${PACKAGE}
+					[ $? -eq 1 ] && echo -e "\tMD5SUM check for [$PKG] FAILED!"
+				fi
+				
+		fi 
+		{{/ifdef_auto_download}}
+         
+        [ "$MODE" = "make" -a $FORCE_DL -eq 1 ] && calc_md5 ${PACKAGE}    
 }
 
 echo "=================================================================="
@@ -170,6 +212,10 @@ echo "Downloading required files from vendor"
 echo "Detected version for this package: ${VERSION}"
 echo "Timestamp: $(date +'%Y-%m-%d %H:%M:%S')"
 echo "Targtet directory: ${DEST_DIR}"
+echo "MD5UMS: ${MD5SUMS}"
+{{^ifdef_auto_download}}
+echo "Auto download disabled for this package!"
+{{/ifdef_auto_download}}
 echo "=================================================================="
 
 {{#ifdef_use_json_dl}}
@@ -195,7 +241,7 @@ for ARCH in "32" "64"; do
         download "${PKG_URL}"  "${PACKAGE}"
 done
 
-[ "$MODE" = "depot" ] && check_md5  
+# [ "$MODE" = "depot" ] && check_md5  
 # MD5SUMS="DOWNLOAD/${PROD}.md5sums" check_md5 
 
 exit $ERR
