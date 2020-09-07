@@ -121,7 +121,7 @@ var_test:
 	@echo "* SPEC file             : [$(SPEC)]"
 	@echo "* Batteries included    : [$(ALLINC)] --> [$(ALLINCLUSIVE)]"
 	@echo "* Custom Name           : [$(CUSTOMNAME)]"
-	@echo "* Choosen package type  : [$(PACKAGE)][$(PKGX)][$(PKGY)][$(PKGZ)] --> $(PKG)	[build JRE:$(BUILD_FOR_JRE), build JDK:$(BUILD_FOR_JDK)]"
+	@echo "* Choosen package type  : [$(PACKAGE)][$(PKGX)][$(PKGY)][$(PKGZ)] --> $(PKG)"
 	@echo "* OPSI Archive Types    : [$(ARCHIVE_TYPES)]"
 	@echo "* OPSI Archive Format   : [$(ARCHIVE_FORMAT)] --> $(BUILD_FORMAT)"
 	@echo "* Templates OPSI        : [$(FILES_OPSI_IN)]"
