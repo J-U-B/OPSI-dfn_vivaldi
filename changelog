@@ -1,3 +1,8 @@
+vivaldi 3.7.2218.58-25
+	* product update ==> 3.7.2218.58 
+	* [Chromium][Security] Backported patch for issue under active attack (CVE-2021-21224)
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2021-04-22 07:22:41 +0200
+
 vivaldi 3.7.2218.55-25
 	* product update ==> 3.7.2218.55 (Chromium upgraded to 89.0.4389.128)
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2021-04-16 11:23:06 +0200
