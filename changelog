@@ -1,3 +1,9 @@
+vivaldi 3.8.2259.42-26
+	* product update ==> 3.8.2259.42
+	* [Chromium] Upgraded to 90.0.4430.214
+	* changed default for o4i packages to ALLINC=true
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2021-05-11 14:40:25 +0200
+
 vivaldi 3.8.2259.40-25
 	* product update ==> 3.8.2259.40
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2021-05-06 07:22:24 +0200

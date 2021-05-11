@@ -1,8 +1,8 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 2.4.5
+# Version: 2.4.6
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2020-08-19 07:39:27 +0200
+# 2021-05-11 14:41:31 +0200
 ############################################################
 
 .PHONY: header clean mpimsp mpimsp_test o4i o4i_test dfn dfn_test all_test all_prod all help download
@@ -170,6 +170,7 @@ o4i: header
 	@make 	TESTPREFIX=""    			\
 			ORGNAME="O4I"    			\
 			ORGPREFIX="o4i_" 			\
+			ALLINC="true"				\
 			STAGE="release"  			\
 	build
 
@@ -178,6 +179,7 @@ o4i_test: header
 	@make 	TESTPREFIX="test_"  		\
 			ORGNAME="O4I"    			\
 			ORGPREFIX="o4i_" 			\
+			ALLINC="true"				\
 			STAGE="testing"  			\
 	build
 
@@ -186,6 +188,7 @@ o4i_test_0: header
 	@make 	TESTPREFIX="0_"  			\
 			ORGNAME="O4I"    			\
 			ORGPREFIX="o4i_" 			\
+			ALLINC="true"				\
 			STAGE="testing"  			\
 	build
 
@@ -194,6 +197,7 @@ o4i_test_noprefix: header
 	@make 	TESTPREFIX=""    			\
 			ORGNAME="O4I"    			\
 			ORGPREFIX="o4i_" 			\
+			ALLINC="true"				\
 			STAGE="testing"  			\
 	build
 
