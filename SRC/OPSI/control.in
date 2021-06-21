@@ -1,6 +1,6 @@
 {{! ========================================================================== }}
 {{!  Vivaldi CONTROL                                                           }}
-{{!  J. Boettge <boettge@mpi-halle.mpg.de> 2020-04-22 12:31:13 +0200           }}
+{{!  J. Boettge <boettge@mpi-halle.mpg.de> 2021-06-21 12:51:01 +0200           }}
 {{! ========================================================================== }}
 [Package]
 version: {{O_PKG_VER}}
@@ -16,7 +16,7 @@ description: • Free an powerful webbrowser based on the chromium engine
     ___
     WebSite: https://vivaldi.com/
     Changelog: {{O_CHANGELOG}}
-advice: Maintainer: {{O_MAINTAINER}}
+advice: Maintainer: {{{O_MAINTAINER}}}
     Organization: {{ORGNAME}}
     Release date: {{O_RELEASE_DATE}}
 version: {{O_SOFTWARE_VER}}
@@ -29,7 +29,7 @@ updateScript:
 alwaysScript: 
 onceScript: 
 customScript: 
-userLoginScript: 
+userLoginScript: config_profile.opsiscript
 
 [ProductProperty]
 type: bool
@@ -59,7 +59,7 @@ default: ["64 bit"]
 type: bool
 name: disable_update_notifier
 description: disable the update notifier (by removing binary)
-default: False
+default: True
 
 [ProductProperty]
 type: bool
@@ -71,6 +71,13 @@ default: False
 type: bool
 name: desktoplink
 description: generate or delete DesktopLink
+default: False
+
+
+[ProductProperty]
+type: bool
+name: fix_user_profiles
+description: Fix user profiles (try to remove installation in profile)
 default: False
 
 [ProductProperty]

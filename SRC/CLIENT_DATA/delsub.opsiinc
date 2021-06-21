@@ -1,6 +1,6 @@
 ;=====================================================================
 ; delsub.opsiinc VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2019-07-24 14:39:12 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2021-06-21 12:31:57 +0200
 ;=====================================================================
 
 ;=======================================
@@ -105,7 +105,7 @@ endif
 ;=======================================
 [sub_do_opsi_inst_remove_generals]
 ;=======================================
-Message "removing link from startmenu"
+Message "Removing link from startmenu"
 LinkFolder_RemoveVivaldi
 LinkFolder_RemoveDesktopLink
 ;if ($pr_MakeDefault$ = "true")
@@ -130,7 +130,7 @@ if FileExists($UninstDir$)
 		Message "Uninstalling previous setup of " + $UninstName$ + " (" + $UninstArch$ + " bit)"
 	endif
 
-	Message "removing installation directory"
+	Message "Removing installation directory"
 	set $LogLevel$ = getLogLevel
 	SetLogLevel=5
 	Files_RemoveInstallDir

@@ -1,0 +1,2 @@
+message "testing custom script...."
+sleepseconds 2

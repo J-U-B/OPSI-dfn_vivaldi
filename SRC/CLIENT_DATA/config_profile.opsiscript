@@ -1,0 +1,69 @@
+;=====================================================================
+; config_profile.opsiscript (VIVALDI)
+; J. Boettge <boettge@mpi-halle.mpg.de>  2021-06-21 12:53:58 +0200
+;=====================================================================
+
+;======================================================================
+[Initial]
+;======================================================================
+encoding=utf8
+setLogLevel=5
+; Log Errors in Logfile but don't abort:
+ExitOnError=true
+; Show syntax errors in the script:
+ScriptErrorMessages=off
+; Dont trace step by step through the script:
+TraceMode=off 
+; Let started programs run in front of the winst window
+StayOnTop=false 
+
+;======================================================================
+;[Actions]
+;======================================================================
+;include_insert "%ScriptPath%\product_variables.opsiinc"
+;
+;Message "Configure user profile(s) for " + $ProductName$
+;ShowBitmap $Img_Config $ProductName$
+;
+;if FileExists("%ScriptPath%\config_profile.opsiinc")
+;	comment "Starting config_profile sub section"
+;	include_append "%ScriptPath%\config_profile.opsiinc"
+;	sub_config_profile
+;else
+;	logError "Can't find config_profile script"
+;	isFatalError "config_profile.opsiinc not found"
+;	
+;endif
+
+;======================================================================
+[ProfileActions]
+;======================================================================
+if getProductProperty("fix_user_profiles","false") = "true"
+	comment "Trying to fix user profiles"
+	;if not (scriptWasExecutedBefore)
+		if (GetScriptMode = "Machine")
+			Message "Configure local user profile(s) for " + getValue("name", getProductMap)
+		else
+			; include_insert "%ScriptPath%\product_variables.opsiinc"
+			Message "Configure user profile (" + GetLoggedInUser + ") for " + getValue("name", getProductMap)
+		endif
+		
+		Registry_disable_update_notifier
+		Files_del_vivaldi_lnk
+		Files_rename_profile_installation
+	;endif
+else
+	comment "Skipping try to fix user profiles"
+endif
+
+[Registry_disable_update_notifier]
+openkey [HKCU\Software\Microsoft\Windows\CurrentVersion\Run]
+deletevar "Vivaldi Update Notifier"
+
+[Files_del_vivaldi_lnk]
+del -s "%UserProfileDir%\Appdata\Roaming\Microsoft\Windows\Start Menu\Programs\Vivaldi.lnk"
+
+[Files_rename_profile_installation]
+zipfile "%UserProfileDir%\AppData\Local\Vivaldi\Application" "%UserProfileDir%\AppData\Local\Vivaldi\Application.zip"
+del -sf "%UserProfileDir%\AppData\Local\Vivaldi\Application"
+

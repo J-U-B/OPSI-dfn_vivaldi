@@ -1,7 +1,21 @@
+vivaldi 4.0.2312.33-28
+	* product update ==> 4.0.2312.33 (Chromium upgraded to 91.0.4472.114)
+	* property default disable_update_notifier changed to true
+	* new property: fix_user_profiles
+	* configure user profile(s) to remove update notifier (config_profile.opsiscript)
+	* Makefile: new target: pdf
+	* switched template engine from pystache to mustache (Go implementation)
+	* updated helpers.opsiinc -> v1.7
+	* added custom directory with custom_test.opsiinc
+	* copy changelog and readme.pdf also to CLIENT_DATA
+	* control: omit escaping of O_MAINTAINER (https://github.com/hoisie/mustache#escaping)
+	* updated readme (pystache -> mustache)
+	* added .gitattributes
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2021-06-21 12:51:41 +0200
+
 vivaldi 4.0.2312.27-27
 	* product update ==> 4.0.2312.27
 	* UTF-8 encoding for *.opsiscript
-	-- J. Boettge <boettge@mpi-halle.mpg.de>  2021-06-14 06:56:45 +0200
 
 vivaldi 4.0.2312.24-26
 	* product update ==> 4.0.2312.24

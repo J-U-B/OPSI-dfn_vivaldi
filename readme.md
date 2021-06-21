@@ -5,7 +5,7 @@
 * [Paket erstellen](#paket_erstellen)
 	* [Voraussetzungen](#voraussetzungen)
 	* [Makefile und spec.json](#makefile_und_spec)
-	* [pystache](#pystache)
+	* [Mustache](#mustache)
 	* [Verzeichnisstruktur](#verzeichnisstruktur)
 	* [Makefile-Parameter](#makefile_parameter)
 	* [spec.json](#spec_json)
@@ -70,14 +70,18 @@ Im Idealfall ist beim Erscheinen einer neuen Release von Vivaldi lediglich die
 
 <div id="pystache"></div>
 
-### pystache ###
+<div id="mustache"></div>
 
-Als Template-Engine kommt **<code>pystache</code>** zum Einsatz.
-Das entsprechende Paket ist auf dem Build-System aus dem Repository der verwendeten
-Distribution zu installieren.
+### Mustache ###
 
-Unter Debian/Ubuntu erledigt das:
-> <code>sudo apt-get install python-pystache</code>
+Als Template-Engine kommt **Mustache** zum Einsatz.  
+Im Detail wird hier eine Go-Implementierung verwendet. Die Software ist auf 
+[Github](https://github.com/cbroglie/mustache) zu finden. Binaries 
+für Linux und Windows liegen diesem Paket bei.
+
+Das in vorherigen Versionen dieses Paketes (<11) verwendete `pystache` kommt
+nicht mehr zum Einsatz und wurde aus den Quellen entfernt.
+
 
 
 <div id="verzeichnisstruktur"></div>
