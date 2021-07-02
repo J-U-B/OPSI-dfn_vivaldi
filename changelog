@@ -1,3 +1,8 @@
+vivaldi 4.0.2312.36-29
+	* product update ==> 4.0.2312.36
+	* renamed property disable_update_notifier to deactivate_update_notifier (force new default!)
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2021-07-02 07:44:13 +0200
+
 vivaldi 4.0.2312.33-28
 	* product update ==> 4.0.2312.33 (Chromium upgraded to 91.0.4472.114)
 	* property default disable_update_notifier changed to true

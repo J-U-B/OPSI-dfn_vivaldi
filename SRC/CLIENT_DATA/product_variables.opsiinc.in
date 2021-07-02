@@ -224,7 +224,7 @@ Set $ProductVersionFilter$ 	= "*"
 ; disable the Update Notifier?
 ; make Vivaldi to the default browser?
 ;-----------------------------------------------------------
-Set $pr_NoUpdNotify$ = GetProductProperty("disable_update_notifier", "false")
+Set $pr_NoUpdNotify$ = GetProductProperty("deactivate_update_notifier", "true")
 Set $pr_MakeDefault$ = GetProductProperty("make_default", "false")
 
 ;-----------------------------------------------------------

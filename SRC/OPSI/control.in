@@ -1,6 +1,6 @@
 {{! ========================================================================== }}
 {{!  Vivaldi CONTROL                                                           }}
-{{!  J. Boettge <boettge@mpi-halle.mpg.de> 2021-06-21 12:51:01 +0200           }}
+{{!  J. Boettge <boettge@mpi-halle.mpg.de> 2021-06-22 07:03:34 +0200           }}
 {{! ========================================================================== }}
 [Package]
 version: {{O_PKG_VER}}
@@ -57,8 +57,8 @@ default: ["64 bit"]
 
 [ProductProperty]
 type: bool
-name: disable_update_notifier
-description: disable the update notifier (by removing binary)
+name: deactivate_update_notifier
+description: deactivate the update notifier (by renaming binary)
 default: True
 
 [ProductProperty]
