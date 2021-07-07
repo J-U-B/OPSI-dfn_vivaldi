@@ -1,3 +1,8 @@
+vivaldi 4.0.2312.38-30
+	* product update ==> 4.0.2312.38
+	* Makefile: make ALLINC=true default for o4i
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2021-07-07 07:05:45 +0200
+
 vivaldi 4.0.2312.36-29
 	* product update ==> 4.0.2312.36
 	* renamed property disable_update_notifier to deactivate_update_notifier (force new default!)

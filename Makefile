@@ -1,8 +1,8 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 2.5.0
+# Version: 2.5.1
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2021-06-16 09:30:29 +0200
+# 2021-07-07 07:05:03 +0200
 ############################################################
 
 .PHONY: header clean mpimsp mpimsp_test o4i o4i_test dfn dfn_test all_test all_prod all help download pdf
@@ -13,6 +13,11 @@ DEFAULT_SPEC = spec.json
 DEFAULT_ALLINC = false
 DEFAULT_KEEPFILES = false
 DEFAULT_ARCHIVEFORMAT = cpio
+
+ifeq ($(ORGNAME),O4I)
+	override DEFAULT_ALLINC = true
+endif
+
 ### to keep the changelog inside the control set CHANGELOG_TGT to an empty string
 ### otherwise the given filename will be used:
 CHANGELOG_TGT = changelog.txt
@@ -171,7 +176,6 @@ o4i: header
 	@make 	TESTPREFIX=""    			\
 			ORGNAME="O4I"    			\
 			ORGPREFIX="o4i_" 			\
-			ALLINC="true"				\
 			STAGE="release"  			\
 	build
 
@@ -180,7 +184,6 @@ o4i_test: header
 	@make 	TESTPREFIX="test_"  		\
 			ORGNAME="O4I"    			\
 			ORGPREFIX="o4i_" 			\
-			ALLINC="true"				\
 			STAGE="testing"  			\
 	build
 
@@ -189,7 +192,6 @@ o4i_test_0: header
 	@make 	TESTPREFIX="0_"  			\
 			ORGNAME="O4I"    			\
 			ORGPREFIX="o4i_" 			\
-			ALLINC="true"				\
 			STAGE="testing"  			\
 	build
 
@@ -198,7 +200,6 @@ o4i_test_noprefix: header
 	@make 	TESTPREFIX=""    			\
 			ORGNAME="O4I"    			\
 			ORGPREFIX="o4i_" 			\
-			ALLINC="true"				\
 			STAGE="testing"  			\
 	build
 
