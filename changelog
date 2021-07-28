@@ -1,8 +1,11 @@
+vivaldi 4.1.2369.11-30
+	* product update ==> 4.1.2369.11
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2021-07-28 13:49:15 +0200
+
 vivaldi 4.0.2312.41-30
 	* product update ==> 4.0.2312.41 (Chromium upgraded to 91.0.4472.166)
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2021-07-17 06:47:10 +0200
-	
-	
+
 vivaldi 4.0.2312.38-30
 	* product update ==> 4.0.2312.38
 	* Makefile: make ALLINC=true default for o4i
