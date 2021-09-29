@@ -1,7 +1,7 @@
 {  
 	"_": "=== OPSI package variables ===",
 	"O_PKG_VER"         : "30",
-	"O_SOFTWARE_VER"    : "4.2.2406.48",
+	"O_SOFTWARE_VER"    : "4.2.2406.52",
 	"O_SOFTWARE"        : "vivaldi",
 	"O_CHANGELOG"       : "https://vivaldi.com/de/changelog-vivaldi-browser-4-2/",
 	"O_RELEASE_DATE"    : "{{M_TODAY}}",
