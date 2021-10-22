@@ -61,7 +61,7 @@ fi
 if [ "$DOWNLOADER" = "curl" ]; then
 	#options for curl:
 	DOWNLOADER=$CURL
-	DL_OPTS="--silent --show-error -L -k "
+	DL_OPTS="--silent --show-error -L "
 	DL_OUT="-o"
 fi
 
