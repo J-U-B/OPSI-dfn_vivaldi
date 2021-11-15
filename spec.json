@@ -1,9 +1,9 @@
 {  
 	"_": "=== OPSI package variables ===",
 	"O_PKG_VER"         : "30",
-	"O_SOFTWARE_VER"    : "4.3.2439.63",
+	"O_SOFTWARE_VER"    : "4.3.2439.65",
 	"O_SOFTWARE"        : "vivaldi",
-	"O_CHANGELOG"       : "https://vivaldi.com/blog/desktop/update-three-4-3/",
+	"O_CHANGELOG"       : "https://vivaldi.com/blog/desktop/update-four-4-3/",
 	"O_RELEASE_DATE"    : "{{M_TODAY}}",
 	"O_INST_LOG"        : "/tmp/{{M_ORGPREFIX}}vivaldi__opsi_package_install.log",
 	"O_MAINTAINER"      : "Jens Boettge <boettge@mpi-halle.mpg.de>",
