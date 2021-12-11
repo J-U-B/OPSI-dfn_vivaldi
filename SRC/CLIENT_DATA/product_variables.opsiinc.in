@@ -1,6 +1,6 @@
 ;=====================================================================
 ; product specific variables  VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2020-04-22 11:50:09 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2021-12-11 17:38:44 +0100
 ;=====================================================================
 
 include_insert "%ScriptPath%\variables.opsiinc"
@@ -180,11 +180,7 @@ set $bPSDetail$			= "false"
 ;-----------------------------------------------------------
 ;*** logs & temp
 ;-----------------------------------------------------------
-if $isO4I$ = "true"
-	Set $LogDir$		= "%opsiLogDir%"
-else
-	Set $LogDir$		= "%SystemDrive%\tmp"
-endif
+Set $LogDir$			= "%opsiLogDir%"
 Set $InstallLog$		= $LogDir$ + "\"+$ProductId$+"_install.log"
 Set $UninstallLog$		= $LogDir$ + "\"+$ProductId$+"_uninstall.log"
 
