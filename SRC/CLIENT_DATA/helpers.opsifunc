@@ -1,14 +1,27 @@
 ;==========================================================================
 ; helpers.opsifunc
-; 
+;
 ; Some general helper functions...
 ;
-; Version: 	v1.7
+; Version: 	v1.9.0
 ; Author : 	J. Boettge <boettge@mpi-halle.mpg.de>
-; Date   :	2020-11-27 00:05:05 +0100
+; Date   :	2022-04-11 11:40:26 +0200
 ;==========================================================================
 ; Changelog
 ; ---------
+; v1.8.1
+; * adjusted removeProductOnClientStatus, removeProductVerOnClientStatus,
+;   and clearProductVerOnClientStatus: also include installation status
+;   'unknown' and target configuration 'always'
+; * removeProductVerOnClientStatus and clearProductVerOnClientStatus
+;   also match productVersion = null for "*"
+;
+; v1.8.0
+; * added function setProductProperty
+;
+; v1.7.1
+; * fixed syntax opsiServiceCalls
+;
 ; v1.7
 ; * added function clearProductOnClientStatus
 ;
@@ -256,8 +269,8 @@ DefFunc productSetActionRequest(val $prodId$:string, val $actRequest$: string) :
 ;.................................................
 "method": "setProductActionRequest"
 "params": [ 
-"$prodId$"
-"%opsiserviceUser%"
+"$prodId$",
+"%opsiserviceUser%",
 "$actRequest$"
 ]	
 ;.................................................
@@ -299,12 +312,68 @@ DefFunc currentProductSetReport(val $Report$: string) : string
 ;.................................................
 "method": "setProductActionProgress"
 "params": [
-"$prodId$"
-"%opsiserviceUser%"
+"$prodId$",
+"%opsiserviceUser%",
 "$Report$"
 ]
 ;.................................................
 EndFunc
+
+
+;-------------------------------------------------------------------------
+DefFunc setProductProperty(val $product$:string, val $property$:string, val $propertyValue$:string) : string
+;-------------------------------------------------------------------------
+; Set a property value for a productId on the current client.
+; Some valid strings for $propertyValue$:
+;		"value"
+;		'value'
+;		'"val1", "val2"
+;		'["val3", "val4"]'
+;		"['val5', 'val5']"
+;
+; Return value:
+;		* empty string in case of no error
+;		* error message (result of opsiServiceCall) in any other case
+;-------------------------------------------------------------------------
+	DefVar $logLvl$
+	set $logLvl$=getLoglevel
+	setLogLevel=7
+
+	set $propertyValue$ = stringReplace($propertyValue$, "'", '"')
+	if not(isRegexMatch($propertyValue$, '^\[.*\]$'))
+		if not(isRegexMatch($propertyValue$, '^\".*\"$'))
+			set $propertyValue$ = '"' + $propertyValue$ + '"'
+		endif
+		set $propertyValue$ = "[" + $propertyValue$ + "]"
+	endif
+
+	DefStringList $outStream$
+	set $outStream$ = getReturnListFromSection("opsiServiceCall_set_productProperty")
+	set $result$ = takeString("0", $outStream$)
+	if ($result$='[]')
+		set $result$ = ''
+	endif
+	if strPos($result$,'-> ') INT> "0"
+		set $result$ = strPart($result$, "4", strLength($result$))
+	endif
+	if jsonIsObject($result$)
+		set $result$ = jsonAsObjectGetValueByKey($result$, "message")
+	endif
+	setLogLevel=$logLvl$
+
+;.................................................
+[opsiServiceCall_set_productProperty]
+;.................................................
+"method": "setProductProperty"
+"params": [
+	"$product$",
+	"$property$",
+	'$propertyValue$',
+	"%opsiserviceUser%"
+]
+;.................................................
+EndFunc
+;--- ...setProductProperty -----------------------------------------------
 
 
 ;-------------------------------------------------------------------------
@@ -318,7 +387,7 @@ DefFunc productGetOnClient(val $product$:string) : string
 	DefStringList $outStream$
 	set $outStream$ = getReturnListFromSection("opsiServiceCall_get_productOnClient")
 	set $result$ = takeString("0", $outStream$)
-	
+
 ;.................................................
 [opsiServiceCall_get_productOnClient]
 ;.................................................
@@ -513,22 +582,20 @@ DefFunc removeProductOnClientStatus(val $productFilter$:string) : string
 	DefVar $p_prodId$
 	DefVar $p_actProgess$
 	DefVar $thisProductId$
-	
+
 	DefVar $logLvl$
 	set $logLvl$=getLoglevel
-	setLogLevel=7	
-	
+	setLogLevel=7
+
 	set $thisProductId$   = getValue("id", getProductMap)
-	
+
 	set $productArray$ = productGetOnClient($productFilter$)
 	if jsonIsArray($productArray$)
 		set $count$ = jsonAsArrayCountElements($productArray$)
 		comment "Found products for [" + $productFilter$ +"]: " + $count$
-		
 		if ($count$ INT> "0")
 			for %prod_idx% = "0" to calculate($count$ + "-1")  do sub_process_depot_info
-		
-		endif		
+		endif
 	endif
 	setLogLevel=$logLvl$
 
@@ -542,7 +609,7 @@ if not ($p_prodId$ = $thisProductId$)
 	set $p_instStatus$ = jsonAsObjectGetValueByKey($object$, "installationStatus")
 	set $p_tgtConfig$  = jsonAsObjectGetValueByKey($object$, "targetConfiguration")
 
-	if ($p_instStatus$ = "installed") OR ($p_tgtConfig$ = "installed")
+	if ($p_instStatus$ = "installed") OR ($p_instStatus$ = "unknown") OR ($p_tgtConfig$ = "installed") OR ($p_tgtConfig$ = "always")
 		set $result$ = productUpdateOnClient($p_prodId$, "forbidden", "not_installed")
 		if not ($result$ = "")
 			logError $result$
@@ -588,18 +655,20 @@ DefFunc removeProductVerOnClientStatus(val $productFilter$:string, val $pVersion
 
 	set $thisProductId$   = getValue("id", getProductMap)
 
-	set $productArray$ = productVerGetOnClient($productFilter$, $pVersion$)
+	if ($pVersion$ = "*")
+		set $productArray$ = productGetOnClient($productFilter$)
+	else
+		set $productArray$ = productVerGetOnClient($productFilter$, $pVersion$)
+	endif
 	if jsonIsArray($productArray$)
 		set $count$ = jsonAsArrayCountElements($productArray$)
 		comment "Found products for [" + $productFilter$ +"]: " + $count$
 
 		if ($count$ INT> "0")
 			for %prod_idx% = "0" to calculate($count$ + "-1")  do sub_process_depot_info
-
 		endif
 	endif
 	setLogLevel=$logLvl$
-
 
 ;----------------------------------------------------------
 [sub_process_depot_info]
@@ -611,7 +680,7 @@ if not ($p_prodId$ = $thisProductId$)
 	set $p_instStatus$ = jsonAsObjectGetValueByKey($object$, "installationStatus")
 	set $p_tgtConfig$  = jsonAsObjectGetValueByKey($object$, "targetConfiguration")
 
-	if ($p_instStatus$ = "installed") OR ($p_tgtConfig$ = "installed")
+	if ($p_instStatus$ = "installed") OR ($p_instStatus$ = "unknown") OR ($p_tgtConfig$ = "installed") OR ($p_tgtConfig$ = "always")
 		set $result$ = productUpdateOnClient($p_prodId$, "forbidden", "not_installed")
 		if not ($result$ = "")
 			logError $result$
@@ -656,7 +725,7 @@ DefFunc clearProductVerOnClientStatus(val $productFilter$:string, val $pVersion$
 	DefVar $logLvl$
 	set $logLvl$=getLoglevel
 	setLogLevel=7
-	
+
 	if ($pTgtConfig$ = "")
 		set $tgtConfig$ = 'forbidden'
 	else
@@ -670,18 +739,20 @@ DefFunc clearProductVerOnClientStatus(val $productFilter$:string, val $pVersion$
 
 	set $thisProductId$   = getValue("id", getProductMap)
 
-	set $productArray$ = productVerGetOnClient($productFilter$, $pVersion$)
+	if ($pVersion$ = "*")
+		set $productArray$ = productGetOnClient($productFilter$)
+	else
+		set $productArray$ = productVerGetOnClient($productFilter$, $pVersion$)
+	endif
 	if jsonIsArray($productArray$)
 		set $count$ = jsonAsArrayCountElements($productArray$)
 		comment "Found products for [" + $productFilter$ +"]: " + $count$
 
 		if ($count$ INT> "0")
 			for %prod_idx% = "0" to calculate($count$ + "-1")  do sub_process_depot_info
-
 		endif
 	endif
 	setLogLevel=$logLvl$
-
 
 ;----------------------------------------------------------
 [sub_process_depot_info]
@@ -693,7 +764,7 @@ if not ($p_prodId$ = $thisProductId$)
 	set $p_instStatus$ = jsonAsObjectGetValueByKey($object$, "installationStatus")
 	set $p_tgtConfig$  = jsonAsObjectGetValueByKey($object$, "targetConfiguration")
 
-	if ($p_instStatus$ = "installed") OR ($p_tgtConfig$ = "installed")
+	if ($p_instStatus$ = "installed") OR ($p_instStatus$ = "unknown") OR ($p_tgtConfig$ = "installed") OR ($p_tgtConfig$ = "always")
 		set $result$ = productUpdateOnClient($p_prodId$, $tgtConfig$, $instStatus$)
 		if not ($result$ = "")
 			logError $result$
@@ -712,4 +783,4 @@ else
 endif
 ;-------------------------------------------------------------------------
 EndFunc
-;--- ...clearProductOnClientStatus --------------------------------------
+;--- ...clearProductOnClientStatus ---------------------------------------
