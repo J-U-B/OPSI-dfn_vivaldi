@@ -1,8 +1,8 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 2.5.1
+# Version: 2.6.0
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2021-07-07 07:05:03 +0200
+# 2022-05-12 11:15:29 +0200
 ############################################################
 
 .PHONY: header clean mpimsp mpimsp_test o4i o4i_test dfn dfn_test all_test all_prod all help download pdf
@@ -68,7 +68,8 @@ FILES_EXPECTED = 2
 MD5SUM_FILE := $(SW_NAME).md5sums
 
 ### Only download packages?
-ifeq ($(MAKECMDGOALS),download)
+# ifeq ($(MAKECMDGOALS),download)
+ifneq ($(filter download all_%,$(MAKECMDGOALS)),)
 	ONLY_DOWNLOAD=true
 else
 	ONLY_DOWNLOAD=false
@@ -451,8 +452,8 @@ build: download pdf clean copy_from_src
 	cd $(CURDIR)
 
 
-all_test:  header mpimsp_test o4i_test dfn_test dfn_test_0
+all_test:  header download mpimsp_test o4i_test dfn_test dfn_test_0
 
-all_prod : header mpimsp o4i dfn
+all_prod : header download mpimsp o4i dfn
 
 all : header download mpimsp o4i dfn

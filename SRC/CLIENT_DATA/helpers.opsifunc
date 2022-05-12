@@ -9,7 +9,7 @@
 ;==========================================================================
 ; Changelog
 ; ---------
-; v1.8.1
+; v1.9.0
 ; * adjusted removeProductOnClientStatus, removeProductVerOnClientStatus,
 ;   and clearProductVerOnClientStatus: also include installation status
 ;   'unknown' and target configuration 'always'
