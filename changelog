@@ -1,3 +1,7 @@
+vivaldi 5.2.2623.48-33
+	* product update ==> 5.2.2623.48
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2022-05-19 13:26:25 +0200
+
 vivaldi 5.2.2623.46-33
 	* product update ==> 5.2.2623.46
 	* adjustment in Makefile for download
