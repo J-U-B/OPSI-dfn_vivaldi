@@ -1,7 +1,7 @@
 {
 	"_": "=== OPSI package variables ===",
 	"O_PKG_VER"         : "33",
-	"O_SOFTWARE_VER"    : "5.3.2679.36",
+	"O_SOFTWARE_VER"    : "5.3.2679.38",
 	"O_SOFTWARE"        : "vivaldi",
 	"O_CHANGELOG"       : "https://vivaldi.com/blog/desktop/minor-update-three-5-3/",
 	"O_RELEASE_DATE"    : "{{M_TODAY}}",
