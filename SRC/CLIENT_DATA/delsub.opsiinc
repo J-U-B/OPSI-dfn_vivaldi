@@ -1,6 +1,6 @@
 ;=====================================================================
 ; delsub.opsiinc VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2021-06-21 12:31:57 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2022-06-16 15:26:15 +0200
 ;=====================================================================
 
 ;=======================================
@@ -45,12 +45,18 @@ if ($bInstalled$ INT> "0")
 	for %s% in $UninstList$ do sub_do_opsi_inst_remove
 
 	;=== custom post uninstall
-	comment "include custom post uninstall file"
 	if not ($CustomPostUninstall$ = "none")
 		if FileExists("%ScriptPath%\custom\" + $CustomPostUninstall$)
-			include_insert "%ScriptPath%\custom\" + $CustomPostUninstall$
+			ShowBitmap $Img_Uninstall_Custom$ $ProductName$
+			comment "Starting custom post uninstall"
+			include_append "%ScriptPath%\custom\" + $CustomPostUninstall$
+			SUB_POST_UNINSTALL
+			ShowBitmap $Img_Uninstall$ $ProductName$
+		else
+			logError "Can't find custom post uninstall script: %ScriptPath%\custom\" + $CustomPostUninstall$
 		endif
 	endif
+
 endif
 
 if (count($UninstRegList$) INT> "0")
@@ -234,3 +240,5 @@ deleteVar ""
 
 openkey [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet]
 deleteVar ""
+
+[EOF_delsub]

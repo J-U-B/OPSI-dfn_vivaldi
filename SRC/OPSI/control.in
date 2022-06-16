@@ -1,6 +1,6 @@
 {{! ========================================================================== }}
 {{!  Vivaldi CONTROL                                                           }}
-{{!  J. Boettge <boettge@mpi-halle.mpg.de> 2021-06-22 07:03:34 +0200           }}
+{{!  J. Boettge <boettge@mpi-halle.mpg.de> 2022-06-16 15:29:01 +0200           }}
 {{! ========================================================================== }}
 [Package]
 version: {{O_PKG_VER}}
@@ -86,7 +86,7 @@ name: custom_post_install
 multivalue: False
 editable: True
 description: Define filename for include script in custom directory after installation
-values: ["none", "post-install.opsiinc"]
+values: ["none", "custom_test.opsiinc", "post-install.opsiinc"]
 default: ["none"]
 
 [ProductProperty]
@@ -95,7 +95,7 @@ name: custom_post_uninstall
 multivalue: False
 editable: True
 description: Define filename for include script in custom directory after deinstallation
-values: ["none", "post-uninstall.opsiinc"]
+values: ["none", "custom_test.opsiinc", "post-uninstall.opsiinc"]
 default: ["none"]
 
 [ProductProperty]

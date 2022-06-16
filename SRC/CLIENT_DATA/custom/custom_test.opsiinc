@@ -1,2 +1,17 @@
-message "testing custom script...."
-sleepseconds 2
+;=====================================================================
+; Custom scripts example
+;
+; J. Boettge <boettge@mpi-halle.mpg.de>  2022-06-16 13:12:32 +0200
+;=====================================================================
+
+;-----------------------------------------------------------
+[SUB_POST_INSTALL]
+;-----------------------------------------------------------
+message "testing custom post INSTALL script...."
+sleepseconds 1
+
+;-----------------------------------------------------------
+[SUB_POST_UNINSTALL]
+;-----------------------------------------------------------
+message "testing custom post UNINSTALL script...."
+sleepseconds 1
