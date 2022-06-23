@@ -1,3 +1,7 @@
+vivaldi 5.3.2679.61-34
+	* product update ==> 5.3.2679.61
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2022-06-23 11:31:42 +0200
+
 vivaldi 5.3.2679.58-34
 	* product update ==> 5.3.2679.58
 	* changed handling of custom scripts (require SUB_POST_INSTALL and SUB_POST_UNINSTALL sections)
