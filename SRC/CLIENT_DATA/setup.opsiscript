@@ -1,6 +1,6 @@
 ;======================================================================
 ; setup.opsiscript VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2022-06-16 15:24:08 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2022-07-23 09:11:19 +0200
 ;======================================================================
 
 ;======================================================================
@@ -136,12 +136,17 @@ else
 		if FileExists("%ScriptPath%\custom\" + $CustomPostInstall$)
 			ShowBitmap $Img_Install_Custom$ $ProductName$
 			comment "Starting custom post install"
-			include_append "%ScriptPath%\custom\" + $CustomPostInstall$
-			SUB_POST_INSTALL
+			if LineExistsIn("[SUB_POST_INSTALL]", "%ScriptPath%\custom\" + $CustomPostInstall$)
+				include_append "%ScriptPath%\custom\" + $CustomPostInstall$
+				comment "calling section: SUB_POST_INSTALL"
+				SUB_POST_INSTALL
+			else
+				comment "calling section: Sub_InstallAppendix"
+				Sub_InstallAppendix
+			endif
 			ShowBitmap $Img_Install$ $ProductName$
 		else
 			logError "Can't find custom post install script: %ScriptPath%\custom\" + $CustomPostInstall$
-			; isFatalError "delsub.opsiinc not found"
 		endif
 	endif
 
@@ -359,5 +364,12 @@ set "" = REG_SZ:'"$InstallDir$\$MainBin$" -- "%1"'
 
 openkey [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet]
 set "" = REG_SZ:"Vivaldi"
+
+
+;=====================================================================
+[Sub_InstallAppendix]
+;=====================================================================
+include_insert "%ScriptPath%\custom\" + $CustomPostInstall$
+
 
 [EOF_setup]

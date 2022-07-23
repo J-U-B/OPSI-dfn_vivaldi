@@ -1,0 +1,8 @@
+;=====================================================================
+; Custom scripts example
+;
+; J. Boettge <boettge@mpi-halle.mpg.de>  2022-07-23 09:28:29 +0200
+;=====================================================================
+
+message "testing custom post UNINSTALL script (without section)..."
+sleepseconds 1

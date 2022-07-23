@@ -1,3 +1,9 @@
+vivaldi 5.3.2679.70-35
+	* product update ==> 5.3.2679.70
+	* changed handling of custom scripts (use SUB_POST_INSTALL and SUB_POST_UNINSTALL sections (optional))
+	* added custom post (un)install scripts as alternative to single script with sections
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2022-07-23 09:30:56 +0200
+
 vivaldi 5.3.2679.68-34
 	* product update ==> 5.3.2679.68
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2022-07-06 06:51:03 +0200
