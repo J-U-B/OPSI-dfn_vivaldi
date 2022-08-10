@@ -1,3 +1,8 @@
+vivaldi 5.4.2753.28-36
+	* product update ==> 5.4.2753.28
+	* fixed custom post uninstall section check
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2022-08-10 14:21:15 +0200
+
 vivaldi 5.3.2679.70-35
 	* product update ==> 5.3.2679.70
 	* changed handling of custom scripts (use SUB_POST_INSTALL and SUB_POST_UNINSTALL sections (optional))

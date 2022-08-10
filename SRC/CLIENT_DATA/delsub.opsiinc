@@ -1,6 +1,6 @@
 ;=====================================================================
 ; delsub.opsiinc VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2022-07-23 09:13:55 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2022-08-04 11:27:56 +0200
 ;=====================================================================
 
 ;=======================================
@@ -49,7 +49,7 @@ if ($bInstalled$ INT> "0")
 		if FileExists("%ScriptPath%\custom\" + $CustomPostUninstall$)
 			ShowBitmap $Img_Uninstall_Custom$ $ProductName$
 			comment "Starting custom post uninstall"
-			if LineExistsIn("[SUB_POST_INSTALL]", "%ScriptPath%\custom\" + $CustomPostInstall$)
+			if LineExistsIn("[SUB_POST_INSTALL]", "%ScriptPath%\custom\" + $CustomPostUninstall$)
 				include_append "%ScriptPath%\custom\" + $CustomPostUninstall$
 				comment "calling section: SUB_POST_INSTALL"
 				SUB_POST_UNINSTALL
