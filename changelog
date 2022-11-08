@@ -1,3 +1,7 @@
+vivaldi 5.5.2805.42-38
+	* fixed $PathToExe$
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2022-11-08 17:10:32 +0100
+
 vivaldi 5.5.2805.42-37
 	* product update ==> 5.5.2805.42
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2022-11-01 10:36:02 +0100

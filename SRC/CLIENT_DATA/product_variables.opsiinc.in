@@ -1,6 +1,6 @@
 ;=====================================================================
 ; product specific variables  VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2021-12-11 17:38:44 +0100
+; J. Boettge <boettge@mpi-halle.mpg.de>  2022-11-08 17:08:40 +0100
 ;=====================================================================
 
 include_insert "%ScriptPath%\variables.opsiinc"
@@ -236,7 +236,7 @@ Set $Archive$		= $ProductName$ + "." + $Version$ + ".x" + $sw_arch$ + ".7z"
 Set $MainBin$      		= $StrippedProductId$ +".exe"
 Set $NotifierBin$		= $InstallDir$ + "\" + "update_notifier.exe"
 Set $NotifierPattern$	= $StrippedProductId$ + "%\update_notifier.exe"
-Set $PathToExe$			= $InstallDir$ + $MainBin$
+Set $PathToExe$			= $InstallDir$ + "\" + $MainBin$
 
 ;-----------------------------------------------------------
 if ( $sw_arch$ = "32" )
