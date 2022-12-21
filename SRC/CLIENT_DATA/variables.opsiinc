@@ -50,7 +50,7 @@ DefVar $MinimumSpace$
 DefVar $NotifierBin$
 DefVar $NotifierPattern$
 DefVar $NTVersion$
-defVar $OS$
+DefVar $OS$
 DefVar $PackageReg$
 DefVar $PackageRegBase$
 DefVar $PathToExe$
