@@ -1,6 +1,6 @@
 {{! ========================================================================== }}
 {{!  Vivaldi CONTROL                                                           }}
-{{!  J. Boettge <boettge@mpi-halle.mpg.de> 2022-06-16 15:29:01 +0200           }}
+{{!  J. Boettge <boettge@mpi-halle.mpg.de> 2023-04-17 06:53:04 +0200           }}
 {{! ========================================================================== }}
 [Package]
 version: {{O_PKG_VER}}
@@ -11,15 +11,18 @@ incremental: False
 type: localboot
 id: {{TESTPREFIX}}{{ORGPREFIX}}vivaldi
 name: Vivaldi
-description: • Free an powerful webbrowser based on the chromium engine
-	• Freier und leistungsfaehiger Web-Browser, basierend auf Chromium
-    ___
-    WebSite: https://vivaldi.com/
-    Changelog: {{O_CHANGELOG}}
-advice: Maintainer: {{{O_MAINTAINER}}}
-    Organization: {{ORGNAME}}
-    Release date: {{O_RELEASE_DATE}}
+description: ‣ Free, powerful, and highly configurable web browser based on 
+  the chromium engine; including a mail client  
+  ‣ Freier, leistungsfaehiger und umfangreich konfigurierbarer Web-Browser,
+  basierend auf Chromium; einschliesslich Mailclient  
+  ___  
+  WebSite: https://vivaldi.com/  
+  Changelog: {{O_CHANGELOG}}  
+  Maintainer: {{{O_MAINTAINER}}}  
+  Organization: {{ORGNAME}}  
+  Release date: {{O_RELEASE_DATE}}  
 version: {{O_SOFTWARE_VER}}
+advice:
 priority: 0
 licenseRequired: False
 productClasses: web & mail

@@ -1,3 +1,9 @@
+vivaldi 5.7.2921.68-39
+	* product update ==> 5.7.2921.68
+	* removed deprecated INITIAL section from setup.opsiscript and uninstall.opsiscript
+	* small optimization of control file for rendering of decription
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2023-04-17 06:53:10 +0200
+
 vivaldi 5.7.2921.65-38
 	* product update ==> 5.7.2921.65
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2023-03-23 14:52:47 +0100
