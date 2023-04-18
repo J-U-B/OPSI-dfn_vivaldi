@@ -1,3 +1,7 @@
+vivaldi 6.0.2979.11-39
+	* product update ==> 6.0.2979.11
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2023-04-18 13:19:37 +0200
+    
 vivaldi 5.7.2921.68-39
 	* product update ==> 5.7.2921.68
 	* removed deprecated INITIAL section from setup.opsiscript and uninstall.opsiscript
