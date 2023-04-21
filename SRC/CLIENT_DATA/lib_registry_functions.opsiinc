@@ -1,0 +1,212 @@
+DefFunc SearchRegistryUninstallKeys(val $SearchTerm$ : string) : stringlist
+	;@author		Thomas Besser
+	;@email			thomas.besser@kit.edu
+	;@date			21.11.2018
+	;@copyright		AGPLv3
+	;@version		1.0
+	;@Description	Search in registry (HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, 32- and 64-bit scope, attribute "DisplayName") for installed software
+	;@Returns		Returns stringlist (multiple hits possible)
+	;@Returns		Single string item (= hit) is a composite from "registry key with path", "scope of registry" and "displayname", separated by character "|" (because opsi-script does not know multi-array)
+	;@Returns		for example: "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Test64|64bit|Test Registry Entry64"
+	;@ParamDesc_$SearchTerm$	Search term of which a software can be found in registry on the basis of "DisplayName" (Installers usually are setting this attribute); is not case-sensitive
+	;@Example	[actions]
+	;@Example	DefStringList $ResultList$
+	;@Example	DefVar $RegId$
+	;@Example	DefVar $RegBitScope$
+	;@Example	DefVar $InstalledVersion$
+	;@Example	Set $ResultList$ = SearchRegistryUninstallKeys("Test")
+	;@Example	; take only the first hit
+	;@Example	Set $RegId$ = takeString (0,splitString(takeString(0,$ResultList$), '|'))
+	;@Example	Set $RegBitScope$ = takeString (1,splitString(takeString(0,$ResultList$), '|'))
+	;@Example	Set $InstalledVersion$ = GetRegistryValue($RegId$, "DisplayVersion", $RegBitScope$)
+	DefStringList $ResultList$
+	DefStringList $KeyList$
+	DefVar $RegPathUninstall$
+	DefVar $KeyPath$
+	DefVar $DisplayName$
+	DefVar $RegBitScope$
+	DefVar $SystemType$
+
+	Set $SystemType$ = GetSystemType
+	Set $RegPathUninstall$ = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
+
+	; nur auf 64-Bit-Systemen ausführen
+	if ($SystemType$ = "64 Bit System")
+		; zuerst 64-Bit
+		Set $KeyList$ = getRegistryKeyList64($RegPathUninstall$)
+		Set $RegBitScope$ = "64bit"
+		for %k% in $KeyList$ do Sub_search_in_keys
+	endif
+	; jetzt 32-Bit
+	Set $KeyList$ = getRegistryKeyList32($RegPathUninstall$)
+	Set $RegBitScope$ = "32bit"
+	for %k% in $KeyList$ do Sub_search_in_keys
+
+	Set $result$ = $ResultList$	
+
+	[Sub_search_in_keys]
+	Set $KeyPath$ = $RegPathUninstall$ + "\%k%"
+	if RegVarExists($KeyPath$, "DisplayName", $RegBitScope$)
+		Set $DisplayName$ = getRegistryValue($KeyPath$, "DisplayName", $RegBitScope$)
+		; Check DisplayName auf Suchbegriff, alles lower damit case-insensitive
+		if (contains(lower($DisplayName$), lower($SearchTerm$)))
+			; zusätzlich noch vermerken, in welchem Teil der Registry (32- oder 64bit) der Schlüssel gefunden wurde. Auch DisplayName mitliefern
+			Set $ResultList$ = addtolist($ResultList$, $KeyPath$ + "|" + $RegBitScope$ + "|" + $DisplayName$)
+		endif
+	endif
+endfunc
+
+
+DefFunc PSSearchRegistryUninstallKeys(val $SearchPattern$ : string, val $Scope$ : string) : stringlist
+	;@author		Jens Boettge
+	;@email			boettge@mpi-halle.mpg.de
+	;@date			2022-08-26
+	;@copyright		AGPLv3
+	;@version		1.1
+	;@Description	Search in registry (HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall) of the requested scope for installed software using attribute "DisplayName". +
+	;@Description	"*" is accepted as wildcard. Without a wildcard, the exact phrase is searched for. +
+	;@Description   Before use, make sure that a permissive execution policy is active for PowerShell (Unrestricted, RemoteSigned).
+	;@Description   For this you can use `powershellGetExecPolicy`/`powershellSetExecPolicy` from **helpers.opsifunc**.
+	;@Returns		Returns stringlist (multiple hits possible)
+	;@Returns		Single string item (= hit) is a composite from "registry key with path", "scope of registry" and "displayname", separated by character "|" (because opsi-script does not know multi-array)
+	;@Returns		for example: "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Test64|64bit|Test Registry Entry64"
+	;@ParamDesc_$SearchPattern$	Search term of which a software can be found in registry on the basis of "DisplayName" (Installers usually are setting this attribute). Not case-sensitive. Note: "*" works as wildcard; without wildcard, the exact phrase is searched for!
+	;@ParamDesc_$Scope$ The search scope. Valid values are "32", "64", "32+64", an empty or invalid value is interpreted for a search in 32 and 64 bit.
+	;@Example	[actions]
+	;@Example	DefStringList $ResultList$
+	;@Example	DefVar $RegId$
+	;@Example	DefVar $RegBitScope$
+	;@Example	DefVar $InstalledVersion$
+	;@Example	Set $ResultList$ = PSSearchRegistryUninstallKeys("Test")
+	;@Example	; example takes only the first hit
+	;@Example	Set $RegId$ = takeString (0,splitString(takeString(0,$ResultList$), '|'))
+	;@Example	Set $RegBitScope$ = takeString (1,splitString(takeString(0,$ResultList$), '|'))
+	;@Example	Set $InstalledVersion$ = GetRegistryValue($RegId$, "DisplayVersion", $RegBitScope$)
+
+	DefVar $EnumValidScopes$ = "|32|64|32+64|64+32|96|3264|6432|all|both|"
+	if not(contains($EnumValidScopes$, '|'+$Scope$+'|'))
+		set $Scope$ = "32+64"
+	endif
+
+	Set $Result$ = getOutStreamFromSection('ExecWith_PS__Search powershell.exe winst /sysnative')
+
+	DefStringList $DBG$
+	Set $DBG$ = removeFromListByContainingRegex('^HKEY_LOCAL_MACHINE', $Result$)
+	for %L% in $DBG$ do comment "DBG: %L%"
+	Set $Result$ = getSubListByContainingRegex('^HKEY_LOCAL_MACHINE', $Result$)
+
+    ;----------------------
+	[ExecWith_PS__Search]
+	;----------------------
+	$policy = get-executionpolicy
+	write-host ("# Current execution policy: {0}" -f $policy)
+
+	$PATTERN = "$SearchPattern$"
+	$ARCH    = "$Scope$".toLower()
+
+	$ValidScopes = @("32","64","32+64","64+32","96","32|64","64|32","all","both")
+	$BothScopes  = @(          "32+64","64+32","96","32|64","64|32","all","both")
+	if ((-not $Arch) -or (-not $ValidScopes.contains($Arch))) { $Arch = "32+64"}
+	$ask32 = $Arch.contains("32") -or $BothScopes.contains($Arch)
+	$ask64 = $Arch.contains("64") -or $BothScopes.contains($Arch)
+
+	#write-host ("# Pattern: [{0}]n" -f $Pattern)
+	#write-host ("# Arch:    [{0}]n" -f $Arch)
+	#write-host ("# ask32:   [{0}]n" -f $ask32)
+	#write-host ("# ask64:   [{0}]n" -f $ask64)
+
+	$RT=@{};
+	if ([System.Environment]::Is64BitOperatingSystem){
+		if ($ask64) {$RT["64bit"]="HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"}
+		if ($ask32) {$RT["32bit"]="HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"}
+	} else {
+		if ($ask32) {$RT["32bit"]="HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"}
+	}
+
+	foreach ($ARCH in $RT.GetEnumerator()){
+		Get-ChildItem -Path ("Registry::{0}" -f $ARCH.Value) -ErrorAction SilentlyContinue  | foreach {
+			$DN=$_.GetValue("DisplayName")
+			if ($DN -like $PATTERN) { "{0}|{1}|{2}" -f $_, $ARCH.Name, $DN }
+		}
+	}
+
+	if ($?) {Exit(0)} else {Exit(1)}
+	[sub_eof]
+endfunc
+
+
+DefFunc PSSearchRegistryUninstallKeysByAttribute(val $Attribute$ : string , val $SearchPattern$ : string, val $Scope$ : string) : stringlist
+	;@author		Jens Boettge
+	;@email			boettge@mpi-halle.mpg.de
+	;@date			2023-02-23
+	;@copyright		AGPLv3
+	;@version		1.0
+	;@Description	Search in registry (HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall) of the requested scope for installed software using the given attribute. +
+	;@Description	"*" is accepted as wildcard. Without a wildcard, the exact phrase is searched for.
+	;@Returns		Returns stringlist (multiple hits possible)
+	;@Returns		Single string item (= hit) is a composite from "registry key with path", "scope of registry" and "displayname", separated by character "|" (because opsi-script does not know multi-array)
+	;@Returns		for example: "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Test64|64bit|Test Registry Entry64"
+	;@ParamDesc_$SearchPattern$	Search term of which a software can be found in registry on the basis of ab given attribute (eg. "Publisher"). Not case-sensitive. Note: "*" works as wildcard; without wildcard, the exact phrase is searched for!
+	;@ParamDesc_$Scope$ The search scope. Valid values are "32", "64", "32+64", an empty or invalid value is interpreted for a search in 32 and 64 bit.
+	;@Example	[actions]
+	;@Example	DefStringList $ResultList$
+	;@Example	DefVar $RegId$
+	;@Example	DefVar $RegBitScope$
+	;@Example	DefVar $InstalledVersion$
+	;@Example	Set $ResultList$ = PSSearchRegistryUninstallKeys("Publisher", "Test", "32+64")
+	;@Example	; example takes only the first hit
+	;@Example	Set $RegId$ = takeString (0,splitString(takeString(0,$ResultList$), '|'))
+	;@Example	Set $RegBitScope$ = takeString (1,splitString(takeString(0,$ResultList$), '|'))
+	;@Example	Set $InstalledVersion$ = GetRegistryValue($RegId$, "DisplayVersion", $RegBitScope$)
+
+	DefVar $EnumValidScopes$ = "|32|64|32+64|64+32|96|3264|6432|all|both|"
+	if not(contains($EnumValidScopes$, '|'+$Scope$+'|'))
+		set $Scope$ = "32+64"
+	endif
+
+	Set $Result$ = getOutStreamFromSection('ExecWith_PS__Search powershell.exe winst /sysnative')
+
+	DefStringList $DBG$
+	Set $DBG$ = removeFromListByContainingRegex('^HKEY_LOCAL_MACHINE', $Result$)
+	for %L% in $DBG$ do comment "DBG: %L%"
+	Set $Result$ = getSubListByContainingRegex('^HKEY_LOCAL_MACHINE', $Result$)
+
+    ;----------------------
+	[ExecWith_PS__Search]
+	;----------------------
+	$policy = get-executionpolicy
+	write-host ("# Current execution policy: {0}" -f $policy)
+
+	$ATTR    = "$Attribute$"
+	$PATTERN = "$SearchPattern$"
+	$ARCH    = "$Scope$".toLower()
+
+	$ValidScopes = @("32","64","32+64","64+32","96","32|64","64|32","all","both")
+	$BothScopes  = @(          "32+64","64+32","96","32|64","64|32","all","both")
+	if ((-not $Arch) -or (-not $ValidScopes.contains($Arch))) { $Arch = "32+64"}
+	$ask32 = $Arch.contains("32") -or $BothScopes.contains($Arch)
+	$ask64 = $Arch.contains("64") -or $BothScopes.contains($Arch)
+
+	#write-host ("# Pattern: [{0}]n" -f $Pattern)
+	#write-host ("# Arch:    [{0}]n" -f $Arch)
+	#write-host ("# ask32:   [{0}]n" -f $ask32)
+	#write-host ("# ask64:   [{0}]n" -f $ask64)
+
+	$RT=@{};
+	if ([System.Environment]::Is64BitOperatingSystem){
+		if ($ask64) {$RT["64bit"]="HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"}
+		if ($ask32) {$RT["32bit"]="HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"}
+	} else {
+		if ($ask32) {$RT["32bit"]="HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"}
+	}
+
+	foreach ($ARCH in $RT.GetEnumerator()){
+		Get-ChildItem -Path ("Registry::{0}" -f $ARCH.Value) -ErrorAction SilentlyContinue  | foreach {
+			$VAL=$_.GetValue($ATTR)
+			if ($VAL -like $PATTERN) { "{0}|{1}|{2}" -f $_, $ARCH.Name, $_.GetValue("DisplayName") }
+		}
+	}
+
+	if ($?) {Exit(0)} else {Exit(1)}
+	[sub_eof]
+endfunc

@@ -1,26 +1,28 @@
 ;=====================================================================
 ; product specific variables  VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2022-11-08 17:08:40 +0100
+; J. Boettge <boettge@mpi-halle.mpg.de>  2023-04-21 12:56:02 +0200
 ;=====================================================================
 
 include_insert "%ScriptPath%\variables.opsiinc"
 
-Set $MAP$				= getProductMap
-Set $FullProductId$		= getValue("id", $MAP$)
-Set $ProductName$		= getValue("name", $MAP$)
-Set $Version$			= getValue("ProductVersion", $MAP$)
-Set $ActionRequest$		= getValue("actionrequest", $MAP$)
-Set $SystemType$		= GetSystemType
+Set $MAP$               = getProductMap
+Set $FullProductId$     = getValue("id", $MAP$)
+Set $ProductName$       = getValue("name", $MAP$)
+Set $Version$           = getValue("ProductVersion", $MAP$)
+Set $PackageVersion$    = getValue("PackageVersion", $MAP$)
+Set $ActionRequest$     = getValue("actionrequest", $MAP$)
+Set $SystemType$        = GetSystemType
 Set $OS$                = GetOS
-; Set $NTVersion$		= GetMsVersionInfo
-Set $Stage$				= lower("{{STAGE}}")
+; Set $NTVersion$       = GetMsVersionInfo
+Set $Stage$             = lower("{{STAGE}}")
 
-requiredWinstVersion >= "4.11.6"
+requiredWinstVersion >= "4.12.7.5"
 
 ;-----------------------------------------------------------
 ;*** helper functions
 ;-----------------------------------------------------------
 importlib "helpers.opsifunc"
+importlib "lib_registry_functions.opsiinc"
 
 ;-----------------------------------------------------------
 ;*** basic requirements
@@ -249,6 +251,8 @@ else
 endif
 
 ;-----------------------------------------------------------
+Set $SearchPattern$     = $ProductId$ + " *"
+Set $SearchScope$       = "32+64"
 Set $PackageRegBase$	= "HKEY_Local_Machine\Software\"
 Set $SrchLst$			= createStringList('_DFN','_O4I','_MPIMSP')
 if ($isO4I$ = "true")
@@ -257,3 +261,4 @@ else
 	Set $PackageReg$	= $PackageRegBase$ + "_MPIMSP\" + $ProductName$
 endif
 
+Set $UninstString$      = 'powershell -windowstyle hidden -noprofile -nologo -command "[System.Reflection.Assembly]::LoadWithPartialName("""System.Windows.Forms""");[System.Windows.Forms.MessageBox]::Show("""Vivaldi was installed by OPSI.`nPlease uninstall it the same way.""","""Uninstall Note""",0,[System.Windows.Forms.MessageBoxIcon]::Information)"'

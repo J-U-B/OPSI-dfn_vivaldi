@@ -1,6 +1,6 @@
 ;======================================================================
 ; setup.opsiscript VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2023-04-17 06:51:02 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2023-04-21 15:37:21 +0200
 ;======================================================================
 
 ;======================================================================
@@ -116,8 +116,11 @@ else
 	endif
 
 	;=== write helper info to registry
-	Set $OutStream$ = shellCall('echo %DATE%_%TIME%')
-	Set $DateTime$ = takeString(0, $OutStream$)
+	; Set $OutStream$ = shellCall('echo %DATE%_%TIME%')
+	set $OutStream$ = PowerShellCall('Get-Date -Format "yyyy-MM-dd hh:mm:ss (zzzz)"')
+	if count($OutStream$) INT> "0"
+		Set $DateTime$ = takeString(0, $OutStream$)
+	endif
 
 	Message "Set up Vivaldi handler in registry "
 	Registry_WriteVivaldiHTM /sysnative
@@ -127,7 +130,6 @@ else
 		Message "Making Vivaldi to default browser"
 		Registry_MakeVivaldiDefault /sysnative
 	endif
-	Registry_WriteVivaldiInfo /sysnative
 
 	;=== custom post install
 	if not ($CustomPostInstall$ = "none")
@@ -146,6 +148,27 @@ else
 		else
 			logError "Can't find custom post install script: %ScriptPath%\custom\" + $CustomPostInstall$
 		endif
+	endif
+
+	;=== get estimated size
+	set $OutStream$ = PowerShellCall('[math]::round(($(Get-Item "'+ $InstallDir$ +'" | Get-ChildItem -Recurse | measure -Sum Length).Sum/1024))')
+	if count($OutStream$) INT> "0"
+		set $EstimatedSize$ = takeString(0, $OutStream$)
+		comment "Measured size of installation directory: " + $EstimatedSize$ + " kBytes"
+	else
+		set $EstimatedSize$ = "0"
+	endif
+
+	;=== write uninstall information to registry
+	;; obsolete uninstall information from package version 40:
+	;Registry_WriteVivaldiInfo /sysnative
+	;;..use regular uninstall information instead:
+	if $sw_arch$ = "64"
+		Registry_WriteVivaldiUninstallKey /64Bit
+	elseif $sw_arch$ = "32"
+		Registry_WriteVivaldiUninstallKey /32Bit
+	else
+		Registry_WriteVivaldiUninstallKey /SysNative
 	endif
 
 	;=== configure user profile(s)
@@ -240,6 +263,23 @@ set "Architecture"	= "$sw_arch$"
 set "DateTime"		= "$DateTime$"
 set "ProductName"	= "$ProductName$"
 
+;=====================================================================
+[Registry_WriteVivaldiUninstallKey]
+;=====================================================================
+openkey [$RegPathUninstall$\$ProductName$]
+set "DisplayName"         = "$ProductName$ (installed by OPSI)"
+set "OPSIProductID"       = "$FullProductId$"
+set "OPSIProductName"     = "$ProductName$"
+set "OPSIPackageVersion"  = "$PackageVersion$"
+set "DisplayVersion"      = "$Version$"
+set "DisplayIcon"         = "$PathToExe$"
+set "InstallLocation"     = "$InstallDir$"
+set "InstallArchitecture" = "$sw_arch$"
+set "InstallDateTime"	  = "$DateTime$"
+set "EstimatedSize"       = REG_DWORD:$EstimatedSize$
+set "UninstallString"     = REG_SZ:'$UninstString$'
+set "NoRepair"            = REG_DWORD:0001
+set "NoModify"            = REG_DWORD:0001
 
 ;=====================================================================
 [Registry_WriteVivaldiHTM]

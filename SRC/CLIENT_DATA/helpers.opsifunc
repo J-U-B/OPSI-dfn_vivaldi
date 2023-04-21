@@ -1,14 +1,19 @@
 ;==========================================================================
 ; helpers.opsifunc
 ;
-; Some general helper functions...
+;@filedesc			Some general helper functions...
 ;
-; Version: 	v1.9.0
-; Author : 	J. Boettge <boettge@mpi-halle.mpg.de>
-; Date   :	2022-04-11 11:40:26 +0200
+;@author			Jens Boettge
+;@email				jens.boettge@mpi-halle.mpg.de
+;@date				2023-02-23 10:36:00 +0100
+;@copyright			AGPLv3
+;@version			1.9.1
 ;==========================================================================
 ; Changelog
 ; ---------
+; v1.9.1
+; * added header for opsi-doc
+;
 ; v1.9.0
 ; * adjusted removeProductOnClientStatus, removeProductVerOnClientStatus,
 ;   and clearProductVerOnClientStatus: also include installation status

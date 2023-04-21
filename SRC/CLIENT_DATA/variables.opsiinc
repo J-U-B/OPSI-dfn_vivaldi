@@ -2,14 +2,16 @@
 ; variables.opsiinc
 ; This file contains all possible variables, excluding the opsi-system
 ; variables, for the opsi-winst scripts in use.
-; J. Boettge <boettge@mpi-halle.mpg.de>  2020-04-22 11:51:02 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2023-04-21 14:48:45 +0200
 ;=====================================================================
 
 DefStringList $MAP$
 DefStringList $OutStream$
 DefStringList $SrchLst$
+DefStringList $UninstKeys$
 DefStringList $UninstList$
 DefStringList $UninstRegList$
+DefStringList $resList$
 
 DefVar $ActionRequest$
 DefVar $Archive$
@@ -20,6 +22,8 @@ DefVar $CheckProcess$
 DefVar $CustomPostInstall$
 DefVar $CustomPostUninstall$
 DefVar $DateTime$
+DefVar $DisplayName$
+DefVar $EstimatedSize$
 DefVar $ExDir$
 DefVar $ExDirLong$
 DefVar $ExitCode$
@@ -53,6 +57,7 @@ DefVar $NTVersion$
 DefVar $OS$
 DefVar $PackageReg$
 DefVar $PackageRegBase$
+DefVar $PackageVersion$
 DefVar $PathToExe$
 DefVar $pr_MakeDefault$
 DefVar $pr_NoUpdNotify$
@@ -69,6 +74,8 @@ DefVar $RegPathUninstall$
 DefVar $RegPathUninstall32$
 DefVar $RegPathUninstall64$
 DefVar $result$
+DefVar $SearchPattern$
+DefVar $SearchScope$
 DefVar $SEVENZIP$
 DefVar $SrcDir$
 DefVar $Stage$
@@ -85,6 +92,8 @@ DefVar $UninstArch$
 DefVar $UninstDir$
 DefVar $UninstName$
 DefVar $UninstRegKeyPath$
+DefVar $UninstallString$
+DefVar $UninstString$
 DefVar $UninstVer$
 DefVar $Version$
 

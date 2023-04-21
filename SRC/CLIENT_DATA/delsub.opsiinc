@@ -1,6 +1,6 @@
 ;=====================================================================
 ; delsub.opsiinc VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2022-08-04 11:27:56 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2023-04-21 15:37:36 +0200
 ;=====================================================================
 
 ;=======================================
@@ -17,13 +17,20 @@ else
 	isFatalError "File not found: checkinstance.opsiinc"
 endif
 
+
 ;=== search for OPSI package uninstall info (not the native installer!)
 Set $bInstalled$ 	= "0"
 Set $UninstList$ 	= emptyList($UninstList$)
 Set $UninstRegList$ = emptyList($UninstRegList$)
-for %s% in $SrchLst$ do sub_search_opsi_inst_reg
-Set $bInstalled$ 	= count($UninstList$)
 
+; legacy install information
+for %s% in $SrchLst$ do sub_search_opsi_inst_reg
+
+; regular uninstall information
+set $UninstKeys$ = PSSearchRegistryUninstallKeys($SearchPattern$, $SearchScope$)
+for %s% in $UninstKeys$ do sub_process_uninst_reg
+
+set $bInstalled$ 	= count($UninstList$)
 if ($bInstalled$ INT> "0")
 	ShowBitmap $Img_Uninstall$	 $ProductName$
 
@@ -41,7 +48,7 @@ if ($bInstalled$ INT> "0")
 	;=== remove general settings (links, registry settings)
 	sub_do_opsi_inst_remove_generals
 
-	;=== remove found setups
+    ;=== process found directories to remove
 	for %s% in $UninstList$ do sub_do_opsi_inst_remove
 
 	;=== custom post uninstall
@@ -66,8 +73,8 @@ if ($bInstalled$ INT> "0")
 endif
 
 if (count($UninstRegList$) INT> "0")
-	Message "Removing opsi_inst uninstall information"
-	for %s% in $UninstRegList$ do Registry_RemoveVivaldiInfo_loop /sysnative
+	Message "Removing uninstall information from registry"
+	for %s% in $UninstRegList$ do sub_RemoveVivaldiInfo_loop /sysnative
 endif
 
 ;=== update productOnClient information on depot server
@@ -81,6 +88,7 @@ Message  "Removal time: " + $TimeDiff$ + " seconds"
 
 ;=======================================
 [sub_search_opsi_inst_reg]
+; legacy uninstall information
 ;=======================================
 Set $UninstRegKeyPath$ = "[" + $PackageRegBase$ + "%s%\" + $ProductName$ + "]"
 Set $UninstDir$  = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " InstallDir")
@@ -113,6 +121,50 @@ else
 	endif
 endif
 
+;=======================================
+[sub_process_uninst_reg]
+; regular uninstall information
+;=======================================
+set $resList$          = splitString("%s%", "|")
+set $UninstRegKeyPath$ = "[" + takeString(0, $resList$) + "]"
+set $UninstArch$       = takeString(1, $resList$)
+set $DisplayName$      = takeString(2, $resList$)
+Set $UninstDir$        = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " InstallLocation")
+Set $UninstVer$        = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " DisplayVersion")
+Set $UninstArch$       = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " InstallArchitecture")
+Set $UninstName$       = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " OPSIProductName")
+Set $UninstallString$  = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " UninstallString")
+
+if (not($UninstallString$ ="")) and (not(isRegexMatch($UninstallString$, "^powershell")))
+	logWarning "Found unexpected uninstall string: [" + $UninstallString$ + "]"
+	lcomment "***** Skipping key! *****"
+	;-------------------------------------------------------
+	; TODO: Use the (silent) uninstall tool from vendor
+	;-------------------------------------------------------
+elseif ($UninstDir$ = "")
+	comment "NOTICE: no uninstall location info found in registry at " + $UninstRegKeyPath$
+	Set $UninstRegList$ = addToList($UninstRegList$, $UninstRegKeyPath$)
+else
+	if not($UninstName$ = $ProductName$)
+		logWarning "ProductName in " + $UninstRegKeyPath$ + " does not match expected value. Found: " + $UninstName$
+		comment "***** Skipping key! *****"
+	else
+		if FileExists($UninstDir$)
+			;=== normalize:
+			if not (strPart($UninstDir$, strLength($UninstDir$),"1") = "\" )
+				set $UninstDir$ = $UninstDir$ + "\"
+			endif
+			;=== add to removal list
+			Set $ListVal$ = $UninstDir$ + "|" + $UninstArch$ + "|" + $UninstVer$
+			if (count(getSubListByMatch($ListVal$, $UninstList$))="0")
+				set $UninstList$ = addToList($UninstList$, $ListVal$)
+			endif
+		else
+			comment "NOTICE: No Files found at location given by " + $UninstRegKeyPath$
+		endif
+		Set $UninstRegList$ = addToList($UninstRegList$, $UninstRegKeyPath$ + "|" + $UninstArch$)
+	endif
+endif
 
 ;=======================================
 [sub_do_opsi_inst_remove_generals]
@@ -131,9 +183,9 @@ Registry_RemoveVivaldiHTM /sysnative
 ;=======================================
 [sub_do_opsi_inst_remove]
 ;=======================================
-Set $UninstDir$  = takeString(0, splitString("%s%","|"))
-Set $UninstVer$  = takeString(2, splitString("%s%","|"))
-Set $UninstArch$ = takeString(1, splitString("%s%","|"))
+Set $UninstDir$  = takeString(0, splitString("%s%|","|"))
+Set $UninstVer$  = takeString(2, splitString("%s%|","|"))
+Set $UninstArch$ = takeString(1, splitString("%s%|","|"))
 
 if FileExists($UninstDir$)
 	if ($UninstVer$="") or ($UninstArch$="")
@@ -152,6 +204,18 @@ if FileExists($UninstDir$)
 	SetLogLevel=$LogLevel$
 endif
 
+;=======================================
+[sub_RemoveVivaldiInfo_loop]
+;=======================================
+set $UninstRegKeyPath$  = takeString(0, splitString("%s%|","|"))
+set $UninstArch$        = takeString(1, splitString("%s%|","|"))
+if isregexMatch($UninstArch$,"32")
+	Registry_RemoveVivaldiInfo_loop /32bit
+elseif isregexMatch($UninstArch$,"64")
+	Registry_RemoveVivaldiInfo_loop /64bit
+else
+	Registry_RemoveVivaldiInfo_loop /Sysnative
+endif
 
 ;=====================================================================
 [Files_RemoveInstallDir]
@@ -180,8 +244,7 @@ delete_element $ProductName$
 ;=====================================================================
 [Registry_RemoveVivaldiInfo_loop]
 ;=====================================================================
-deletekey %s%
-
+deletekey $UninstRegKeyPath$
 
 ;=====================================================================
 [Registry_RemoveVivaldiHTM]

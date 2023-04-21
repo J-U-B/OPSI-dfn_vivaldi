@@ -1,3 +1,12 @@
+vivaldi 6.0.2979.15-40
+	* new format for install date/time: "yyyy-MM-dd hh:mm:ss (zzzz)"
+	* write regular uninstall registry key (incl. additional attributes such as EstimatedSize)
+	* uninstaller prepared for new location of uninstall information (accept both)
+	* required OPSI-Script version is now: 4.12.7.5
+	* updated helpers.opsiinc -> v1.9.1
+	* added lib_registry_functions.opsiinc (for PSSearchRegistryUninstallKeys)
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2023-04-21 15:39:03 +0200
+
 vivaldi 6.0.2979.15-39
 	* product update ==> 6.0.2979.15
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2023-04-19 11:13:52 +0200
