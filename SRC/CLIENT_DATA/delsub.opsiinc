@@ -1,6 +1,6 @@
 ;=====================================================================
 ; delsub.opsiinc VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2023-04-21 15:37:36 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2023-05-05 10:57:22 +0200
 ;=====================================================================
 
 ;=======================================
@@ -28,7 +28,11 @@ for %s% in $SrchLst$ do sub_search_opsi_inst_reg
 
 ; regular uninstall information
 set $UninstKeys$ = PSSearchRegistryUninstallKeys($SearchPattern$, $SearchScope$)
-for %s% in $UninstKeys$ do sub_process_uninst_reg
+if (count($UninstKeys$) INT> "0")
+	for %s% in $UninstKeys$ do sub_process_uninst_reg
+else
+	comment "No $UninstKeys$ found."
+endif
 
 set $bInstalled$ 	= count($UninstList$)
 if ($bInstalled$ INT> "0")
@@ -44,6 +48,7 @@ if ($bInstalled$ INT> "0")
 	set $Kill_Override$ = "false"
 	set $CheckProcess$  = $MainBin$
 	sub_checkinstance
+
 
 	;=== remove general settings (links, registry settings)
 	sub_do_opsi_inst_remove_generals
@@ -90,35 +95,39 @@ Message  "Removal time: " + $TimeDiff$ + " seconds"
 [sub_search_opsi_inst_reg]
 ; legacy uninstall information
 ;=======================================
-Set $UninstRegKeyPath$ = "[" + $PackageRegBase$ + "%s%\" + $ProductName$ + "]"
-Set $UninstDir$  = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " InstallDir")
-Set $UninstVer$  = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " Version")
-Set $UninstArch$ = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " Architecture")
-Set $UninstName$ = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " ProductName")
+if RegKeyExists($PackageRegBase$ + "%s%\" + $ProductName$)
+	Set $UninstRegKeyPath$ = "[" + $PackageRegBase$ + "%s%\" + $ProductName$ + "]"
+	Set $UninstDir$  = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " InstallDir")
+	Set $UninstVer$  = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " Version")
+	Set $UninstArch$ = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " Architecture")
+	Set $UninstName$ = GetRegistryStringValueSysNative($UninstRegKeyPath$ + " ProductName")
 
-if ($UninstDir$ = "")
-	comment "NOTICE: no uninstall location info found in registry at " + $UninstRegKeyPath$
-	Set $UninstRegList$ = addToList($UninstRegList$, $UninstRegKeyPath$)
-else
-	if not($UninstName$ = $ProductName$)
-		logWarning "ProductName in " + $UninstRegKeyPath$ + " does not match expected value. Found: " + $UninstName$
-		comment "***** Skipping key! *****"
-	else
-		if FileExists($UninstDir$)
-			;=== normalize:
-			if not (strPart($UninstDir$, strLength($UninstDir$),"1") = "\" )
-				set $UninstDir$ = $UninstDir$ + "\"
-			endif
-			;=== add to removal list
-			Set $ListVal$ = $UninstDir$ + "|" + $UninstArch$ + "|" + $UninstVer$
-			if (count(getSubListByMatch($ListVal$, $UninstList$))="0")
-				set $UninstList$ = addToList($UninstList$, $ListVal$)
-			endif
-		else
-			comment "NOTICE: No Files found at location given by " + $UninstRegKeyPath$
-		endif
+	if ($UninstDir$ = "")
+		comment "NOTICE: no uninstall location info found in registry at " + $UninstRegKeyPath$
 		Set $UninstRegList$ = addToList($UninstRegList$, $UninstRegKeyPath$)
+	else
+		if not($UninstName$ = $ProductName$)
+			logWarning "ProductName in " + $UninstRegKeyPath$ + " does not match expected value. Found: " + $UninstName$
+			comment "***** Skipping key! *****"
+		else
+			if FileExists($UninstDir$)
+				;=== normalize:
+				if not (strPart($UninstDir$, strLength($UninstDir$),"1") = "\" )
+					set $UninstDir$ = $UninstDir$ + "\"
+				endif
+				;=== add to removal list
+				Set $ListVal$ = $UninstDir$ + "|" + $UninstArch$ + "|" + $UninstVer$
+				if (count(getSubListByMatch($ListVal$, $UninstList$))="0")
+					set $UninstList$ = addToList($UninstList$, $ListVal$)
+				endif
+			else
+				comment "NOTICE: No Files found at location given by " + $UninstRegKeyPath$
+			endif
+			Set $UninstRegList$ = addToList($UninstRegList$, $UninstRegKeyPath$)
+		endif
 	endif
+else
+	comment "NOTICE: registry key does not exist: " + $PackageRegBase$ + "%s%\" + $ProductName$
 endif
 
 ;=======================================

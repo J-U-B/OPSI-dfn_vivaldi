@@ -1,6 +1,6 @@
 ;=====================================================================
 ; product specific variables  VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2023-04-21 12:56:02 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2023-05-05 11:02:09 +0200
 ;=====================================================================
 
 include_insert "%ScriptPath%\variables.opsiinc"
@@ -251,7 +251,7 @@ else
 endif
 
 ;-----------------------------------------------------------
-Set $SearchPattern$     = $ProductId$ + " *"
+Set $SearchPattern$     = $StrippedProductId$ + " *"
 Set $SearchScope$       = "32+64"
 Set $PackageRegBase$	= "HKEY_Local_Machine\Software\"
 Set $SrchLst$			= createStringList('_DFN','_O4I','_MPIMSP')
