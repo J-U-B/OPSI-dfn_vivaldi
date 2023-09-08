@@ -1,11 +1,11 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 2.6.0
+# Version: 2.7.0
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2022-05-12 11:15:29 +0200
+# 2023-09-08 08:30:58 +0200
 ############################################################
 
-.PHONY: header clean mpimsp mpimsp_test o4i o4i_test dfn dfn_test all_test all_prod all help download pdf
+.PHONY: header clean mpimsp mpimsp_test o4i o4i_test dfn dfn_test all_test all_prod all help download pdf install
 .DEFAULT_GOAL := help
 
 ### defaults:
@@ -117,6 +117,13 @@ else
 	BUILD_FORMAT = $(AFY)
 endif
 
+ifeq ($(CUSTOMNAME),"")
+	PKGNAME := ${TESTPREFIX}$(ORGPREFIX)$(SW_NAME)_${SW_VER}-$(PKG_BUILD)$(CUSTOMNAME)
+else
+	PKGNAME := ${TESTPREFIX}$(ORGPREFIX)$(SW_NAME)_${SW_VER}-$(PKG_BUILD)~$(CUSTOMNAME)
+endif
+
+
 
 leave_err:
 	exit 1
@@ -170,7 +177,6 @@ mpimsp_test: header
 			ORGPREFIX=""     			\
 			STAGE="testing"  			\
 	build
-
 
 o4i: header
 	@echo "---------- building O4I package ----------------------------------"
@@ -241,15 +247,18 @@ dfn_test_noprefix: header
 clean_packages: header
 	@echo "---------- cleaning packages, checksums and zsync ----------------"
 	@rm -f $(PACKAGE_DIR)/*.md5 $(PACKAGE_DIR)/*.opsi $(PACKAGE_DIR)/*.zsync
-	
+
+
 clean: header
 	@echo "---------- cleaning  build directory -----------------------------"
-	@rm -rf $(BUILD_DIR)	
-	
+	@rm -rf $(BUILD_DIR)
+
+
 realclean: header clean
 	@echo "---------- cleaning  download directory --------------------------"
-	@rm -rf $(DL_DIR)	
-		
+	@rm -rf $(DL_DIR)
+
+
 help: header
 	@echo "Valid targets: "
 	@echo "	mpimsp"
@@ -280,6 +289,7 @@ help: header
 	@echo "			If false only files matching this package version are kept."
 	@echo "	ARCHIVE_FORMAT=[cpio|tar]       (default: $(DEFAULT_ARCHIVEFORMAT))"
 	@echo ""
+
 
 pdf:
 	@# requirements for ths script (under Debian/Ubuntu):
@@ -313,6 +323,7 @@ pdf:
 		echo "* Error: readme.md is missing!"; \
 	fi
 
+
 build_dirs:
 	@echo "* Creating/checking directories"
 	@if [ ! -d "$(BUILD_DIR)" ]; then mkdir -p "$(BUILD_DIR)"; fi
@@ -320,13 +331,14 @@ build_dirs:
 	@if [ ! -d "$(BUILD_DIR)/CLIENT_DATA" ]; then mkdir -p "$(BUILD_DIR)/CLIENT_DATA"; fi
 	@if [ ! -d "$(PACKAGE_DIR)" ]; then mkdir -p "$(PACKAGE_DIR)"; fi
 
+
 build_md5:
 	@echo "* Creating md5sum file for installation archives ($(MD5SUM_FILE))"
 	if [ -f "$(BUILD_DIR)/CLIENT_DATA/$(MD5SUM_FILE)" ]; then \
 		rm -f $(BUILD_DIR)/CLIENT_DATA/$(MD5SUM_FILE); \
 	fi
 	@grep -i "$(SW_NAME).$(SW_VER)." $(DL_DIR)/$(MD5SUM_FILE)>> $(BUILD_DIR)/CLIENT_DATA/$(MD5SUM_FILE) 
-	
+
 
 copy_from_src:	build_dirs build_md5
 	@echo "* Copying files"
@@ -337,8 +349,8 @@ copy_from_src:	build_dirs build_md5
 	@cp -upr $(SRC_DIR)/CLIENT_DATA/*.opsiinc     $(BUILD_DIR)/CLIENT_DATA/
 	@cp -upr $(SRC_DIR)/CLIENT_DATA/*.opsifunc    $(BUILD_DIR)/CLIENT_DATA/
 
-	@if [ -f  "readme.pdf" ] ; then cp -upL readme.pdf   $(BUILD_DIR)/CLIENT_DATA/; fi
-	@if [ -f  "changelog" ]  ; then cp -upL changelog    $(BUILD_DIR)/CLIENT_DATA/changelog.txt; fi
+	@# if [ -f  "readme.pdf" ] ; then cp -upL readme.pdf   $(BUILD_DIR)/CLIENT_DATA/; fi
+	@# if [ -f  "changelog" ]  ; then cp -upL changelog    $(BUILD_DIR)/CLIENT_DATA/changelog.txt; fi
 
 	@$(eval NUM_FILES := $(shell ls -l $(DL_DIR)/$(FILES_MASK) 2>/dev/null | wc -l))
 	@if [ "$(ALLINCLUSIVE)" = "true" ]; then \
@@ -370,6 +382,7 @@ copy_from_src:	build_dirs build_md5
 	@if [ -f  "$(SRC_DIR)/OPSI/preinst" ];  then cp -up $(SRC_DIR)/OPSI/preinst   $(BUILD_DIR)/OPSI/; fi 
 	@if [ -f  "$(SRC_DIR)/OPSI/postinst" ]; then cp -up $(SRC_DIR)/OPSI/postinst  $(BUILD_DIR)/OPSI/; fi
 
+
 build_json:
 	@if [ ! -f "$(SPEC)" ]; then echo "*Error* spec file not found: \"$(SPEC)\""; exit 1; fi
 	@if [ ! -d "$(BUILD_DIR)" ]; then mkdir -p "$(BUILD_DIR)"; fi
@@ -389,44 +402,49 @@ build_json:
 	@$(MUSTACHE) $(TMP_FILE) $(SPEC)	 > $(BUILD_JSON)
 	@rm -f $(TMP_FILE)
 
+
 download: build_json
-	@echo "**Debug** [ALLINC=$(ALLINCLUSIVE)]  [ONLY_DOWNLOAD=$(ONLY_DOWNLOAD)]"
-	@if [ "$(ALLINCLUSIVE)" = "true" -o  $(ONLY_DOWNLOAD) = "true" ]; then \
+	@echo "[DBG] Vars: [ALLINC=$(ALLINCLUSIVE)]  [ONLY_DOWNLOAD=$(ONLY_DOWNLOAD)]"
+	@$(eval NUM_FOUND := $(shell ls -l $(DL_DIR)/$(FILES_MASK) 2>/dev/null | wc -l))
+	@echo "[DBG] Vivaldi installer packages foud: $(NUM_FOUND), expected: $(FILES_EXPECTED)"
+	@if [ "$(ALLINCLUSIVE)" = "true" -o  $(ONLY_DOWNLOAD) = "true" -o $(NUM_FOUND) -ne $(FILES_EXPECTED) ]; then \
 		rm -f $(DOWNLOAD_SH) ;\
 		$(MUSTACHE) $(BUILD_JSON) $(DOWNLOAD_SH_IN) > $(DOWNLOAD_SH) ;\
 		chmod +x $(DOWNLOAD_SH) ;\
 		if [ ! -d "$(DL_DIR)" ]; then mkdir -p "$(DL_DIR)"; fi ;\
 		DEST_DIR=$(DL_DIR) $(DOWNLOAD_SH) ;\
 	fi
-	
-	
+
+
 build: download pdf clean copy_from_src
 	@make build_json
-	
+
 	for F in $(FILES_OPSI_IN); do \
 		echo "* Creating OPSI/$$F"; \
 		rm -f $(BUILD_DIR)/OPSI/$$F; \
 		$(MUSTACHE) $(BUILD_JSON) $(SRC_DIR)/OPSI/$$F.in > $(BUILD_DIR)/OPSI/$$F; \
 	done
 
-	for E in txt md pdf; do \
-		if [ -e readme.$$E ]; then \
-			echo "Copying additional file: readme.$$E"; \
-			cp -f readme.$$E $(BUILD_DIR)/OPSI/; \
+	for E in readme.txt readme.md readme.pdf changelog.txt changelog.md changelog.pdf; do \
+		if [ -e $$E ]; then \
+			echo "Copying additional file: $$E"; \
+			cp -fupL $$E $(BUILD_DIR)/CLIENT_DATA/; \
+			cp -fupL $$E $(BUILD_DIR)/OPSI/; \
 		fi; \
 	done
-	
+
 	if [ -e $(BUILD_DIR)/OPSI/control -a -e changelog ]; then \
 		if [ -n "$(CHANGELOG_TGT)" ]; then \
 			echo "* Using separate CHANGELOG file."; \
 			echo "The logs were moved to $(CHANGELOG_TGT)" >> $(BUILD_DIR)/OPSI/control; \
 			cp -f changelog $(BUILD_DIR)/OPSI/$(CHANGELOG_TGT); \
+			cp -f changelog $(BUILD_DIR)/CLIENT_DATA/$(CHANGELOG_TGT); \
 		else \
 			echo "* Including changelogs in CONTROL file."; \
 			cat changelog >> $(BUILD_DIR)/OPSI/control; \
 		fi; \
 	fi
-	
+
 	for F in $(FILES_IN); do \
 		echo "* Creating CLIENT_DATA/$$F"; \
 		rm -f $(BUILD_DIR)/CLIENT_DATA/$$F; \
@@ -437,7 +455,7 @@ build: download pdf clean copy_from_src
 	fi
 	find $(BUILD_DIR)/CLIENT_DATA -type f -name "*.sh" -exec chmod +x {} \;
 	@#chmod +x $(BUILD_DIR)/CLIENT_DATA/*.sh; \
-	
+
 	@echo "* OPSI Archive Format: $(BUILD_FORMAT)"
 	@echo "* Building OPSI package"
 	if [ -z $(CUSTOMNAME) ]; then \
@@ -450,10 +468,26 @@ build: download pdf clean copy_from_src
 		cd "$(CURDIR)/$(PACKAGE_DIR)" && $(OPSI_BUILDER) -F $(BUILD_FORMAT) -k -m $(CURDIR)/$(BUILD_DIR) -c $(CUSTOMNAME); \
 	fi; \
 	cd $(CURDIR)
+	@echo "======================================================================"
+	@echo "Package built: $(PACKAGE_DIR)/$(PKGNAME).opsi"
+	@echo "======================================================================"
 
 
 all_test:  header download mpimsp_test o4i_test dfn_test dfn_test_0
 
-all_prod : header download mpimsp o4i dfn
+all_prod:  header download mpimsp o4i dfn
 
-all : header download mpimsp o4i dfn
+all: header download mpimsp o4i dfn
+
+install:
+	@$(eval PACKAGES_FOUND := $(shell ls -1 $(PACKAGE_DIR)/*.opsi | grep -E "$(SW_NAME)_$(SW_VER)-$(SW_BUILD)(~dl){0,1}.opsi$$"))
+	@$(eval PKG_NUM := $(shell echo $(PACKAGES_FOUND) | wc -w))
+	@#echo "[$(PACKAGES_FOUND)]"
+	@echo "Number of installable packages found: $(PKG_NUM)"
+	@if [ $(PKG_NUM) -gt 0 ]; then \
+		for F in $(PACKAGES_FOUND); do \
+			echo -n "* Installing: $$F" ;\
+			opsi-package-manager -q -p package -i $$F ;\
+			echo "\t[$$?]" ;\
+		done ;\
+	fi

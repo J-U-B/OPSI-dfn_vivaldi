@@ -1,3 +1,10 @@
+vivaldi 6.2.3105.47-42
+	* product update ==> 6.2.3105.47
+	* minor improvements of Makefile
+	  * download on build
+	  * new target 'install'
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2023-09-08 08:30:50 +0200
+
 vivaldi 6.2.3105.45-41
 	* product update ==> 6.2.3105.45
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2023-09-01 07:33:24 +0200
