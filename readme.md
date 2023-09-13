@@ -9,6 +9,7 @@
 	* [Verzeichnisstruktur](#verzeichnisstruktur)
 	* [Makefile-Parameter](#makefile_parameter)
 	* [spec.json](#spec_json)
+	* [Paketerstellung](#paketerstellung)
 * [Installation](#installation)
 * [Allgemeines](#allgemeines)
 	* [Aufbau des Paketes](#paketaufbau)
@@ -51,8 +52,8 @@ jeweiligen Distributionen zu beziehen sind.
 Das sind (angegebenen Namen entsprechen Paketen in Debian/Ubuntu):
 
 * make
-* python-pystache
 * curl oder wget
+* mustache (im Repository enthalten)
 
 
 <div id="makefile_und_spec"></div>
@@ -68,8 +69,6 @@ Im Idealfall ist beim Erscheinen einer neuen Release von Vivaldi lediglich die
 **<code>spec.json</code>** anzupassen.
 
 
-<div id="pystache"></div>
-
 <div id="mustache"></div>
 
 ### Mustache ###
@@ -81,7 +80,6 @@ für Linux und Windows liegen diesem Paket bei.
 
 Das in vorherigen Versionen dieses Paketes (<11) verwendete `pystache` kommt
 nicht mehr zum Einsatz und wurde aus den Quellen entfernt.
-
 
 
 <div id="verzeichnisstruktur"></div>
@@ -110,6 +108,7 @@ ein alternatives Spec--File uebergeben werden:
 Das Paket kann mit *"batteries included"* erstellt werden. In dem Fall erfolgt 
 der Download der Software beim Erstellen des OPSI-Paketes und nicht erst bei
 dessen Installation:
+
 > *<code>ALLINC=[true|false]</code>*
 
 Standard ist hier die Erstellung des leichtgewichtigen Paketes (```ALLINC=false```).
@@ -119,6 +118,7 @@ Bei der Installation des Paketes im Depot wird ein eventuell vorhandenes
 spaeter wiederhergestellt. Diese Verzeichnis beeinhaltet die eigentlichen
 Installationsfiles. Sollen alte Version aufgehoben werden, kann das ueber
 einen Parameter beeinflusst werden:
+
 > *<code>KEEPFILES=[true|false]</code>*
 
 Standardmaessig sollen die Files geloescht werden.
@@ -126,6 +126,7 @@ Standardmaessig sollen die Files geloescht werden.
 OPSI erlaubt des Pakete im Format <code>cpio</code> und <code>tar</code> zu erstellen.  
 Als Standard ist <code>cpio</code> festgelegt.  
 Das Makefile erlaubt die Wahl des Formates ueber die Umgebungsvariable bzw. den Parameter:
+
 > *<code>ARCHIVE_FORMAT=&lt;cpio|tar&gt;</code>*
 
 
@@ -139,6 +140,37 @@ weiterer Variablen erforderlich, die sich auf verschiedene Files verteilen.
 Auch das soll durch das Makefile vereinfacht werden. Die relevanten Variablen
 sollen nur noch in <code>spec.json</code> angepasst werden. Den Rest uebernimmt *<code>make</code>*
 
+
+<div id="paketerstellung"></div>
+
+### Paketerstellung ###
+
+Soll lediglich die Software aktualisiert werden, beschränken sich die notwendigen
+Änderungen in der <code>spec.json</code> auf:
+
+* <code>O_SOFTWARE_VER</code>
+* <code>O_CHANGELOG</code>
+
+Weiterhin sollte die <code>changelog</code> um einen entsprechenden Eintrag
+ergänzt werden.
+
+Gültige Targets für die Paketerstellung liefert
+```sh
+		make help
+```   
+In der Regel ist *all_prod* die passende Wahl:
+
+```sh
+		make all_prod
+```
+erstellt.
+
+Sofern erforderlich erfolgt nun der Download der Software von den Vivaldi-Servern
+automatisch.  
+Das Target `all_prod` erstellt 3 Pakete:
+* vivaldi (hausinternes Download-Paket des MPIMSP)
+* dfn_vivaldi (leichtgewichtiges *self-download*-Paket für das o4i-Repository)
+* o4i_vivaldi (*batteries-included*-Paket für das o4i-Repository
 
 
 <div id="installation"></div>
@@ -167,6 +199,13 @@ in <code>spec.json</code>) ist dieses unter
 **<code>/tmp/${PRODUCT_ID}__opsi_package_install.log</code>** zu finden.  
 Hier eventuell auftretende Fehler werden an den opsi-package-manager uebergeben
 und setzen das Paket in einen Fehlerzustand.
+
+Mit 
+```sh
+		make install
+```
+können alle zuvor für die aktuelle Version erstellten Pakete auf dem Depot-Server
+installiert werden.
 
 
 <div id="allgemeines"></div>
@@ -308,4 +347,4 @@ erfolgt aufgrund der Art der Installation derzeit nicht).
 * Policies fuer Chromium/Vivaldi sind bislang noch nicht realisiert.
 
 -----
-Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2020-08-05 10:15:37 +0200
+Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2023-09-13 09:26:30 +0200

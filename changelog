@@ -1,3 +1,10 @@
+vivaldi 6.2.3105.48-43
+	* product update ==> 6.2.3105.48
+	* fixed Makefile: SW_BUILD --> read O_PKG_VER
+	* Makefile: updated help (target install)
+	* readme: Aktualisierung Paketerstellung und Installation
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2023-09-13 09:27:05 +0200
+
 vivaldi 6.2.3105.47-42
 	* product update ==> 6.2.3105.47
 	* minor improvements of Makefile

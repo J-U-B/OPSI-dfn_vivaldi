@@ -1,8 +1,8 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 2.7.0
+# Version: 2.7.1
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2023-09-08 08:30:58 +0200
+# 2023-09-13 08:57:50 +0200
 ############################################################
 
 .PHONY: header clean mpimsp mpimsp_test o4i o4i_test dfn dfn_test all_test all_prod all help download pdf install
@@ -58,9 +58,9 @@ else
     $(error Error: spec file NOT found: $(SPEC))
 endif
 
-SW_VER := $(shell grep '"O_SOFTWARE_VER"' $(SPEC)     | sed -e 's/^.*\s*:\s*\"\(.*\)\".*$$/\1/' )
-SW_BUILD := $(shell grep '"O_PKG_VER"' $(SPEC)        | sed -e 's/^.*\s*:\s*\"\(.*\)\".*$$/\1/' )
 SW_NAME := $(shell grep '"O_SOFTWARE"' $(SPEC)        | sed -e 's/^.*\s*:\s*\"\(.*\)\".*$$/\1/' )
+SW_VER := $(shell grep '"O_SOFTWARE_VER"' $(SPEC)     | sed -e 's/^.*\s*:\s*\"\(.*\)\".*$$/\1/' )
+PKG_BUILD := $(shell grep '"O_PKG_VER"' $(SPEC)       | sed -e 's/^.*\s*:\s*\"\(.*\)\".*$$/\1/' )
 
 FILES_MASK := *.$(SW_VER).*exe
 FILES_EXPECTED = 2
@@ -132,7 +132,7 @@ var_test:
 	@echo "=================================================================="
 	@echo "* Software Name         : [$(SW_NAME)]"
 	@echo "* Software Version      : [$(SW_VER)]"
-	@echo "* Package Build         : [$(SW_BUILD)]"
+	@echo "* Package Build         : [$(PKG_BUILD)]"
 	@echo "* SPEC file             : [$(SPEC)]"
 	@echo "* Batteries included    : [$(ALLINC)] --> [$(ALLINCLUSIVE)]"
 	@echo "* Custom Name           : [$(CUSTOMNAME)]"
@@ -278,6 +278,7 @@ help: header
 	@echo "	clean_packages"
 	@echo "	download              - download installation archive(s) from vendor"
 	@echo "	pdf                   - create PDF from readme.md (req. pandoc)"
+	@echo "	install               - install all packages built for current version on depot server"
 	@echo ""
 	@echo "Options:"
 	@echo "	SPEC=<filename>                 (default: $(DEFAULT_SPEC))"
@@ -406,7 +407,7 @@ build_json:
 download: build_json
 	@echo "[DBG] Vars: [ALLINC=$(ALLINCLUSIVE)]  [ONLY_DOWNLOAD=$(ONLY_DOWNLOAD)]"
 	@$(eval NUM_FOUND := $(shell ls -l $(DL_DIR)/$(FILES_MASK) 2>/dev/null | wc -l))
-	@echo "[DBG] Vivaldi installer packages foud: $(NUM_FOUND), expected: $(FILES_EXPECTED)"
+	@echo "[DBG] $(SW_NAME) installer packages found: $(NUM_FOUND), expected: $(FILES_EXPECTED)"
 	@if [ "$(ALLINCLUSIVE)" = "true" -o  $(ONLY_DOWNLOAD) = "true" -o $(NUM_FOUND) -ne $(FILES_EXPECTED) ]; then \
 		rm -f $(DOWNLOAD_SH) ;\
 		$(MUSTACHE) $(BUILD_JSON) $(DOWNLOAD_SH_IN) > $(DOWNLOAD_SH) ;\
@@ -480,7 +481,7 @@ all_prod:  header download mpimsp o4i dfn
 all: header download mpimsp o4i dfn
 
 install:
-	@$(eval PACKAGES_FOUND := $(shell ls -1 $(PACKAGE_DIR)/*.opsi | grep -E "$(SW_NAME)_$(SW_VER)-$(SW_BUILD)(~dl){0,1}.opsi$$"))
+	@$(eval PACKAGES_FOUND := $(shell ls -1 $(PACKAGE_DIR)/*.opsi | grep -E "$(SW_NAME)_$(SW_VER)-$(PKG_BUILD)(~dl){0,1}.opsi$$"))
 	@$(eval PKG_NUM := $(shell echo $(PACKAGES_FOUND) | wc -w))
 	@#echo "[$(PACKAGES_FOUND)]"
 	@echo "Number of installable packages found: $(PKG_NUM)"
