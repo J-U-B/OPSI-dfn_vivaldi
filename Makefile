@@ -1,8 +1,8 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 2.7.1
+# Version: 3.0.0
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2023-09-13 08:57:50 +0200
+# 2024-01-11 11:45:51 +0100
 ############################################################
 
 .PHONY: header clean mpimsp mpimsp_test o4i o4i_test dfn dfn_test all_test all_prod all help download pdf install
@@ -12,7 +12,6 @@
 DEFAULT_SPEC = spec.json
 DEFAULT_ALLINC = false
 DEFAULT_KEEPFILES = false
-DEFAULT_ARCHIVEFORMAT = cpio
 
 ifeq ($(ORGNAME),O4I)
 	override DEFAULT_ALLINC = true
@@ -36,7 +35,29 @@ ifeq ($(OPSI_BUILDER),)
 		$(error Error: opsi-make(package|productfile) not found!)
 	endif
 endif
-$(info * OPSI_BUILDER = $(OPSI_BUILDER))
+
+OPSI_VERSION = $(shell $(OPSI_BUILDER) -V | cut -f 1 -d " ")
+$(info * OPSI_BUILDER = $(OPSI_BUILDER) $(OPSI_VERSION))
+O_MAJOR = $(shell echo $(OPSI_VERSION) | cut -f1 -d.)
+O_MINOR = $(shell echo $(OPSI_VERSION) | cut -f2 -d.)
+O_REVNR = $(shell echo $(OPSI_VERSION) | cut -f3 -d.)
+O_VERCL = $(shell echo $$(($(O_MAJOR) * 100 + $(O_MINOR))))
+# $(info * VERCL = $(O_VERCL))
+
+### more defaults, depending on OPSI version:
+ifeq ($(shell test "$(O_VERCL)" -ge "403"; echo $$?),0)
+    $(info * OPSI >=4.3)
+	DEFAULT_ARCHIVEFORMAT = tar
+	ARCHIVE_TYPES :="[tar]"
+	DEFAULT_COMPRESSION = gz
+	COMPRESSION_TYPES :="[gz] [zstd] [bz2]"
+else
+    $(info * OPSI <4.3)
+	DEFAULT_ARCHIVEFORMAT = cpio
+	ARCHIVE_TYPES :="[cpio] [tar]"
+	DEFAULT_COMPRESSION = gzip
+	COMPRESSION_TYPES :="[gzip] [zstd]"
+endif
 
 MUSTACHE = ./SRC/TOOLS/mustache.32
 BUILD_JSON = $(BUILD_DIR)/build.json
@@ -107,15 +128,26 @@ endif
 
 ### Used archive format for OPSI package
 ARCHIVE_FORMAT ?= $(DEFAULT_ARCHIVEFORMAT)
-ARCHIVE_TYPES :="[cpio] [tar]"
 AFX := $(firstword $(ARCHIVE_FORMAT))
 AFY := $(shell echo $(AFX) | tr A-Z a-z)
 
 ifeq (,$(findstring [$(AFY)],$(ARCHIVE_TYPES)))
-	BUILD_FORMAT = cpio
+	BUILD_FORMAT := cpio
 else
-	BUILD_FORMAT = $(AFY)
+	BUILD_FORMAT := $(AFY)
 endif
+
+### Used compression for OPSI package
+COMPRESSION ?= $(DEFAULT_COMPRESSION)
+AFX := $(firstword $(COMPRESSION))
+AFY := $(shell echo $(AFX) | tr A-Z a-z)
+
+ifeq (,$(findstring [$(AFY)],$(COMPRESSION_TYPES)))
+	BUILD_COMPRESSION := $(DEFAULT_COMPRESSION)
+else
+	BUILD_COMPRESSION := $(AFY)
+endif
+
 
 ifeq ($(CUSTOMNAME),"")
 	PKGNAME := ${TESTPREFIX}$(ORGPREFIX)$(SW_NAME)_${SW_VER}-$(PKG_BUILD)$(CUSTOMNAME)
@@ -138,6 +170,8 @@ var_test:
 	@echo "* Custom Name           : [$(CUSTOMNAME)]"
 	@echo "* OPSI Archive Types    : [$(ARCHIVE_TYPES)]"
 	@echo "* OPSI Archive Format   : [$(ARCHIVE_FORMAT)] --> $(BUILD_FORMAT)"
+	@echo "* OPSI Compression Types: [$(COMPRESSION_TYPES)]"
+	@echo "* OPSI Compression      : [$(COMPRESSION)] --> $(BUILD_COMPRESSION)"
 	@echo "* Templates OPSI        : [$(FILES_OPSI_IN)]"
 	@echo "* Templates CLIENT_DATA : [$(FILES_IN)]"
 	@echo "* Files Mask            : [$(FILES_MASK)]"
@@ -286,9 +320,15 @@ help: header
 	@echo "	ALLINC=[true|false]             (default: $(DEFAULT_ALLINC))"
 	@echo "			Include software in OPSI package?"
 	@echo "	KEEPFILES=[true|false]          (default: $(DEFAULT_KEEPFILES))"
-	@echo "			Keep really all previous files from files?"
+	@echo "			Keep really all previous files from 'files' directory?"
 	@echo "			If false only files matching this package version are kept."
-	@echo "	ARCHIVE_FORMAT=[cpio|tar]       (default: $(DEFAULT_ARCHIVEFORMAT))"
+	@if [ $(O_VERCL) -ge 403 ]; then \
+	 echo "	ARCHIVE_FORMAT=[cpio|tar]       (default: $(DEFAULT_ARCHIVEFORMAT))"; \
+	 echo "	COMPRESSION=[gz|zstd|bz2]       (default: $(DEFAULT_COMPRESSION))"; \
+	else \
+	 echo "	ARCHIVE_FORMAT=[tar]            (default: $(DEFAULT_ARCHIVEFORMAT))"; \
+	 echo "	COMPRESSION=[gzip|zstd]         (default: $(DEFAULT_COMPRESSION))"; \
+    fi
 	@echo ""
 
 

@@ -125,9 +125,24 @@ Standardmaessig sollen die Files geloescht werden.
 
 OPSI erlaubt des Pakete im Format <code>cpio</code> und <code>tar</code> zu erstellen.  
 Als Standard ist <code>cpio</code> festgelegt.  
+**_Achtung:_** Ab OPSI 4.3 findet nur noch das `tar`-Format Awendung.  
 Das Makefile erlaubt die Wahl des Formates ueber die Umgebungsvariable bzw. den Parameter:
 
 > *<code>ARCHIVE_FORMAT=&lt;cpio|tar&gt;</code>*
+
+Optional kann auch das verwendete Kompressionsformat festgelegt werden.  
+Ab OPSI-Version 4.3 sind das `gz`, `zstd` und `bz2`; zuvor gab es `gzip` und `zstd`.
+Default bei OPSI 4.3 ist `zstd`, bis dahin galt `gz` bzw. `gzip`.  
+Als Standard ist `gz`/`gzip` festgelegt.  
+Das Makefile erlaubt die Wahl der Kompressionsformates ueber eine Umgebungsvariable bzw.
+den Parameter in Abhaengigkeit von der OPSI-Version:
+
+> *<code>COMPRESSION=&lt;gzip|zstd&gt;</code>*  
+> *<code>COMPRESSION=&lt;gz|zstd|bz2&gt;</code>*
+
+**_Achtung:_** Obwohl fuer OPSI 4.3 "`zstd`" als Standard-Kompression zum Einsatz kommt,
+wird hier weiterhin "`gz`" verwendet, da die mit "`zstd`" erstellten Pakete unter OPSI 4.2
+derzeit nicht installiert werden koennen.
 
 
 <div id="spec_json"></div>
@@ -347,4 +362,4 @@ erfolgt aufgrund der Art der Installation derzeit nicht).
 * Policies fuer Chromium/Vivaldi sind bislang noch nicht realisiert.
 
 -----
-Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2023-09-13 09:26:30 +0200
+Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2024-01-11 11:51:05 +0100

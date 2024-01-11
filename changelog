@@ -1,3 +1,9 @@
+vivaldi 6.5.3206.53-45
+	* refined Makefile for OPSI 4.3 (handle compression)
+	* Update readme
+	* product update ==> 6.5.3206.53
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2024-01-11 11:51:44 +0100
+
 vivaldi 6.5.3206.50-44
 	* product update ==> 6.5.3206.50
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2024-01-08 06:28:57 +0100
