@@ -1,6 +1,6 @@
 {
 	"_": "=== OPSI package variables ===",
-	"O_PKG_VER"         : "46",
+	"O_PKG_VER"         : "47",
 	"O_SOFTWARE_VER"    : "6.6.3271.48",
 	"O_SOFTWARE"        : "vivaldi",
 	"O_CHANGELOG"       : "https://vivaldi.com/blog/desktop/minor-update-6-6/",

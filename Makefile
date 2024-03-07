@@ -1,8 +1,8 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 3.0.1
+# Version: 3.0.2
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2024-03-07 11:33:34 +0100
+# 2024-03-07 13:04:53 +0100
 ############################################################
 
 .PHONY: header clean mpimsp mpimsp_test o4i o4i_test dfn dfn_test all_test all_prod all help download pdf install
@@ -320,17 +320,17 @@ help: header
 	@echo "Options:"
 	@echo "	SPEC=<filename>                       (default: $(DEFAULT_SPEC))"
 	@echo "			Use the given alternative spec file."
-	@echo "	ALLINC=[true|false]                   (default: $(DEFAULT_ALLINC))"
+	@echo "	ALLINC={true,false}                   (default: $(DEFAULT_ALLINC))"
 	@echo "			Include software in OPSI package?"
-	@echo "	KEEPFILES=[true|false]                (default: $(DEFAULT_KEEPFILES))"
+	@echo "	KEEPFILES={true,false}                (default: $(DEFAULT_KEEPFILES))"
 	@echo "			Keep really all previous files from 'files' directory?"
 	@echo "			If false only files matching this package version are kept."
 	@if [ $(O_VERCL) -ge 403 ]; then \
-	 echo "	ARCHIVE_FORMAT=[tar]                  (default: $(DEFAULT_ARCHIVEFORMAT))"; \
-	 echo "	COMPRESSION=[gz|gzip|zstd|bz2|bzip2]  (default: $(DEFAULT_COMPRESSION))"; \
+	 echo "	ARCHIVE_FORMAT={tar}                  (default: $(DEFAULT_ARCHIVEFORMAT))"; \
+	 echo "	COMPRESSION={gz,gzip,zstd,bz2,bzip2}  (default: $(DEFAULT_COMPRESSION))"; \
 	else \
-	 echo "	ARCHIVE_FORMAT=[cpio|tar]             (default: $(DEFAULT_ARCHIVEFORMAT))"; \
-	 echo "	COMPRESSION=[gzip|zstd]               (default: $(DEFAULT_COMPRESSION))"; \
+	 echo "	ARCHIVE_FORMAT={cpio,tar}             (default: $(DEFAULT_ARCHIVEFORMAT))"; \
+	 echo "	COMPRESSION={gzip,zstd}               (default: $(DEFAULT_COMPRESSION))"; \
 	fi
 	@echo ""
 

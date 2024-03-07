@@ -125,7 +125,7 @@ Das Paket kann mit *"batteries included"* erstellt werden. In dem Fall erfolgt
 der Download der Software beim Erstellen des OPSI-Paketes und nicht erst bei
 dessen Installation:
 
-> *`ALLINC=[true|false]`*
+> *`ALLINC={true,false}`*
 
 Standard ist hier die Erstellung des leichtgewichtigen Paketes (`ALLINC=false`).
 
@@ -135,7 +135,7 @@ spaeter wiederhergestellt. Diese Verzeichnis beeinhaltet die eigentlichen
 Installationsfiles. Sollen alte Version aufgehoben werden, kann das ueber
 einen Parameter beeinflusst werden:
 
-> *`KEEPFILES=[true|false]`*
+> *`KEEPFILES={true,false}`*
 
 Standardmaessig sollen die Files geloescht werden.
 
@@ -146,17 +146,21 @@ Als Standard fuer dieses Paket ist nun `tar` festgelegt.
 Das Makefile erlaubt die Wahl des Formates ueber die Umgebungsvariable bzw.
 den Parameter:
 
-> *`ARCHIVE_FORMAT=[cpio|tar]`* ⁽¹⁾
+> *`ARCHIVE_FORMAT={cpio,tar}`* ⁽¹⁾
 
 ⁽¹⁾ Fuer OPSI 4.3 wird durch das Makefile ebenfalls nur noch `tar` unterstuetzt;
 fuer 4.2 steht `cpio` noch zur Verfuegung.
 
-> *`COMPRESSION=[gzip|zstd]`*  
-> *`COMPRESSION=[gz|gzip|zstd|bz2|bzip2]`*   (ab OPSI 4.3)_
+Als Kompressionsformat koennen `bz2` bzw. `bzip2`, `gzip` bzw. `gz` oder
+`zstd` zum Einsatz kommen.  
+Fuer Kompatibilitaet zu OPSI <4.3 sollte vorerst `gzip` verwendet werden.
+(Mit `zstd` gab es teilweise Probleme.)  
+Als Standard fuer dieses Paket ist `gz` festgelegt.  
+OPSI 4.3 verwendet normalerweise `zstd`.  
+Das Makefile erlaubt die Wahl des Formates ueber die Umgebungsvariable bzw. den Parameter:
 
-**_Achtung:_** Obwohl fuer OPSI 4.3 "`zstd`" als Standard-Kompression zum Einsatz kommt,
-wird hier weiterhin "`gz`" verwendet, da die mit "`zstd`" erstellten Pakete unter OPSI 4.2
-derzeit nicht installiert werden koennen.
+> *`COMPRESSION={gzip,zstd}`*  
+> *`COMPRESSION={gz,gzip,zstd,bz2,bzip2}`*   (ab OPSI 4.3)
 
 
 <div id="spec_json"></div>
@@ -378,4 +382,4 @@ erfolgt aufgrund der Art der Installation derzeit nicht).
 * Policies fuer Chromium/Vivaldi sind bislang noch nicht realisiert.
 
 -----
-Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2024-03-07 11:55:23 +0100
+Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2024-03-07 13:08:14 +0100

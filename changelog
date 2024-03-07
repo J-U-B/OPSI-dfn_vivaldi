@@ -1,3 +1,8 @@
+vivaldi 6.6.3271.45-47
+	* adjusted Makefile target `help`
+	* update readme (syntax of environment variables for make)
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2024-03-07 13:12:28 +0100
+
 vivaldi 6.6.3271.45-46
 	* product update ==> 6.6.3271.45
 	* fixed `help` target in Makefile (switch for OPI 4.3)
