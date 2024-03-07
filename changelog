@@ -1,6 +1,8 @@
-vivaldi 6.6.3271.45-45
+vivaldi 6.6.3271.45-46
 	* product update ==> 6.6.3271.45
-	-- J. Boettge <boettge@mpi-halle.mpg.de>  2024-02-29 13:13:42 +0100
+	* fixed `help` target in Makefile (switch for OPI 4.3)
+	* update readme
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2024-03-07 11:49:26 +0100
 
 vivaldi 6.5.3206.63-45
 	* product update ==> 6.5.3206.63

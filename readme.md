@@ -4,6 +4,7 @@
 * [Paketinfo](#paketinfo)
 * [Paket erstellen](#paket_erstellen)
 	* [Voraussetzungen](#voraussetzungen)
+	* [Quickstart](#quickstart)
 	* [Makefile und spec.json](#makefile_und_spec)
 	* [Mustache](#mustache)
 	* [Verzeichnisstruktur](#verzeichnisstruktur)
@@ -51,22 +52,37 @@ Zur Erstellung der OPSI-Pakete aus den vorliegenden Quellen werden neben den
 jeweiligen Distributionen zu beziehen sind.
 Das sind (angegebenen Namen entsprechen Paketen in Debian/Ubuntu):
 
-* make
-* curl oder wget
-* mustache (im Repository enthalten)
+* `make`
+* `curl` oder `wget`
+* mustache (im Paket-Repository enthalten)
 
 
 <div id="makefile_und_spec"></div>
+
+### Quickstart ###
+
+Sind die Voraussetzungen erfuellt, d.h. das [_.spec_-File](#spec_json)
+wurde an die aktuelle Version angepasst kann das Paket mit
+```
+		make o4i install
+```
+
+erstellt und im Anschluss gleich auf dem Depot-Server installiert werden.  
+Statt _o4i_ kann auch _mpimsp_ oder _all_prod_ zum Einsatz kommen.  
+Details zu weiteren Targets verraet **`make help`**.
+
+
+<div id="mustache"></div>
 
 ### Makefile und spec.json ###
 
 Da aus den Quellen verschiedene Versionen des Paketes mit entsprechenden Anpassungen
 generiert werden sollen (intern, O4I; testing/release) wurde hierfuer ein
-**<code>Makefile</code>** erstellt. Darueber hinaus steuert **<code>spec.json</code>**
+**`Makefile`** erstellt. Darueber hinaus steuert **`spec.json`**
 die Erstellung der Pakete.
 
 Im Idealfall ist beim Erscheinen einer neuen Release von Vivaldi lediglich die
-**<code>spec.json</code>** anzupassen.
+**`spec.json`** anzupassen.
 
 
 <div id="mustache"></div>
@@ -74,8 +90,8 @@ Im Idealfall ist beim Erscheinen einer neuen Release von Vivaldi lediglich die
 ### Mustache ###
 
 Als Template-Engine kommt **Mustache** zum Einsatz.  
-Im Detail wird hier eine Go-Implementierung verwendet. Die Software ist auf 
-[Github](https://github.com/cbroglie/mustache) zu finden. Binaries 
+Im Detail wird hier eine Go-Implementierung verwendet. Die Software ist auf
+[Github](https://github.com/cbroglie/mustache) zu finden. Binaries
 für Linux und Windows liegen diesem Paket bei.
 
 Das in vorherigen Versionen dieses Paketes (<11) verwendete `pystache` kommt
@@ -86,59 +102,57 @@ nicht mehr zum Einsatz und wurde aus den Quellen entfernt.
 
 ### Verzeichnisstruktur ###
 
-* **<code>PACKAGES</code>** - erstellte Pakete
-* **<code>DOWNLOAD</code>** - heruntergeladene Installationsarchive und md5sums
-* **<code>BUILD</code>** - Arbeitsverzeichnis zur Erstellung der jeweiligen Pakete
-* **<code>SRC</code>** - Skripte und Templates
+* **`PACKAGES`** - erstellte Pakete
+* **`DOWNLOAD`** - heruntergeladene Installationsarchive und md5sums
+* **`BUILD`** - Arbeitsverzeichnis zur Erstellung der jeweiligen Pakete
+* **`SRC`** - Skripte und Templates
 
-Einige Files werden bei der Erstellung erst aus _<code>.in</code>_-Files
-generiert, welche sich in den Verzeichnissen <code>SRC/OPSI</code> und <code>SRC/CLIENT_DATA</code> befinden.
-Die <code>SRC</code>-Verzeichnisse sind in den OPSI-Paketen nicht mehr enthalten.
+Einige Files werden bei der Erstellung erst aus _`.in`_-Files
+generiert, welche sich in den Verzeichnissen `SRC/OPSI` und `SRC/CLIENT_DATA` befinden.
+Die `SRC`-Verzeichnisse sind in den OPSI-Paketen nicht mehr enthalten.
 
 
 <div id="makefile_parameter"></div>
 
 ### Makefile-Parameter ###
 Der vorliegende Code erlaubt die Erstellung von OPSI-Paketen fuer die Releases
-gemaess der Angaben in <code>spec.json</code>. Es kann jedoch bei der Paketerstellung
+gemaess der Angaben in `spec.json`. Es kann jedoch bei der Paketerstellung
 ein alternatives Spec--File uebergeben werden:
 
-> *<code>SPEC=&lt;spec_file&gt;</code>*
+> *`SPEC=<spec_file>`*
 
-Das Paket kann mit *"batteries included"* erstellt werden. In dem Fall erfolgt 
+Das Paket kann mit *"batteries included"* erstellt werden. In dem Fall erfolgt
 der Download der Software beim Erstellen des OPSI-Paketes und nicht erst bei
 dessen Installation:
 
-> *<code>ALLINC=[true|false]</code>*
+> *`ALLINC=[true|false]`*
 
-Standard ist hier die Erstellung des leichtgewichtigen Paketes (```ALLINC=false```).
+Standard ist hier die Erstellung des leichtgewichtigen Paketes (`ALLINC=false`).
 
-Bei der Installation des Paketes im Depot wird ein eventuell vorhandenes 
-```files```-Verzeichnis zunaechst gesichert und vom ```postinst```-Skript
+Bei der Installation des Paketes im Depot wird ein eventuell vorhandenes
+`files`-Verzeichnis zunaechst gesichert und vom `postinst`-Skript
 spaeter wiederhergestellt. Diese Verzeichnis beeinhaltet die eigentlichen
 Installationsfiles. Sollen alte Version aufgehoben werden, kann das ueber
 einen Parameter beeinflusst werden:
 
-> *<code>KEEPFILES=[true|false]</code>*
+> *`KEEPFILES=[true|false]`*
 
 Standardmaessig sollen die Files geloescht werden.
 
-OPSI erlaubt des Pakete im Format <code>cpio</code> und <code>tar</code> zu erstellen.  
-Als Standard ist <code>cpio</code> festgelegt.  
-**_Achtung:_** Ab OPSI 4.3 findet nur noch das `tar`-Format Awendung.  
-Das Makefile erlaubt die Wahl des Formates ueber die Umgebungsvariable bzw. den Parameter:
+OPSI vor Version 4.3 erlaubte es Pakete im Format `cpio` oder `tar` zu erstellen.
+Mit Version 4.3 steht nur noch `tar` zur Verfuegung, weshalb dieser Parameter
+eigentlich obsolet ist.  
+Als Standard fuer dieses Paket ist nun `tar` festgelegt.  
+Das Makefile erlaubt die Wahl des Formates ueber die Umgebungsvariable bzw.
+den Parameter:
 
-> *<code>ARCHIVE_FORMAT=&lt;cpio|tar&gt;</code>*
+> *`ARCHIVE_FORMAT=[cpio|tar]`* ⁽¹⁾
 
-Optional kann auch das verwendete Kompressionsformat festgelegt werden.  
-Ab OPSI-Version 4.3 sind das `gz`, `zstd` und `bz2`; zuvor gab es `gzip` und `zstd`.
-Default bei OPSI 4.3 ist `zstd`, bis dahin galt `gz` bzw. `gzip`.  
-Als Standard ist `gz`/`gzip` festgelegt.  
-Das Makefile erlaubt die Wahl der Kompressionsformates ueber eine Umgebungsvariable bzw.
-den Parameter in Abhaengigkeit von der OPSI-Version:
+⁽¹⁾ Fuer OPSI 4.3 wird durch das Makefile ebenfalls nur noch `tar` unterstuetzt;
+fuer 4.2 steht `cpio` noch zur Verfuegung.
 
-> *<code>COMPRESSION=&lt;gzip|zstd&gt;</code>*  
-> *<code>COMPRESSION=&lt;gz|zstd|bz2&gt;</code>*
+> *`COMPRESSION=[gzip|zstd]`*  
+> *`COMPRESSION=[gz|gzip|zstd|bz2|bzip2]`*   (ab OPSI 4.3)_
 
 **_Achtung:_** Obwohl fuer OPSI 4.3 "`zstd`" als Standard-Kompression zum Einsatz kommt,
 wird hier weiterhin "`gz`" verwendet, da die mit "`zstd`" erstellten Pakete unter OPSI 4.2
@@ -153,7 +167,7 @@ Haeufig beschraenkt sich die Aktualisierung eines Paketes auf das Aendern der
 Versionsnummern und des Datums etc. In einigen Faellen ist jedoch auch das Anpassen
 weiterer Variablen erforderlich, die sich auf verschiedene Files verteilen.  
 Auch das soll durch das Makefile vereinfacht werden. Die relevanten Variablen
-sollen nur noch in <code>spec.json</code> angepasst werden. Den Rest uebernimmt *<code>make</code>*
+sollen nur noch in `spec.json` angepasst werden. Den Rest uebernimmt *`make`*
 
 
 <div id="paketerstellung"></div>
@@ -161,12 +175,12 @@ sollen nur noch in <code>spec.json</code> angepasst werden. Den Rest uebernimmt 
 ### Paketerstellung ###
 
 Soll lediglich die Software aktualisiert werden, beschränken sich die notwendigen
-Änderungen in der <code>spec.json</code> auf:
+Änderungen in der `spec.json` auf:
 
-* <code>O_SOFTWARE_VER</code>
-* <code>O_CHANGELOG</code>
+* `O_SOFTWARE_VER`
+* `O_CHANGELOG`
 
-Weiterhin sollte die <code>changelog</code> um einen entsprechenden Eintrag
+Weiterhin sollte die `changelog` um einen entsprechenden Eintrag
 ergänzt werden.
 
 Gültige Targets für die Paketerstellung liefert
@@ -192,12 +206,12 @@ Das Target `all_prod` erstellt 3 Pakete:
 
 ## Installation ##
 
-Das <code>Makefile</code> erlaubt die Erstellung verschiedener Varianten des
-OPSI-Paketes. Details hierzu liefert **<code>make help</code>**  
+Das `Makefile` erlaubt die Erstellung verschiedener Varianten des
+OPSI-Paketes. Details hierzu liefert **`make help`**  
 Standardmässig werden Pakete erstellt, bei denen die Software selbst <u>nicht</u>
 mit dem OPSI-Paket vertrieben wird. Dennoch ist ein manueller Download der
-Software hier nicht erforderlich. Bei der Installation des Paketes im Depot 
-erfolgt im <code>postinst</code>-Script  der Download der Software vom Hersteller
+Software hier nicht erforderlich. Bei der Installation des Paketes im Depot
+erfolgt im `postinst`-Script  der Download der Software vom Hersteller
 (Windows, 32 und 64 Bit). Ensprechende Pakete sollten i.d.R. durch einen Suffix
 "~dl" gekennzeichnet sein (siehe [Nomenklatur](#nomenklatur)). Beim Download
 der erforderlichen Files erfolgt eine Ueberpruefung der MD5-Summen; diese sind
@@ -208,10 +222,10 @@ In diesen ist - wie zu vermuten - die Software selbst bereits enthalten.
 *"batteries included"*-Pakete und *"self download"*-Pakete sind nach der Installation
 im Depot technisch identisch.
 
-Die Aktivitaeten von <code>preinst</code> und <code>postinst</code> werden
+Die Aktivitaeten von `preinst` und `postinst` werden
 auf dem Depot-Server in einem Logfile protokolliert. Standardmaessig (definiert
-in <code>spec.json</code>) ist dieses unter 
-**<code>/tmp/${PRODUCT_ID}__opsi_package_install.log</code>** zu finden.  
+in `spec.json`) ist dieses unter
+**`/tmp/${PRODUCT_ID}__opsi_package_install.log`** zu finden.  
 Hier eventuell auftretende Fehler werden an den opsi-package-manager uebergeben
 und setzen das Paket in einen Fehlerzustand.
 
@@ -232,23 +246,23 @@ installiert werden.
 
 ### Aufbau des Paketes ###
 
-* **<code>variables.opsiinc</code>** - Da Variablen ueber die Scripte hinweg mehrfach
+* **`variables.opsiinc`** - Da Variablen ueber die Scripte hinweg mehrfach
 verwendet werden, werden diese (bis auf wenige Ausnahmen) zusammengefasst hier deklariert.
-* **<code>product_variables.opsiinc</code>** - die producktspezifischen Variablen werden
+* **`product_variables.opsiinc`** - die producktspezifischen Variablen werden
 hier definiert
-* **<code>setup.opsiscript </code>** - Das Script fuer die Installation.
-* **<code>uninstall.opsiscript</code>** - Das Uninstall-Script
-* **<code>delsub.opsiinc</code>**- Wird von Setup und Uninstall gemeinsam verwendet.
+* **`setup.opsiscript `** - Das Script fuer die Installation.
+* **`uninstall.opsiscript`** - Das Uninstall-Script
+* **`delsub.opsiinc`**- Wird von Setup und Uninstall gemeinsam verwendet.
 Vor jeder Installation/jedem Update wird eine alte Version entfernt. (Ein explizites
 Update-Script existiert derzeit nicht.)
-* **<code>checkinstance.opsiinc</code>** - Pruefung, ob eine Instanz der Software laeuft.
-Gegebenenfalls wird das Setup abgebrochen. Optional kann eine laufende Instanz 
+* **`checkinstance.opsiinc`** - Pruefung, ob eine Instanz der Software laeuft.
+Gegebenenfalls wird das Setup abgebrochen. Optional kann eine laufende Instanz
 zwangsweise beendet werden.
-* **<code>checkvars.sh</code>** - Hilfsscript fuer die Entwicklung zur Ueberpruefung,
+* **`checkvars.sh`** - Hilfsscript fuer die Entwicklung zur Ueberpruefung,
 ob alle verwendeten Variablen deklariert sind bzw. nicht verwendete Variablen
 aufzuspueren.
-* **<code>bin/</code>** - Hilfprogramme; hier: **7zip**, **psdetail**
-* **<code>images/</code>** - Programmbilder fuer OPSI
+* **`bin/`** - Hilfprogramme; hier: **7zip**, **psdetail**
+* **`images/`** - Programmbilder fuer OPSI
 
 
 
@@ -265,11 +279,11 @@ wird der Praefix entfernt.
 Suffix:
 
 * **~dl** - Das Paket enthaelt die Installationsarchive selbst nicht. Diese werden
-erst bei der Installation im Depot vom <code>postinst</code>-Skript heruntergeladen.  
+erst bei der Installation im Depot vom `postinst`-Skript heruntergeladen.  
 Der Suffix ist kein Bestandteil der ProductId. Nach der Installation im Depot
 gibt es hierauf keinerlei Hinweis mehr.
 
-Die Reihenfolge der Praefixes ist relevant; die Markierung als Testpaket ist 
+Die Reihenfolge der Praefixes ist relevant; die Markierung als Testpaket ist
 stets fuehrend.
 
 
@@ -282,8 +296,8 @@ stets fuehrend.
 aus dem manuellen entpacken des Archivs und Erzeugen der Startmenueeintraege.
 
 In der Folge gibt es auch keinen Eintrag in den Uninstall-Sektionen der Registry.  
-Damit OPSI sich dennoch "orientieren" und den Installationsstatus abfragen kann, 
-wird unter *<code>$PackageReg$</code>* ein Eintrag fuer derart installierte Pakete 
+Damit OPSI sich dennoch "orientieren" und den Installationsstatus abfragen kann,
+wird unter *`$PackageReg$`* ein Eintrag fuer derart installierte Pakete
 angelegt.
 
 
@@ -299,7 +313,7 @@ angelegt.
 
 Dieses OPSI-Paket steht unter der *GNU General Public License* **GPLv3**.
 
-Ausgenommen von dieser Lizenz sind die unter **<code>bin/</code>** zu findenden
+Ausgenommen von dieser Lizenz sind die unter **`bin/`** zu findenden
 Hilfsprogramme. Diese unterliegen ihren jeweiligen Lizenzen.
 
 
@@ -307,19 +321,19 @@ Hilfsprogramme. Diese unterliegen ihren jeweiligen Lizenzen.
 
 ### psdetail ###
 
-**Autor** der Software: Jens Boettge <<boettge@mpi-halle.mpg.de>> 
+**Autor** der Software: Jens Boettge <<boettge@mpi-halle.mpg.de>>
 
-Die Software **psdetail.exe**  wird als Freeware kostenlos angeboten und darf fuer 
+Die Software **`psdetail.exe`**  wird als Freeware kostenlos angeboten und darf fuer 
 nichtkommerzielle sowie kommerzielle Zwecke genutzt werden. Die Software
-darf nicht veraendert werden; es duerfen keine abgeleiteten Versionen daraus 
+darf nicht veraendert werden; es duerfen keine abgeleiteten Versionen daraus
 erstellt werden.
 
-Es ist erlaubt Kopien der Software herzustellen und weiterzugeben, solange 
+Es ist erlaubt Kopien der Software herzustellen und weiterzugeben, solange
 Vervielfaeltigung und Weitergabe nicht auf Gewinnerwirtschaftung oder Spendensammlung
 abzielt.
 
 Haftungsausschluss:  
-Der Auto lehnt ausdruecklich jede Haftung fuer eventuell durch die Nutzung 
+Der Auto lehnt ausdruecklich jede Haftung fuer eventuell durch die Nutzung
 der Software entstandene Schaeden ab.  
 Es werden keine ex- oder impliziten Zusagen gemacht oder Garantien bezueglich
 der Eigenschaften, des Funktionsumfanges oder Fehlerfreiheit gegeben.  
@@ -337,7 +351,7 @@ Fuer die Nutzung wird das *.NET Framework ab v3.5*  benoetigt.
 ### 7zip ###
 
 Es gilt die Lizenz von [http://www.7-zip.org/license.txt](http://www.7-zip.org/license.txt).  
-Die Lizenz liegt diesem Paket in <code>CLIENT_DATA/bin/</code> ebenfalls bei.
+Die Lizenz liegt diesem Paket in `CLIENT_DATA/bin/` ebenfalls bei.
 
 
 
@@ -356,10 +370,12 @@ Quelle: https://de.wikipedia.org/wiki/Vivaldi_(Browser)#/media/File:Vivaldi_web_
 
 ## Anmerkungen/ToDo ##
 
+siehe [Git-Issues](https://git.o4i.org/jens.boettge/vivaldi/issues)
+
 * Die vollstaendige Integration des Browsers ins System (Default-Browser, HTML-Handler, Self-Updater
 erfolgt aufgrund der Art der Installation derzeit nicht).
 * Die Product-Property *default_language* wird derzeit nicht ausgewertet uns ist daher deaktiviert
 * Policies fuer Chromium/Vivaldi sind bislang noch nicht realisiert.
 
 -----
-Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2024-01-11 11:51:05 +0100
+Jens Boettge <<boettge@mpi-halle.mpg.de>>, 2024-03-07 11:55:23 +0100

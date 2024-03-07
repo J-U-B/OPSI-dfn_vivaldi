@@ -1,8 +1,8 @@
 ############################################################
 # OPSI package Makefile (VIVALDI)
-# Version: 3.0.0
+# Version: 3.0.1
 # Jens Boettge <boettge@mpi-halle.mpg.de>
-# 2024-01-11 11:45:51 +0100
+# 2024-03-07 11:33:34 +0100
 ############################################################
 
 .PHONY: header clean mpimsp mpimsp_test o4i o4i_test dfn dfn_test all_test all_prod all help download pdf install
@@ -50,7 +50,7 @@ ifeq ($(shell test "$(O_VERCL)" -ge "403"; echo $$?),0)
 	DEFAULT_ARCHIVEFORMAT = tar
 	ARCHIVE_TYPES :="[tar]"
 	DEFAULT_COMPRESSION = gz
-	COMPRESSION_TYPES :="[gz] [zstd] [bz2]"
+	COMPRESSION_TYPES :="[gz] [gzip] [bz2] [bzip2] [zstd]"
 else
     $(info * OPSI <4.3)
 	DEFAULT_ARCHIVEFORMAT = cpio
@@ -132,7 +132,7 @@ AFX := $(firstword $(ARCHIVE_FORMAT))
 AFY := $(shell echo $(AFX) | tr A-Z a-z)
 
 ifeq (,$(findstring [$(AFY)],$(ARCHIVE_TYPES)))
-	BUILD_FORMAT := cpio
+	BUILD_FORMAT := $(DEFAULT_ARCHIVEFORMAT)
 else
 	BUILD_FORMAT := $(AFY)
 endif
@@ -148,7 +148,7 @@ else
 	BUILD_COMPRESSION := $(AFY)
 endif
 
-
+### Customname
 ifeq ($(CUSTOMNAME),"")
 	PKGNAME := ${TESTPREFIX}$(ORGPREFIX)$(SW_NAME)_${SW_VER}-$(PKG_BUILD)$(CUSTOMNAME)
 else
@@ -177,9 +177,10 @@ var_test:
 	@echo "* Files Mask            : [$(FILES_MASK)]"
 	@echo "* Keep files            : [$(KEEPFILES)]"
 	@echo "* Changelog target      : [$(CHANGELOG_TGT)]"
+	@echo "* OPSI Builder Version  : [$(OPSI_VERSION)]"
 	@echo "=================================================================="
 	@echo "* Installer files in $(DL_DIR):"
-	@for F in `ls -1 $(DL_DIR)/$(FILES_MASK) | sed -re 's/.*\/(.*)$$/\1/' `; do echo "    $$F"; done 
+	@for F in `ls -1 $(DL_DIR)/$(FILES_MASK) | sed -re 's/.*\/(.*)$$/\1/' `; do echo "    $$F"; done
 	@ $(eval NUM_FILES := $(shell ls -l $(DL_DIR)/$(FILES_MASK) 2>/dev/null | wc -l))
 	@echo "* $(NUM_FILES) files found"
 	@echo "=================================================================="
@@ -295,40 +296,42 @@ realclean: header clean
 
 help: header
 	@echo "Valid targets: "
-	@echo "	mpimsp"
-	@echo "	mpimsp_test"
-	@echo "	o4i"
-	@echo "	o4i_test"
-	@echo "	o4i_test_0"
-	@echo "	o4i_test_noprefix"	
-	@echo "	dfn"
-	@echo "	dfn_test"
-	@echo "	dfn_test_0"
-	@echo "	dfn_test_noprefix"
-	@echo "	all_prod"
-	@echo "	all_test"
-	@echo "	fix_rights            - fix rights for package directory"
-	@echo "	clean"
-	@echo "	clean_packages"
+	@echo "	mpimsp                - build package for mpimsp"
+	@echo "	mpimsp_test           - build testing package for mpimsp"
+	@echo "	o4i                   - build package for O4I"
+	@echo "	o4i_test              - build testing package for O4I"
+	@echo "	o4i_test_0            - build package for O4I with prefix 0_"
+	@echo "	o4i_test_noprefix     - build package for O4I without testing prefix"
+	@echo "	dfn                   - build 'dfn' package for O4I"
+	@echo "	dfn_test              - build 'dfn' testing package for O4I"
+	@echo "	dfn_test_0            - build 'dfn' testing package for O4I with prefix 0_"
+	@echo "	dfn_test_noprefix     - build 'dfn' testing package for O4I without testing prefix"
+	@echo "	all_prod              - build: mpimsp o4i dfn"
+	@echo "	all_test              - build: mpimsp_test o4i_test dfn"
+	@echo ""
+	@echo "	install               - install available current packages on depot server"
 	@echo "	download              - download installation archive(s) from vendor"
 	@echo "	pdf                   - create PDF from readme.md (req. pandoc)"
-	@echo "	install               - install all packages built for current version on depot server"
+	@echo "	fix_rights            - fix rights for package directory"
+	@echo "	clean                 - delete build directory"
+	@echo "	clean_packages        - delete all packages previously built"
+	@echo "	realclean             - delete build directory and download directory"
 	@echo ""
 	@echo "Options:"
-	@echo "	SPEC=<filename>                 (default: $(DEFAULT_SPEC))"
+	@echo "	SPEC=<filename>                       (default: $(DEFAULT_SPEC))"
 	@echo "			Use the given alternative spec file."
-	@echo "	ALLINC=[true|false]             (default: $(DEFAULT_ALLINC))"
+	@echo "	ALLINC=[true|false]                   (default: $(DEFAULT_ALLINC))"
 	@echo "			Include software in OPSI package?"
-	@echo "	KEEPFILES=[true|false]          (default: $(DEFAULT_KEEPFILES))"
+	@echo "	KEEPFILES=[true|false]                (default: $(DEFAULT_KEEPFILES))"
 	@echo "			Keep really all previous files from 'files' directory?"
 	@echo "			If false only files matching this package version are kept."
 	@if [ $(O_VERCL) -ge 403 ]; then \
-	 echo "	ARCHIVE_FORMAT=[cpio|tar]       (default: $(DEFAULT_ARCHIVEFORMAT))"; \
-	 echo "	COMPRESSION=[gz|zstd|bz2]       (default: $(DEFAULT_COMPRESSION))"; \
+	 echo "	ARCHIVE_FORMAT=[tar]                  (default: $(DEFAULT_ARCHIVEFORMAT))"; \
+	 echo "	COMPRESSION=[gz|gzip|zstd|bz2|bzip2]  (default: $(DEFAULT_COMPRESSION))"; \
 	else \
-	 echo "	ARCHIVE_FORMAT=[tar]            (default: $(DEFAULT_ARCHIVEFORMAT))"; \
-	 echo "	COMPRESSION=[gzip|zstd]         (default: $(DEFAULT_COMPRESSION))"; \
-    fi
+	 echo "	ARCHIVE_FORMAT=[cpio|tar]             (default: $(DEFAULT_ARCHIVEFORMAT))"; \
+	 echo "	COMPRESSION=[gzip|zstd]               (default: $(DEFAULT_COMPRESSION))"; \
+	fi
 	@echo ""
 
 
@@ -378,7 +381,7 @@ build_md5:
 	if [ -f "$(BUILD_DIR)/CLIENT_DATA/$(MD5SUM_FILE)" ]; then \
 		rm -f $(BUILD_DIR)/CLIENT_DATA/$(MD5SUM_FILE); \
 	fi
-	@grep -i "$(SW_NAME).$(SW_VER)." $(DL_DIR)/$(MD5SUM_FILE)>> $(BUILD_DIR)/CLIENT_DATA/$(MD5SUM_FILE) 
+	@grep -i "$(SW_NAME).$(SW_VER)." $(DL_DIR)/$(MD5SUM_FILE)>> $(BUILD_DIR)/CLIENT_DATA/$(MD5SUM_FILE)
 
 
 copy_from_src:	build_dirs build_md5
@@ -420,7 +423,7 @@ copy_from_src:	build_dirs build_md5
 		cp -up $(SRC_DIR)/CLIENT_DATA/images/*.png  $(BUILD_DIR)/CLIENT_DATA/images/; \
 	fi
 	@if [ -f  "$(SRC_DIR)/OPSI/control" ];  then cp -up $(SRC_DIR)/OPSI/control   $(BUILD_DIR)/OPSI/; fi
-	@if [ -f  "$(SRC_DIR)/OPSI/preinst" ];  then cp -up $(SRC_DIR)/OPSI/preinst   $(BUILD_DIR)/OPSI/; fi 
+	@if [ -f  "$(SRC_DIR)/OPSI/preinst" ];  then cp -up $(SRC_DIR)/OPSI/preinst   $(BUILD_DIR)/OPSI/; fi
 	@if [ -f  "$(SRC_DIR)/OPSI/postinst" ]; then cp -up $(SRC_DIR)/OPSI/postinst  $(BUILD_DIR)/OPSI/; fi
 
 
