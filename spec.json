@@ -1,9 +1,9 @@
 {
 	"_": "=== OPSI package variables ===",
 	"O_PKG_VER"         : "47",
-	"O_SOFTWARE_VER"    : "7.0.3495.6",
+	"O_SOFTWARE_VER"    : "7.0.3495.10",
 	"O_SOFTWARE"        : "vivaldi",
-	"O_CHANGELOG"       : "https://vivaldi.com/blog/read-all-about-vivaldi-7-0/",
+	"O_CHANGELOG"       : "https://vivaldi.com/blog/desktop/minor-update-7-0/",
 	"O_RELEASE_DATE"    : "{{M_TODAY}}",
 	"O_INST_LOG"        : "/tmp/{{M_ORGPREFIX}}vivaldi__opsi_package_install.log",
 	"O_MAINTAINER"      : "Jens Boettge <boettge@mpi-halle.mpg.de>",
