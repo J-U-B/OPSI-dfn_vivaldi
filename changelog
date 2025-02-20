@@ -1,3 +1,8 @@
+vivaldi 7.1.3570.54-48
+	* adjusted space requirements
+	* write Publisher to uninstall information
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2025-02-20 12:33:15 +0100
+
 vivaldi 7.1.3570.54-47
 	* product update ==> 7.1.3570.54
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2025-02-20 10:57:56 +0100

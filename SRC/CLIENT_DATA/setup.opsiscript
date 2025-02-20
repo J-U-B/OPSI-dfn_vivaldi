@@ -1,6 +1,6 @@
 ;======================================================================
 ; setup.opsiscript VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2023-04-21 15:37:21 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2025-02-20 12:27:00 +0100
 ;======================================================================
 
 ;======================================================================
@@ -272,6 +272,7 @@ set "OPSIProductID"       = "$FullProductId$"
 set "OPSIProductName"     = "$ProductName$"
 set "OPSIPackageVersion"  = "$PackageVersion$"
 set "DisplayVersion"      = "$Version$"
+set "Publisher"           = "$Publisher$"
 set "DisplayIcon"         = "$PathToExe$"
 set "InstallLocation"     = "$InstallDir$"
 set "InstallArchitecture" = "$sw_arch$"

@@ -1,6 +1,6 @@
 ;=====================================================================
 ; product specific variables  VIVALDI
-; J. Boettge <boettge@mpi-halle.mpg.de>  2023-05-05 11:02:09 +0200
+; J. Boettge <boettge@mpi-halle.mpg.de>  2025-02-20 12:31:53 +0100
 ;=====================================================================
 
 include_insert "%ScriptPath%\variables.opsiinc"
@@ -226,6 +226,11 @@ Set $pr_NoUpdNotify$ = GetProductProperty("deactivate_update_notifier", "true")
 Set $pr_MakeDefault$ = GetProductProperty("make_default", "false")
 
 ;-----------------------------------------------------------
+; additional uninstall information
+;-----------------------------------------------------------
+Set $Publisher$			= "Vivaldi Technologies"
+
+;-----------------------------------------------------------
 Set $ProductDir$	= stringReplace($ProductName$," ","")
 ;Set $ProductDir$	= $ProductId$
 Set $SrcDir$		= "%ScriptPath%\files\" 
@@ -243,11 +248,11 @@ Set $PathToExe$			= $InstallDir$ + "\" + $MainBin$
 ;-----------------------------------------------------------
 if ( $sw_arch$ = "32" )
 	Set $Installer$		= $SrcDir$ + $ProductName$ + "." + $Version$ + ".exe"
-	Set $MinimumSpace$	= "360 MB"
+	Set $MinimumSpace$	= "400 MB"
 else
 	; $sw_arch$ = "64" 
 	Set $Installer$		= $SrcDir$ + $ProductName$ + "." + $Version$ + ".x64.exe"
-	Set $MinimumSpace$	= "400 MB"
+	Set $MinimumSpace$	= "450 MB"
 endif
 
 ;-----------------------------------------------------------
