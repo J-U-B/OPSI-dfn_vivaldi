@@ -1,31 +1,37 @@
-vivaldi 7.3.3635.14-47
+vivaldi 7.4.3684.38-48
+	* product update ==> 7.4.3684.38
+	* fix changelog
+	-- J. Boettge <boettge@mpi-halle.mpg.de>  2025-05-20 07:25:52 +0200
+
+vivaldi 7.3.3635.14-48
 	* product update ==> 7.3.3635.14
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2025-05-16 12:37:40 +0200
-vivaldi 7.3.3635.12-47
+
+vivaldi 7.3.3635.12-48
 	* product update ==> 7.3.3635.12
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2025-05-06 09:10:07 +0200
 
-vivaldi 7.3.3635.11-47
+vivaldi 7.3.3635.11-48
 	* product update ==> 7.3.3635.11
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2025-04-22 08:48:57 +0200
 
-vivaldi 7.3.3635.9-47
+vivaldi 7.3.3635.9-48
 	* product update ==> 7.3.3635.9
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2025-04-11 07:18:42 +0200
 
-vivaldi 7.3.3635.7-47
+vivaldi 7.3.3635.7-48
 	* product update ==> 7.3.3635.7
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2025-04-03 07:07:18 +0200
 
-vivaldi 7.3.3635.4-47
+vivaldi 7.3.3635.4-48
 	* product update ==> 7.3.3635.4
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2025-03-31 07:39:25 +0200
 
-vivaldi 7.3.3635.2-47
+vivaldi 7.3.3635.2-48
 	* product update ==> 7.3.3635.2
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2025-03-28 07:07:21 +0100
 
-vivaldi 7.2.3621.71-47
+vivaldi 7.2.3621.71-48
 	* product update ==> 7.2.3621.71
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2025-03-27 07:19:49 +0100
 
@@ -33,11 +39,11 @@ vivaldi 7.2.3621.67-47
 	* product update ==> 7.2.3621.67
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2025-03-24 07:18:42 +0100
 
-vivaldi 7.1.3570.60-47
+vivaldi 7.1.3570.60-48
 	* product update ==> 7.1.3570.60
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2025-03-11 07:13:59 +0100
 
-vivaldi 7.1.3570.58-47
+vivaldi 7.1.3570.58-48
 	* product update ==> 7.1.3570.58
 	-- J. Boettge <boettge@mpi-halle.mpg.de>  2025-02-28 10:58:53 +0100
 
