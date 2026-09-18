@@ -1,7 +1,7 @@
 {
 	"_": "=== OPSI package variables ===",
 	"O_PKG_VER"         : "49",
-	"O_SOFTWARE_VER"    : "8.2.4133.52",
+	"O_SOFTWARE_VER"    : "8.2.4133.64",
 	"O_SOFTWARE"        : "vivaldi",
 	"O_CHANGELOG"       : "https://vivaldi.com/de/blog/desktop/desktop-releases/vivaldi-on-desktop-8-2/",
 	"O_RELEASE_DATE"    : "{{M_TODAY}}",
